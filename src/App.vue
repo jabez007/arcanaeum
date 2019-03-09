@@ -23,9 +23,9 @@
         </RotatingEntity>
       </RotatingEntity>
     </Scene>
-    <!-- div style="position: absolute; top: 100px; right: 100px;">
-      hello world
-    </div-->
+    <div ref="tooltip"
+         id="tooltip">
+    </div>    
   </div>
 </template>
 
@@ -91,18 +91,31 @@ export default {
   mounted() {
     window.removeEventListener('click', this.pickMesh);
     window.addEventListener('click', this.pickMesh);
-    window.removeEventListener('mousemove', this.pickMesh);
-    window.addEventListener('mousemove', this.pickMesh);
+    window.removeEventListener('mousemove', this.showTooltip);
+    window.addEventListener('mousemove', this.showTooltip);
   },
   methods: {
+    showTooltip() {
+      const box = this.pickMesh();
+      if (box.name) {
+        this.$refs.tooltip.style.background = '#D1C4E9';
+        this.$refs.tooltip.style.border = '1px solid #673ab7'
+        this.$refs.tooltip.innerText = box.name;
+      } else {
+        this.$refs.tooltip.style.background = 'transparent';
+        this.$refs.tooltip.style.border = '';
+        this.$refs.tooltip.innerText = '';
+      }
+    },
     pickMesh() {
       const pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY);
       if (pickResult.hit) {
         const index = this.nodes.findIndex(n => n.id === pickResult.pickedMesh.id);
         if (index >= 0) {
-          console.log(BOXES[index].to);
+          return BOXES[index];
         }
       }
+      return {};
     }
   }
 };
@@ -117,6 +130,21 @@ html, body {
 
 body {
   overflow: hidden;
+}
+
+#tooltip {
+  position: absolute;
+  top: 50%;
+  right: 45%;
+  min-width: 10%;
+  border-radius: 25px;
+  opacity: 0.5;
+  color: #212121;
+  font-size: large;
+  font-family: Aclonica, Merienda, 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+  text-align: center;
+  padding: 5px;
+  margin: 0 auto;
 }
 
 /*#canvas {
