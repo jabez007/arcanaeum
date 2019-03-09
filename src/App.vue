@@ -1,28 +1,122 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <Scene id="canvas"
+           ref="scene"
+           v-model="scene">
+      <Camera v-model="camera"
+              type="arcRotate" 
+              :radius="20" 
+              :position="[0, 0, -25]">
+      </Camera>
+      <HemisphericLight diffuse="#0000FF"></HemisphericLight>
+      <RotatingEntity>
+        <PointLight diffuse="#FF0000"></PointLight>
+        <RotatingEntity v-for="(box, key) in boxes"
+                        :key="key"
+                        :position="box.pos">
+          <Box v-model="nodes[key]">
+            <Material>
+
+            </Material>
+          </Box>
+        </RotatingEntity>
+      </RotatingEntity>
+    </Scene>
+    <!-- div style="position: absolute; top: 100px; right: 100px;">
+      hello world
+    </div-->
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+const BOXES = [
+  {
+    name: 'hello',
+    pos: [4, 0, 0],
+    to: '/hello'
+  },
+  {
+    name: 'world',
+    pos: [0, 4, 0],
+    to: '/world'
+  },
+  {
+    name: 'foo',
+    pos: [0, 0, 4],
+    to: '/foo'
+  },
+  {
+    name: 'bar',
+    pos: [-4, 0, 0],
+    to: '/bar'
+  },
+  {
+    name: 'good',
+    pos: [0, -4, 0],
+    to: '/good'
+  },
+  {
+    name: 'bye',
+    pos: [0, 0, -4],
+    to: '/bye'
+  },
+]; 
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    RotatingEntity: () => import('./components/RotatingEntity'),
+  },
+  data: () => ({
+    scene: null,
+    camera: null,
+    nodes: [],
+  }),
+  computed: {
+    boxes() {
+      return BOXES;
+    }
+  },
+  watch: {
+    scene() {
+      // console.log('scene ready');
+    },
+    camera() {
+      // console.log('camera ready');
+      // cheat scene in here
+      this.scene = this.scene || this.camera._scene;
+    },
+  },
+  mounted() {
+    window.removeEventListener('click', this.pickMesh);
+    window.addEventListener('click', this.pickMesh);
+    window.removeEventListener('mousemove', this.pickMesh);
+    window.addEventListener('mousemove', this.pickMesh);
+  },
+  methods: {
+    pickMesh() {
+      const pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY);
+      if (pickResult.hit) {
+        const index = this.nodes.findIndex(n => n.id === pickResult.pickedMesh.id);
+        console.log(BOXES[index].to);
+      }
+    }
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
+
+body {
+  overflow: hidden;
+}
+
+/*#canvas {
+  background-image: url('./assets/banner.jpg') !important;
+}*/
 </style>

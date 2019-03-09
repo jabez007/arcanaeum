@@ -1,5 +1,8 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from 'vue';
+import Babylon from 'vue-babylonjs';
+import App from './App.vue';
+
+Vue.use(Babylon);
 
 Vue.config.productionTip = false
 

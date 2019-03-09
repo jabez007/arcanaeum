@@ -8,7 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "vue": "^2.6.6"
+    "vue": "^2.6.6",
+    "vue-babylonjs": "^1.0.0-beta.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
