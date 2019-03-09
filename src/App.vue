@@ -2,15 +2,17 @@
   <div>
     <Scene id="canvas"
            ref="scene"
+           fog="exp"
+           :fogDensity="0.01"
            v-model="scene">
       <Camera v-model="camera"
               type="arcRotate" 
               :radius="20" 
               :position="[0, 0, -25]">
       </Camera>
-      <HemisphericLight diffuse="#0000FF"></HemisphericLight>
+      <HemisphericLight diffuse="#512da8"></HemisphericLight>
       <RotatingEntity>
-        <PointLight diffuse="#FF0000"></PointLight>
+        <PointLight diffuse="#03a9f4"></PointLight>
         <RotatingEntity v-for="(box, key) in boxes"
                         :key="key"
                         :position="box.pos">
