@@ -15,8 +15,7 @@
                         :key="key"
                         :position="box.pos">
           <Box v-model="nodes[key]">
-            <Material>
-
+            <Material :alpha="0.8">
             </Material>
           </Box>
         </RotatingEntity>
@@ -98,7 +97,9 @@ export default {
       const pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY);
       if (pickResult.hit) {
         const index = this.nodes.findIndex(n => n.id === pickResult.pickedMesh.id);
-        console.log(BOXES[index].to);
+        if (index >= 0) {
+          console.log(BOXES[index].to);
+        }
       }
     }
   }
