@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import './plugins/vuetify'
 import Babylon from 'vue-babylonjs';
 import App from './App.vue';
 
