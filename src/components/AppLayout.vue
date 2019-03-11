@@ -50,7 +50,7 @@
 export default {
     name: 'AppLayout',
     data: () => ({
-        drawer: false,
+        drawer: true,
         transitionName: 'fade-transition',
     }),
     watch: {

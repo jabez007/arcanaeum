@@ -148,8 +148,4 @@ export default {
   padding: 5px;
   margin: 0 auto;
 }
-
-/*#canvas {
-  background-image: url('./assets/banner.jpg') !important;
-}*/
 </style>

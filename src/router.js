@@ -10,5 +10,10 @@ export default new Router({
       name: 'home',
       component: () => import('./views/Home.vue')
     },
+    {
+      path:'/cryptotron',
+      name: 'cryptotron',
+      component: () => import('./views/CryptoTron/Home.vue'),
+    }
   ]
 })
