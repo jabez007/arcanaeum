@@ -1,6 +1,7 @@
 <template>
   <div>
     <Scene id="canvas"
+           :height="windowHeight"
            ref="scene"
            fog="exp"
            :fogDensity="0.01"
@@ -70,6 +71,7 @@ export default {
     RotatingEntity: () => import('@/components/RotatingEntity'),
   },
   data: () => ({
+    windowHeight: 0,
     scene: null,
     camera: null,
     nodes: [],
@@ -90,10 +92,20 @@ export default {
     },
   },
   mounted() {
+    const self = this;
     window.removeEventListener('click', this.pickMesh);
     window.addEventListener('click', this.pickMesh);
     window.removeEventListener('mousemove', this.showTooltip);
     window.addEventListener('mousemove', this.showTooltip);
+    //
+    this.windowHeight = window.innerHeight;
+    window.addEventListener('resize', () => {
+      self.windowHeight = window.innerHeight;
+    });
+  },
+  beforeDestroy() {
+    window.removeEventListener('click', this.pickMesh);
+    window.removeEventListener('mousemove', this.showTooltip);
   },
   methods: {
     getRandomInt(min, max) {
@@ -108,15 +120,17 @@ export default {
       }
     },
     showTooltip() {
-      const box = this.pickMesh();
-      if (box.name) {
-        this.$refs.tooltip.style.background = '#D1C4E9';
-        this.$refs.tooltip.style.border = '1px solid #673ab7'
-        this.$refs.tooltip.innerText = box.name;
-      } else {
-        this.$refs.tooltip.style.background = 'transparent';
-        this.$refs.tooltip.style.border = '';
-        this.$refs.tooltip.innerText = '';
+      if (this.$refs.tooltip) {
+        const box = this.pickMesh();
+        if (box.name) {
+          this.$refs.tooltip.style.background = '#D1C4E9';
+          this.$refs.tooltip.style.border = '1px solid #673ab7'
+          this.$refs.tooltip.innerText = box.name;
+        } else {
+          this.$refs.tooltip.style.background = 'transparent';
+          this.$refs.tooltip.style.border = '';
+          this.$refs.tooltip.innerText = '';
+        }
       }
     },
     pickMesh() {
