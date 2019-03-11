@@ -10,6 +10,7 @@
   "dependencies": {
     "vue": "^2.6.6",
     "vue-babylonjs": "^1.0.0-beta.6",
+    "vue-router": "^3.0.1",
     "vuetify": "^1.5.5"
   },
   "devDependencies": {
