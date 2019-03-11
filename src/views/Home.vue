@@ -12,12 +12,12 @@
               :position="[0, 0, -25]">
       </Camera>
       <HemisphericLight diffuse="#512da8"></HemisphericLight>
-      <RotatingEntity :duration="getRandomInt(30 ,60)">
+      <RotatingEntity :duration="60">
         <PointLight diffuse="#03a9f4"></PointLight>
         <RotatingEntity v-for="(box, key) in boxes"
                         :key="key"
                         :position="box.pos"
-                        :duration="getRandomInt(5, 15)">
+                        :duration="15">
           <Box v-model="nodes[key]">
             <Material :alpha="0.8">
             </Material>
@@ -108,17 +108,6 @@ export default {
     window.removeEventListener('mousemove', this.showTooltip);
   },
   methods: {
-    getRandomInt(min, max) {
-      min = Math.ceil(Math.min(min, max));
-      max = Math.floor(Math.max(min, max));
-      // dont give a  0
-      const rand = Math.floor(Math.random() * (max - min)) + min;  // The maximum is exclusive and the minimum is inclusive
-      if (rand == 0) {
-          return this.getRandomInt(min, max);
-      } else {
-          return rand ; 
-      }
-    },
     showTooltip() {
       if (this.$refs.tooltip) {
         const box = this.pickMesh();
