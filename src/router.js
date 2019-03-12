@@ -23,6 +23,10 @@ export default new Router({
           path: 'caesar',
           component: () => import('./views/CryptoTron/CaesarCipher.vue'),
         },
+        {
+          path: 'affine',
+          component: () => import('./views/CryptoTron/AffineCipher.vue'),
+        },
       ],
     },
   ],

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="aether">
     <Scene id="canvas"
            :height="windowHeight"
            ref="scene"

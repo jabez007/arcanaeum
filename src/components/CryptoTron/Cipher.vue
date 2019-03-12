@@ -24,20 +24,23 @@
                key="crack">
           Cryptanalysis
         </v-tab>
-        <v-tab-item key="encrypt">
+        <v-tab-item key="encrypt"
+                    lazy>
           <EncryptMessage :encryptAlgorithm="encryptAlgorithm"
                           :cipherKey="cipherKey"
                           @success="onSuccess"
                           @error="onError" />
         </v-tab-item>
-        <v-tab-item key="decrypt">
+        <v-tab-item key="decrypt"
+                    lazy>
           <DecryptMessage :decryptAlgorithm="decryptAlgorithm"
                           :cipherKey="cipherKey"
                           @success="onSuccess"
                           @error="onError" />
         </v-tab-item>
         <v-tab-item v-if="keysGenerator"
-                    key="crack">
+                    key="crack"
+                    lazy>
           <CrackMessage :decryptAlgorithm="decryptAlgorithm"
                         :ngramsFile="ngramsFile"
                         :keysGenerator="keysGenerator"
@@ -112,4 +115,7 @@ export default {
 </script>
 
 <style scoped>
+.v-card__text {
+  overflow: scroll;
+}
 </style>

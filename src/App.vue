@@ -26,10 +26,6 @@ html, body {
   height: 100%;
 }
 
-body {
-  overflow: hidden;
-}
-
 #background {
   width: 100%; 
   height: 100%;
