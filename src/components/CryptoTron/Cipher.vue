@@ -44,6 +44,8 @@
           <CrackMessage :decryptAlgorithm="decryptAlgorithm"
                         :ngramsFile="ngramsFile"
                         :keysGenerator="keysGenerator"
+                        @success="onSuccess"
+                        @error="onError"
                         @update-key="$emit('update-key', $event)" />
         </v-tab-item>
       </v-tabs>
@@ -51,8 +53,9 @@
     <v-snackbar v-model="openSnackbar"
                 :color="status"
                 :timeout="snackbarTimeout"
+                class="text-xs-center"
                 vertical>
-      {{ statusMessage }}
+      <span class="body-2">{{ statusMessage }}</span>
       <v-icon @click="openSnackbar = false">
         close
       </v-icon>
@@ -115,7 +118,4 @@ export default {
 </script>
 
 <style scoped>
-.v-card__text {
-  overflow: scroll;
-}
 </style>
