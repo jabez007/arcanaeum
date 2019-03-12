@@ -1,8 +1,6 @@
 <template>
   <v-card>
-    <v-card-text>
-      <slot name="description"></slot>
-    </v-card-text>
+    <slot name="description"></slot>
     <v-card>
       <v-card-title>
         <v-flex xs1>
@@ -42,7 +40,8 @@
                     key="crack">
           <CrackMessage :decryptAlgorithm="decryptAlgorithm"
                         :ngramsFile="ngramsFile"
-                        :keysGenerator="keysGenerator" />
+                        :keysGenerator="keysGenerator"
+                        @update-key="$emit('update-key', $event)" />
         </v-tab-item>
       </v-tabs>
     </v-card>

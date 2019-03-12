@@ -14,6 +14,12 @@ export default new Router({
       path:'/cryptotron',
       name: 'cryptotron',
       component: () => import('./views/CryptoTron/Home.vue'),
-    }
-  ]
-})
+      children: [
+        {
+          path: 'caesar',
+          component: () => import('./views/CryptoTron/CaesarCipher.vue'),
+        },
+      ],
+    },
+  ],
+});

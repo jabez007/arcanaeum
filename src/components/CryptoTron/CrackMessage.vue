@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-card>
     <v-slide-y-transition hide-on-leave>
       <v-progress-circular v-show="crackingMessage"
                            :size="clientHeight"
@@ -8,32 +8,26 @@
       </v-progress-circular>
     </v-slide-y-transition>
     <v-slide-y-reverse-transition hide-on-leave>
-      <v-layout ref="client"
-                v-show="!crackingMessage"
-                row
-                wrap>
-        <v-flex xs12>
-          <v-textarea label="Cipher Text"
-                      v-model="cipherText"
-                      append-icon="send"
-                      @click:append="crackMessage"
-                      auto-grow
-                      clearable>
-          </v-textarea>
-        </v-flex>
-        <v-flex xs12>
-          <v-textarea label="Plain Text"
-                      :value="plainText"
-                      prepend-inner-icon="file_copy"
-                      @click:prepend-inner="copyToClipboard"
-                      outline
-                      auto-grow
-                      readonly>
-          </v-textarea>
-        </v-flex>
-      </v-layout>
-    </v-slide-y-reverse-transition>
-  </div>
+      <v-card-text ref="client"
+                   v-show="!crackingMessage">
+        <v-textarea label="Cipher Text"
+                    v-model="cipherText"
+                    append-icon="send"
+                    @click:append="crackMessage"
+                    auto-grow
+                    clearable>
+        </v-textarea>
+        <v-textarea label="Plain Text"
+                    :value="plainText"
+                    prepend-inner-icon="file_copy"
+                    @click:prepend-inner="copyToClipboard"
+                    outline
+                    auto-grow
+                    readonly>
+        </v-textarea>
+      </v-card-text>
+    </v-slide-y-reverse-transition>    
+  </v-card>
 </template>
 
 <script>
@@ -82,34 +76,42 @@ export default {
     crackMessage() {
       this.clientHeight = this.$refs.client.clientHeight;
       this.crackingMessage = true;
-      if (!this.ngrams) {
-        this.ngrams = require(`../../assets/CryptoTron/${this.ngramsFile}.json`);
-        let sum = 0;
-        for (const name in this.ngrams) {
-          if (Number.isInteger(this.ngrams[name])) {
-            this.L = name.length;
-            sum += this.ngrams[name];
+      const self = this;
+      setTimeout(() => {
+        if (!self.ngrams) {
+          this.ngrams = require(`../../assets/CryptoTron/${self.ngramsFile}.json`);
+          let sum = 0;
+          for (const name in self.ngrams) {
+            if (Number.isInteger(self.ngrams[name])) {
+              self.L = name.length;
+              sum += self.ngrams[name];
+            }
+          }
+          self.N = sum;
+          self.floor = Math.log10(0.01 / sum);
+        }
+        const ciphertext = self.cipherText.toUpperCase().replace(/[^A-Z]/g, '');
+        let bestScore = Number.MIN_SAFE_INTEGER;
+        let bestKey = null;
+        let s = 0;
+        for (const key of self.keysGenerator(ciphertext)) {
+          const plaintext = self.decryptAlgorithm(ciphertext, key);
+          const currentScore = self.getScore(plaintext);
+          if (currentScore > bestScore) {
+            bestScore = currentScore;
+            bestKey = key;
+            self.plainText = plaintext;
+            s = 0;
+          }
+          if (s > 1000) {
+            break;
+          } else {
+            s += 1;
           }
         }
-        this.N = sum;
-        this.floor = Math.log10(0.01 / sum);
-      }
-      const ciphertext = this.cipherText.toUpperCase().replace(/[^A-Z]/g, '');
-      let bestScore = Number.MIN_SAFE_INTEGER;
-      let bestKey = null;
-      for (const key of this.possibleKeys(ciphertext)) {
-        this.$emit('updateKey', key);
-        const plaintext = this.decryptAlgorithm(ciphertext);
-        const currentScore = this.getScore(plaintext);
-        if (currentScore > bestScore) {
-          this.$emit('updateScore', currentScore);
-          bestScore = currentScore;
-          bestKey = key;
-          this.plainText = plaintext;
-        }
-      }
-      this.$emit('updateKey', bestKey);
-      this.crackingMessage = false;
+        self.$emit('update-key', bestKey);
+        self.crackingMessage = false;
+      }, 100);
     },
     copyToClipboard() {
       const self = this;
