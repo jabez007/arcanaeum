@@ -3,7 +3,9 @@
         <v-toolbar app
                    fixed
                    clipped-left>
-            <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+            <v-toolbar-side-icon v-if="navigationDrawer"
+                                 @click.stop="drawer = !drawer">
+            </v-toolbar-side-icon>
             <v-toolbar-title>
                 <slot name="toolbarTitle">
                 </slot>
@@ -18,7 +20,8 @@
                 <v-icon>local_library</v-icon>
             </v-btn>
         </v-toolbar>
-        <v-navigation-drawer v-model="drawer"
+        <v-navigation-drawer v-if="navigationDrawer"
+                             v-model="drawer"
                              app
                              fixed
                              clipped>
@@ -53,6 +56,11 @@ export default {
         drawer: true,
         transitionName: 'fade-transition',
     }),
+    computed: {
+        navigationDrawer() {
+            return !!this.$slots.navigationDrawerList;
+        }
+    },
     watch: {
         $route(to, from) {
             const toDepth = to.path.split('/').length;
