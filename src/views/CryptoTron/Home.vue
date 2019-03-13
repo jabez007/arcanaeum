@@ -12,6 +12,7 @@
                 </v-list-tile-content>
             </v-list-tile>
             <v-list-group prepend-icon="swap_horiz"
+                          active-class=""
                           value="">
                 <v-list-tile slot="activator">
                     <v-list-tile-content>
@@ -26,6 +27,7 @@
                 </v-list-tile>
             </v-list-group>
             <v-list-group prepend-icon="spellcheck"
+                          active-class=""
                           value="">
                 <v-list-tile slot="activator">
                     <v-list-tile-content>
@@ -52,6 +54,7 @@
                 </v-list-tile>
             </v-list-group>
             <v-list-group prepend-icon="grid_on"
+                          active-class=""
                           value="">
                 <v-list-tile slot="activator">
                     <v-list-tile-content>
@@ -66,6 +69,7 @@
                 </v-list-tile>
             </v-list-group>
             <v-list-group prepend-icon="sort_by_alpha"
+                          active-class=""
                           value="">
                 <v-list-tile slot="activator">
                     <v-list-tile-content>
