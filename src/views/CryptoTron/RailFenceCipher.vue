@@ -237,12 +237,15 @@ export default {
       this.computedPlainText = '';
       return '';
     },
-    * possibleKeys(ciphertext) {
-      let rails = 1;
-      while (rails < ciphertext.length) {
-        yield { rails };
-        rails += 1;
+    possibleKeys(key, ciphertext) {
+      if (!key) {  // first pass is '' 
+        return { rails: 1 };
       }
+      if (key.rails >= ciphertext.length)
+      {
+        return;
+      }
+      return { rails: key.rails + 1 };
     },
     resetCipherGrid() {
       for (let i = 0; i < this.cipherGrid.length; i += 1) {

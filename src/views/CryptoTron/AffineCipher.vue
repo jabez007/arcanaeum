@@ -133,22 +133,33 @@ export default {
       }
       return '';
     },
-    * possibleKeys() {
-      let alpha = 1;
-      while (alpha < 26) {
-        if (this.gcd(alpha, 26) === 1) {
-          let beta = 0;
-          while (beta < 26) {
-            yield { alpha, beta };
-            beta += 1;
-          }
-        }
-        alpha += 1;
+    possibleKeys(key) {
+      if (!key) {  // first pass is '' 
+        return { alpha: 1, beta: 0 };
       }
+      let alpha = key.alpha;
+      let beta = key.beta;
+      if (alpha >= 25 && beta >= 25)
+      {
+        return;
+      }
+      if (alpha < 25 && beta === 25)
+      {
+        // restart beta and roll alpha up
+        beta = 0; 
+        alpha = (alpha + 1) % 26;
+        while (this.gcd(alpha, 26) !== 1) {
+          alpha += 1;
+        }
+      } else {
+        // just increment beta
+        beta = (beta + 1) % 26;
+      }
+      return { alpha, beta };
     },
     onUpdateKey(newKey) {
-        this.alpha = newKey.alpha;
-        this.beta = newKey.beta;
+      this.alpha = newKey.alpha;
+      this.beta = newKey.beta;
     }
   },
 };

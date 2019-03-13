@@ -94,7 +94,8 @@ export default {
         let bestScore = Number.MIN_SAFE_INTEGER;
         let bestKey = null;
         let s = 0;
-        for (const key of self.keysGenerator(ciphertext)) {
+        let key = '';
+        while (key = self.keysGenerator(key, ciphertext)) {
           const plaintext = self.decryptAlgorithm(ciphertext, key);
           const currentScore = self.getScore(plaintext);
           if (currentScore > bestScore) {

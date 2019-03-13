@@ -77,12 +77,14 @@ export default {
       }
       return '';
     },
-    * possibleKeys() {
-      let i = 1;
-      while (i < 26) {
-        yield { shift: i };
-        i += 1;
+    possibleKeys(key) {
+      if (!key) {  // first pass is '' 
+        return { shift: 1 };
       }
+      if (key.shift >= 26) {
+        return;
+      }
+      return { shift: key.shift + 1 };
     },
     onUpdateKey(newKey) {
         this.shift = newKey.shift;
