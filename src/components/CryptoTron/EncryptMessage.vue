@@ -7,7 +7,7 @@
                   clearable>
       </v-textarea>
       <v-textarea label="Cipher Text"
-                  :value="encryptAlgorithm(plainText, cipherKey)"
+                  v-model="cipherText"
                   prepend-inner-icon="file_copy"
                   @click:prepend-inner="copyToClipboard"
                   outline
@@ -34,10 +34,15 @@ export default {
   data: () => ({
     plainText: '',
   }),
+  computed: {
+    cipherText() {
+      return this.encryptAlgorithm(this.plainText, this.cipherKey);
+    }
+  },
   methods: {
     copyToClipboard() {
       const self = this;
-      this.$copyText(this.cipherText())
+      this.$copyText(this.cipherText)
         .then(() => {
           self.$emit('success', 'copied!');
         })

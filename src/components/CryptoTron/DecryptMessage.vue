@@ -7,7 +7,7 @@
                   clearable>
       </v-textarea>
       <v-textarea label="Plain Text"
-                  :value="decryptAlgorithm(cipherText, cipherKey)"
+                  v-model="plainText"
                   prepend-inner-icon="file_copy"
                   @click:prepend-inner="copyToClipboard"
                   outline
@@ -34,6 +34,11 @@ export default {
   data: () => ({
     cipherText: '',
   }),
+  computed: {
+    plainText() {
+      return this.decryptAlgorithm(this.cipherText, this.cipherKey)
+    }
+  },
   methods: {
     copyToClipboard() {
       const self = this;
