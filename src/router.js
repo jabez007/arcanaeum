@@ -27,6 +27,10 @@ export default new Router({
           path: 'affine',
           component: () => import('./views/CryptoTron/AffineCipher.vue'),
         },
+        {
+          path: 'railfence',
+          component: () => import('./views/CryptoTron/RailFenceCipher.vue'),
+        },
       ],
     },
   ],
