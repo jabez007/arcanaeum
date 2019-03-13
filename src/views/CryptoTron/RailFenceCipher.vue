@@ -59,10 +59,10 @@
     <v-form slot="key"
             ref="railFenceKeyForm"
             v-model="keyIsValid">
-      <v-text-field v-model.number="rails"
+      <v-text-field label="Number of Rails"
+                    v-model.number="rails"
                     type="number"
                     :rules="[rules.required, rules.number, rules.positive]"
-                    single-line
                     clearable
                     required>
       </v-text-field>

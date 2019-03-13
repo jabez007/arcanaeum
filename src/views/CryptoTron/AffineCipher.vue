@@ -43,7 +43,7 @@
     <v-form slot="key"
             ref="affineKeyForm"
             v-model="keyIsValid">
-      <v-layout row wrap>
+      <v-layout row>
         <v-flex xs5>
           <v-text-field label="Alpha"
                         type="number"

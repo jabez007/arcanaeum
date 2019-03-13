@@ -23,10 +23,10 @@
       </v-card-text>
     </v-card>
     <v-text-field slot="key"
+                  label="Shift"
                   type="number"
                   v-model.number="shift"
                   :rules="[() => !!shift || 'A key is required', () => !!shift && Number.isInteger(Number(shift)) || 'The key must be an integer']"
-                  single-line
                   clearable
                   required>
     </v-text-field>

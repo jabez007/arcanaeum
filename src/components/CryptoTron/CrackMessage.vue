@@ -10,13 +10,28 @@
     <v-slide-y-reverse-transition hide-on-leave>
       <v-card-text ref="client"
                    v-show="!crackingMessage">
-        <v-textarea label="Cipher Text"
-                    v-model="cipherText"
-                    append-icon="send"
-                    @click:append="crackMessage"
-                    auto-grow
-                    clearable>
-        </v-textarea>
+        <v-layout row>
+          <v-flex xs9>
+            <v-textarea label="Cipher Text"
+                        v-model="cipherText"
+                        append-icon="send"
+                        @click:append="crackMessage"
+                        auto-grow
+                        clearable>
+            </v-textarea>
+          </v-flex>
+          <v-spacer></v-spacer>
+          <v-flex xs2>
+            <v-text-field label="Max Steps"
+                          v-model.number="maxSteps"
+                          type="number"
+                          hint="maximum number of keys to attempt after finding a 'best key'"
+                          persistent-hint
+                          clearable
+                          required>
+            </v-text-field>
+          </v-flex>
+        </v-layout>
         <v-textarea label="Plain Text"
                     :value="plainText"
                     prepend-inner-icon="file_copy"
@@ -50,6 +65,7 @@ export default {
   data: () => ({
     cipherText: '',
     plainText: '',
+    maxSteps: 1000,
     crackingMessage: false,
     clientHeight: 0,
     ngrams: null,
@@ -90,13 +106,13 @@ export default {
           self.N = sum;
           self.floor = Math.log10(0.01 / sum);
         }
-        const ciphertext = self.cipherText.toUpperCase().replace(/[^A-Z]/g, '');
+        const ciphertext = self.cipherText;
         let bestScore = Number.MIN_SAFE_INTEGER;
         let bestKey = null;
         let s = 0;
-        let key = '';
-        while (key = self.keysGenerator(key, ciphertext)) {
-          const plaintext = self.decryptAlgorithm(ciphertext, key);
+        let key = null;
+        while (key = self.keysGenerator(key, ciphertext, bestKey)) {
+          const plaintext = self.decryptAlgorithm(ciphertext, key).toUpperCase().replace(/[^A-Z]/g, '');
           const currentScore = self.getScore(plaintext);
           if (currentScore > bestScore) {
             bestScore = currentScore;
@@ -104,7 +120,7 @@ export default {
             self.plainText = plaintext;
             s = 0;
           }
-          if (s > 1000) {
+          if (s > self.maxSteps) {
             break;
           } else {
             s += 1;

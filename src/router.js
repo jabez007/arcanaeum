@@ -20,12 +20,16 @@ export default new Router({
           component: () => import('./views/CryptoTron/About.vue'),
         },
         {
+          path: 'affine',
+          component: () => import('./views/CryptoTron/AffineCipher.vue'),
+        },
+        {
           path: 'caesar',
           component: () => import('./views/CryptoTron/CaesarCipher.vue'),
         },
         {
-          path: 'affine',
-          component: () => import('./views/CryptoTron/AffineCipher.vue'),
+          path: 'polybius',
+          component: () => import('./views/CryptoTron/PolybiusCipher.vue'),
         },
         {
           path: 'railfence',
