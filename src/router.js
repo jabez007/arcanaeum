@@ -24,6 +24,10 @@ export default new Router({
           component: () => import('./views/CryptoTron/AffineCipher.vue'),
         },
         {
+          path: 'autokey',
+          component: () => import('./views/CryptoTron/AutokeyCipher.vue'),
+        },
+        {
           path: 'caesar',
           component: () => import('./views/CryptoTron/CaesarCipher.vue'),
         },
