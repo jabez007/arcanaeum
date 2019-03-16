@@ -10,8 +10,10 @@
     <v-slide-y-reverse-transition hide-on-leave>
       <v-card-text ref="client"
                    v-show="!crackingMessage">
-        <v-layout row>
-          <v-flex xs9>
+        <v-layout row
+                  wrap>
+          <v-flex xs12
+                  md9>
             <v-textarea label="Cipher Text"
                         v-model="cipherText"
                         append-icon="send"
@@ -21,7 +23,8 @@
             </v-textarea>
           </v-flex>
           <v-spacer></v-spacer>
-          <v-flex xs2>
+          <v-flex xs12
+                  md2>
             <v-text-field label="Max Steps"
                           v-model.number="maxSteps"
                           type="number"
