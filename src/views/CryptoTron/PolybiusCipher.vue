@@ -21,51 +21,63 @@
           The positions of the letters in the square are govern by a <a @click="keyword='zebra'">key word</a>.
           That <q>key word</q> is written out first (with repeated characters removed), then the rest of the letters from the alphabet are written in order.
         </p>
-        <table style="table-layout:fixed; width: 100px;">
-          <thead>
-            <tr>
-              <td></td>
-              <td v-for="i in 5"
-                  :key="i"
-                  style="color:red;">
-                {{ (cipherChars || '').charAt(i - 1) }}
-              </td>
-            </tr>
-          </thead>
-          <tr v-for="j in 5"
-              :key="j">
-            <td style="color:red;">{{ (cipherChars || '').charAt(j - 1) }}</td>
-            <td v-for="i in 5"
-                :key="i">
-              {{ square[i-1][j-1] }}
-            </td>
-          </tr>
-        </table>
+        <v-layout row>
+          <v-spacer></v-spacer>
+          <v-flex xs3>
+            <table style="table-layout:fixed; width: 100px;">
+              <thead>
+                <tr>
+                  <td></td>
+                  <td v-for="i in 5"
+                      :key="i"
+                      style="color:red;">
+                    {{ (cipherChars || '').charAt(i - 1) }}
+                  </td>
+                </tr>
+              </thead>
+              <tr v-for="j in 5"
+                  :key="j">
+                <td style="color:red;">{{ (cipherChars || '').charAt(j - 1) }}</td>
+                <td v-for="i in 5"
+                    :key="i">
+                  {{ square[i-1][j-1] }}
+                </td>
+              </tr>
+            </table>
+          </v-flex>
+          <v-spacer></v-spacer>
+        </v-layout>
         <p>
           Encryption then is just a matter of finding the letter from your plaintext in that square.
           The ciphertext is the (row, column) coordinate for the plaintext in the square.
         </p>
       </v-card-text>
     </v-card>
-    <v-form slot="key"
-            ref="polybiusKeyForm"
-            v-model="keyIsValid">
-        <v-layout row>
-            <v-text-field label="Keyword"
-                          v-model.trim="keyword"
-                          :rules="[rules.required, rules.word]"
-                          required
-                          clearable>
-            </v-text-field>
+    <v-flex slot="key"
+            xs9>
+      <v-form ref="polybiusKeyForm"
+              v-model="keyIsValid">
+          <v-layout row>
+            <v-flex xs9>
+              <v-text-field label="Keyword"
+                            v-model.trim="keyword"
+                            :rules="[rules.required, rules.word]"
+                            required
+                            clearable>
+              </v-text-field>
+            </v-flex>
             <v-spacer></v-spacer>
-            <v-text-field label="Ciphertext Characters"
-                          v-model.trim="cipherChars"
-                          :rules="[rules.required, rules.min]"
-                          required
-                          clearable>
-            </v-text-field>
-        </v-layout>
-    </v-form>
+            <v-flex xs2>
+              <v-text-field label="Ciphertext Characters"
+                            v-model.trim="cipherChars"
+                            :rules="[rules.required, rules.min]"
+                            required
+                            clearable>
+              </v-text-field>
+            </v-flex>              
+          </v-layout>
+      </v-form>
+    </v-flex>
   </Cipher>
 </template>
 
