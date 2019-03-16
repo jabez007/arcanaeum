@@ -1,19 +1,25 @@
 <template>
   <v-card>
     <v-card-text>
-      <v-textarea label="Cipher Text"
-                  v-model="cipherText"
-                  auto-grow
-                  clearable>
-      </v-textarea>
-      <v-textarea label="Plain Text"
-                  v-model="plainText"
-                  prepend-inner-icon="file_copy"
-                  @click:prepend-inner="copyToClipboard"
-                  outline
-                  auto-grow
-                  readonly>
-      </v-textarea>
+      <slot name="cipherText" 
+            v-bind="{ cipherText }">
+        <v-textarea label="Cipher Text"
+                    v-model="cipherText"
+                    auto-grow
+                    clearable>
+        </v-textarea>
+      </slot>
+      <slot name="plainText" 
+            v-bind="{ plainText, copyToClipboard }">
+        <v-textarea label="Plain Text"
+                    v-model="plainText"
+                    prepend-inner-icon="file_copy"
+                    @click:prepend-inner="copyToClipboard"
+                    outline
+                    auto-grow
+                    readonly>
+        </v-textarea>
+      </slot>
     </v-card-text>
   </v-card>
 </template>

@@ -2,15 +2,13 @@
   <v-card>
     <slot name="description"></slot>
     <v-card>
-      <v-card-title>
-        <v-flex xs1>
-          <v-icon large>
-            vpn_key
-          </v-icon>
-        </v-flex>
-        <v-flex d-flex offset-xs1>
-          <slot name="key"></slot>
-        </v-flex>
+      <v-card-title class="text-xs-right">
+        <v-icon large>
+          vpn_key
+        </v-icon>
+        <v-spacer></v-spacer>
+        <slot name="key">
+        </slot>
         <v-spacer></v-spacer>
       </v-card-title>
       <v-tabs grow>
@@ -29,14 +27,40 @@
           <EncryptMessage :encryptAlgorithm="encryptAlgorithm"
                           :cipherKey="cipherKey"
                           @success="onSuccess"
-                          @error="onError" />
+                          @error="onError">
+            <template slot="plainText" 
+                      slot-scope="scope">
+              <slot name="encrypt-plainText" 
+                    v-bind="scope">
+              </slot> 
+            </template> 
+            <template slot="cipherText" 
+                      slot-scope="scope">
+              <slot name="encrypt-cipherText" 
+                    v-bind="scope">
+              </slot>
+            </template>
+          </EncryptMessage>
         </v-tab-item>
         <v-tab-item key="decrypt"
                     lazy>
           <DecryptMessage :decryptAlgorithm="decryptAlgorithm"
                           :cipherKey="cipherKey"
                           @success="onSuccess"
-                          @error="onError" />
+                          @error="onError">
+            <template slot="cipherText" 
+                      slot-scope="scope">
+              <slot name="decrypt-cipherText" 
+                    v-bind="scope">
+              </slot>
+            </template>
+            <template slot="plainText" 
+                      slot-scope="scope">
+              <slot name="decrypt-plainText" 
+                    v-bind="scope">
+              </slot> 
+            </template>
+          </DecryptMessage>
         </v-tab-item>
         <v-tab-item v-if="keysGenerator"
                     key="crack"
