@@ -28,6 +28,10 @@ export default new Router({
           component: () => import('./views/CryptoTron/AutokeyCipher.vue'),
         },
         {
+          path: 'baconian',
+          component: () => import('./views/CryptoTron/BaconianCipher.vue'),
+        },
+        {
           path: 'caesar',
           component: () => import('./views/CryptoTron/CaesarCipher.vue'),
         },

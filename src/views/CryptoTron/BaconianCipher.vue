@@ -1,0 +1,115 @@
+<template>
+    <Cipher :encryptAlgorithm="encrypt"
+            :decryptAlgorithm="decrypt"
+            :cipherKey="{ encoding, message }">
+        <v-card slot="description">
+            <v-card-title>
+                <h5 class="headline">The Baconian Cipher</h5>
+            </v-card-title>
+            <v-card-text>
+                <p>
+                    The Baconian cipher is a method of steganography (a method of hiding a secret message as opposed to just a cipher) devised by Francis Bacon in 1605 
+                    The Baconian cipher can also be thought of as a substitution cipher in which each letter is replaced by a sequence of 5 characters. 
+                    In the original cipher, these were sequences of 'A's and 'B's (e.g. the letter 'D' was replaced by 'aaabb', the letter 'O' was replaced by 'abbba' etc).
+                    The steganography aspect involves preparing a false message with the same number of letters as all of the As and Bs in the real, secret message, and choosing two typefaces, one to represent As and the other Bs. 
+                    Then each letter of the false message must be presented in the appropriate typeface, according to whether it stands for an A or a B.
+                </p>
+                <p>
+                    This cipher offers very little communication security, as it is a substitution cipher. 
+                    As such all the methods used to cryptanalyse substitution ciphers can be used to break Baconian ciphers. 
+                    The main advantage of the cipher is that it allows hiding the fact that a secret message has been sent at all.
+                </p>
+            </v-card-text>
+        </v-card>
+        <v-flex slot="key"
+                xs9>
+            <v-form ref="baconianKeyForm"
+                    v-model="keyIsValid">
+                <v-layout row
+                          wrap
+                          align-center>
+                    <v-flex xs12
+                            md4>
+                        <v-layout row
+                                  wrap>
+                            <v-flex xs3
+                                    v-for="(char, key) in Object.keys(encoding)"
+                                    :key="key">
+                                <v-text-field :label="char"
+                                              v-model="encoding[char]"
+                                              readonly>
+                                </v-text-field>
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>
+                    <v-spacer></v-spacer>
+                    <v-flex xs12
+                            md7>
+                        <v-textarea label="False Message"
+                                    v-model.trim="message"
+                                    :rules="[rules.required]"
+                                    clearable
+                                    rows=1
+                                    auto-grow
+                                    required>
+                        </v-textarea>
+                    </v-flex>
+                </v-layout>
+            </v-form>
+        </v-flex>
+    </Cipher>
+</template>
+
+<script>
+// @ is an alias to /src
+import Cipher from '@/components/CryptoTron/Cipher.vue';
+
+export default {
+    components: {
+        Cipher,
+    },
+    data: () => ({
+        encoding: {
+            A: 'aaaaa',
+            B: 'aaaab',
+            C: 'aaaba',
+            D: 'aaabb',
+            E: 'aabaa',
+            F: 'aabab',
+            G: 'aabba',
+            H: 'aabbb',
+            I: 'abaaa',
+            J: 'abaab',
+            K: 'ababa',
+            L: 'ababb',
+            M: 'abbaa',
+            N: 'abbab',
+            O: 'abbba',
+            P: 'abbbb',
+            Q: 'baaaa',
+            R: 'baaab',
+            S: 'baaba',
+            T: 'baabb', 
+            U: 'babaa',
+            V: 'babab',
+            W: 'babba',
+            X: 'babbb',
+            Y: 'bbaaa',
+            Z: 'bbaab'
+        },
+        message: '',
+        rules: {
+            required: value => !!value || 'this item is required',
+        },
+        keyIsValid: false,
+    }),
+    methods: {
+        encrypt(plaintext, key) {
+            return plaintext;
+        },
+        decrypt(ciphertext, key) {
+            return ciphertext;
+        },
+    },
+};
+</script>

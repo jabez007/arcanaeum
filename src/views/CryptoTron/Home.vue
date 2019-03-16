@@ -26,12 +26,12 @@
                     </v-list-tile-content>
                 </v-list-tile>
             </v-list-group>
-            <v-list-group prepend-icon="spellcheck"
+            <v-list-group prepend-icon="find_replace"
                           active-class=""
                           value="">
                 <v-list-tile slot="activator">
                     <v-list-tile-content>
-                        <v-list-tile-title>Monoalphabetic Substitution</v-list-tile-title>
+                        <v-list-tile-title>Substitution</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile to="/cryptotron/caesar"
@@ -46,10 +46,16 @@
                         <v-list-tile-title>Affine Cipher</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click=""
+                <v-list-tile to="/cryptotron/baconian"
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title>Baconian Cipher</v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile to="/cryptotron/autokey"
+                             ripple>
+                    <v-list-tile-content>
+                        <v-list-tile-title>Autokey Cipher</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
             </v-list-group>
@@ -58,7 +64,7 @@
                           value="">
                 <v-list-tile slot="activator">
                     <v-list-tile-content>
-                        <v-list-tile-title>Grid Substitution</v-list-tile-title>
+                        <v-list-tile-title>Square</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile to="/cryptotron/polybius"
@@ -73,13 +79,19 @@
                           value="">
                 <v-list-tile slot="activator">
                     <v-list-tile-content>
-                        <v-list-tile-title>Polyalphabetic Substitution</v-list-tile-title>
+                        <v-list-tile-title>Polyalphabetic</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile to="/cryptotron/autokey"
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title>Autokey Cipher</v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile @click=""
+                             ripple>
+                    <v-list-tile-content>
+                        <v-list-tile-title>Vigenère and Gronsfeld Cipher</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
             </v-list-group>
