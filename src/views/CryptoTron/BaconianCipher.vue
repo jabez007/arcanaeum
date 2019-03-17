@@ -105,10 +105,51 @@ export default {
     }),
     methods: {
         encrypt(plaintext, key) {
-            return plaintext;
+            const plainText = plaintext.toUpperCase();
+            let cipherText = '';
+            for (const char of plainText) {
+                if (key.encoding[char]) {
+                    cipherText += key.encoding[char];
+                } else {
+                    cipherText += char;
+                }
+            }
+            return cipherText;
         },
         decrypt(ciphertext, key) {
-            return ciphertext;
+            const getUniqueCharacters = (str) => {
+                str = str || '';
+                let unique = '';
+                for (let i = 0; i < str.length; i += 1) {
+                    if (i === str.lastIndexOf(str[i])) {
+                        unique += str[i];
+                    }
+                }
+                return unique;
+            };
+            const unique = getUniqueCharacters(ciphertext.toLowerCase().replace(/[^a-z]/g, ''));
+            if (unique.length === 2) {  // we have just the encoding 
+                const cipherText = ciphertext.toLowerCase();
+                const encoding = Object.keys(key.encoding).map(char => ({
+                    char,
+                    encoding: key.encoding[char],
+                }));
+                let block = '';
+                let plainText = '';
+                for (const char of cipherText) {
+                    if (char === 'a' || char === 'b') {
+                        block += char;
+                        if (block.length === 5) {
+                            plainText += encoding.find(e => e.encoding === block).char;
+                            block = '';
+                        }
+                    } else {
+                        plainText += char;
+                    }
+                }
+                return plainText;
+            }
+            return '';
         },
     },
 };
