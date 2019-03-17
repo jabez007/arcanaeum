@@ -57,6 +57,33 @@
                 </v-layout>
             </v-form>
         </v-flex>
+        <v-layout slot="encrypt-cipherText"
+                  slot-scope="scope"
+                  row
+                  wrap>
+            <v-flex xs12
+                    md6>
+                <v-textarea label="Encoding"
+                            v-model="scope.cipherText"
+                            prepend-inner-icon="file_copy"
+                            @click:prepend-inner="scope.copyToClipboard(scope.cipherText)"
+                            outline
+                            auto-grow
+                            readonly>
+                </v-textarea>
+            </v-flex>
+            <v-flex xs12
+                    md6>
+                <v-textarea label="Steganograph"
+                            :value="enstegano(scope.cipherText, message)"
+                            prepend-inner-icon="file_copy"
+                            @click:prepend-inner="scope.copyToClipboard(enstegano(scope.cipherText, message))"
+                            outline
+                            auto-grow
+                            readonly>
+                </v-textarea>
+            </v-flex>
+        </v-layout>
     </Cipher>
 </template>
 
@@ -114,7 +141,26 @@ export default {
                     cipherText += char;
                 }
             }
-            return cipherText;
+            return cipherText.replace(/[^ab]/g, '');
+        },
+        enstegano(encoding, message) {
+            const re = /[a-zA-Z]/;
+            let steganograph = '';
+            let i = 0;
+            for (const char of message) {
+                if (re.test(char)) {
+                    if (encoding[i] === 'a') {
+                        steganograph += char.toLowerCase();
+                        i += 1;
+                    } else if (encoding[i] === 'b') {
+                        steganograph += char.toUpperCase();
+                        i += 1;
+                    }
+                } else {
+                    steganograph += char;
+                }
+            }
+            return steganograph;
         },
         decrypt(ciphertext, key) {
             const getUniqueCharacters = (str) => {

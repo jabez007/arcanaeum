@@ -14,7 +14,7 @@
         <v-textarea label="Plain Text"
                     v-model="plainText"
                     prepend-inner-icon="file_copy"
-                    @click:prepend-inner="copyToClipboard"
+                    @click:prepend-inner="copyToClipboard(plainText)"
                     outline
                     auto-grow
                     readonly>
@@ -46,9 +46,9 @@ export default {
     }
   },
   methods: {
-    copyToClipboard() {
+    copyToClipboard(txt) {
       const self = this;
-      this.$copyText(this.plainText)
+      this.$copyText(txt)
         .then(() => {
           self.$emit('success', 'copied!');
         })

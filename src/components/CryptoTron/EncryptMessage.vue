@@ -14,7 +14,7 @@
         <v-textarea label="Cipher Text"
                     v-model="cipherText"
                     prepend-inner-icon="file_copy"
-                    @click:prepend-inner="copyToClipboard"
+                    @click:prepend-inner="copyToClipboard(cipherText)"
                     outline
                     auto-grow
                     readonly>
@@ -46,9 +46,9 @@ export default {
     }
   },
   methods: {
-    copyToClipboard() {
+    copyToClipboard(txt) {
       const self = this;
-      this.$copyText(this.cipherText)
+      this.$copyText(txt)
         .then(() => {
           self.$emit('success', 'copied!');
         })
