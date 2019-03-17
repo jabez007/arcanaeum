@@ -173,7 +173,7 @@ export default {
                 }
                 return unique;
             };
-            const unique = getUniqueCharacters(ciphertext.toLowerCase().replace(/[^a-z]/g, ''));
+            const unique = getUniqueCharacters((ciphertext || '').toLowerCase().replace(/[^a-z]/g, ''));
             if (unique.length === 2) {  // we have just the encoding 
                 const cipherText = ciphertext.toLowerCase();
                 const encoding = Object.keys(key.encoding).map(char => ({
@@ -194,6 +194,18 @@ export default {
                     }
                 }
                 return plainText;
+            } else if (unique.length > 0) {  // or we have the steganograph
+                const lowerCase = /[a-z]/;
+                const upperCase = /[A-Z]/;
+                let encoding = '';
+                for (const char of ciphertext) {
+                    if (lowerCase.test(char)) {
+                        encoding += 'a';
+                    } else if (upperCase.test(char)) {
+                        encoding += 'b';
+                    }
+                }
+                return this.decrypt(encoding, key);
             }
             return '';
         },
