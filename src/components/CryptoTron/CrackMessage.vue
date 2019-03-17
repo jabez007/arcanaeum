@@ -114,6 +114,7 @@ export default {
         let bestKey = null;
         let s = 0;
         let key = null;
+        // eslint-disable-next-line
         while (key = self.keysGenerator(key, ciphertext, bestKey)) {
           const plaintext = self.decryptAlgorithm(ciphertext, key).toUpperCase().replace(/[^A-Z]/g, '');
           const currentScore = self.getScore(plaintext);
