@@ -52,6 +52,12 @@
                         <v-list-tile-title>Baconian Cipher</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
+                <v-list-tile to="/cryptotron/huffmanian"
+                             ripple>
+                    <v-list-tile-content>
+                        <v-list-tile-title>Huffmanian Cipher</v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
                 <v-list-tile to="/cryptotron/autokey"
                              ripple>
                     <v-list-tile-content>

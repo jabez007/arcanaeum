@@ -36,6 +36,10 @@ export default new Router({
           component: () => import('./views/CryptoTron/CaesarCipher.vue'),
         },
         {
+          path: 'huffmanian',
+          component: () => import('./views/CryptoTron/HuffmanianCipher.vue'),
+        },
+        {
           path: 'polybius',
           component: () => import('./views/CryptoTron/PolybiusCipher.vue'),
         },

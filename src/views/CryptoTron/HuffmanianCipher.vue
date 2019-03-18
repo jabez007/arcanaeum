@@ -4,15 +4,14 @@
             :cipherKey="{ encoding, message }">
         <v-card slot="description">
             <v-card-title>
-                <h5 class="headline">The Baconian Cipher</h5>
+                <h5 class="headline">The Hoffmanian Cipher</h5>
             </v-card-title>
             <v-card-text>
                 <p>
-                    The Baconian cipher is a method of steganography (a method of hiding a secret message as opposed to just a cipher) devised by Francis Bacon in 1605.
-                    The Baconian cipher can also be thought of as a substitution cipher in which each letter is replaced by a sequence of 5 characters. 
-                    In the original cipher, these were sequences of 'A's and 'B's (e.g. the letter 'D' was replaced by 'aaabb', the letter 'O' was replaced by 'abbba' etc).
-                    The steganography aspect involves preparing a false message with the same number of letters as all of the As and Bs in the real, secret message, and choosing two typefaces, one to represent As and the other Bs. 
-                    Then each letter of the false message must be presented in the appropriate typeface, according to whether it stands for an A or a B.
+                    The Huffmanian cipher is a method of steganography (a method of hiding a secret message as opposed to just a cipher) based on the Baconian cipher. 
+                    The difference between the Baconian cipher and this cipher is that this cipher uses a Huffman encoding.
+                    That means instead of each letter of the plain text being replaced by a sequence of 5 characters, each letter of the plain text is replaced by a sequence of variable length.
+                    This allows more common letters (like E and T) to be encoded using shorter sequences while the least common letters (like Z) are encoded using longer sequences. 
                 </p>
                 <p>
                     This cipher offers very little communication security, as it is a substitution cipher. 
@@ -23,7 +22,7 @@
         </v-card>
         <v-flex slot="key"
                 xs9>
-            <v-form ref="baconianKeyForm"
+            <v-form ref="huffmanianKeyForm"
                     v-model="keyIsValid">
                 <v-layout row
                           wrap
@@ -97,32 +96,32 @@ export default {
     },
     data: () => ({
         encoding: {
-            A: 'aaaaa',
-            B: 'aaaab',
-            C: 'aaaba',
-            D: 'aaabb',
-            E: 'aabaa',
-            F: 'aabab',
-            G: 'aabba',
-            H: 'aabbb',
-            I: 'abaaa',
-            J: 'abaab',
-            K: 'ababa',
-            L: 'ababb',
-            M: 'abbaa',
-            N: 'abbab',
-            O: 'abbba',
-            P: 'abbbb',
-            Q: 'baaaa',
-            R: 'baaab',
-            S: 'baaba',
-            T: 'baabb', 
-            U: 'babaa',
-            V: 'babab',
-            W: 'babba',
-            X: 'babbb',
-            Y: 'bbaaa',
-            Z: 'bbaab'
+            A: '0000',
+            B: '010011',
+            C: '10100',
+            D: '01000',
+            E: '100',
+            F: '11010',
+            G: '11011',
+            H: '1100',
+            I: '0011',
+            J: '10111011',
+            K: '1011100',
+            L: '00010',
+            M: '10110',
+            N: '0101',
+            O: '0010',
+            P: '000110',
+            Q: '1011101001',
+            R: '0111',
+            S: '0110',
+            T: '111', 
+            U: '10101',
+            V: '101111',
+            W: '000111',
+            X: '101110101',
+            Y: '010010',
+            Z: '1011101000'
         },
         message: '',
         rules: {
@@ -141,7 +140,7 @@ export default {
                     cipherText += char;
                 }
             }
-            return cipherText.replace(/[^ab]/g, '');
+            return cipherText.replace(/[^01]/g, '');
         },
         enstegano(encoding, message) {
             const re = /[a-zA-Z]/;
@@ -149,10 +148,10 @@ export default {
             let i = 0;
             for (const char of message) {
                 if (re.test(char)) {
-                    if (encoding[i] === 'a') {
+                    if (encoding[i] === '0') {
                         steganograph += char.toLowerCase();
                         i += 1;
-                    } else if (encoding[i] === 'b') {
+                    } else if (encoding[i] === '1') {
                         steganograph += char.toUpperCase();
                         i += 1;
                     }
@@ -163,30 +162,21 @@ export default {
             return steganograph;
         },
         decrypt(ciphertext, key) {
-            const getUniqueCharacters = (str) => {
-                str = str || '';
-                let unique = '';
-                for (let i = 0; i < str.length; i += 1) {
-                    if (i === str.lastIndexOf(str[i])) {
-                        unique += str[i];
-                    }
-                }
-                return unique;
-            };
-            const unique = getUniqueCharacters((ciphertext || '').toLowerCase().replace(/[^a-z0-9]/g, ''));
-            if (unique.length === 2) {  // we have just the encoding 
-                const cipherText = ciphertext.toLowerCase();
+            const reHuffman = /[^01]/;
+            if (!reHuffman.test((ciphertext || '').toLowerCase().replace(/[^a-z0-9]/g, ''))) {  // we have just the encoding 
                 const encoding = Object.keys(key.encoding).map(char => ({
                     char,
                     encoding: key.encoding[char],
                 }));
                 let block = '';
                 let plainText = '';
+                const cipherText = (ciphertext || '').replace(/[^01]/g, '')
                 for (const char of cipherText) {
-                    if (char === 'a' || char === 'b') {
+                    if (char === '0' || char === '1') {
                         block += char;
-                        if (block.length === 5) {
-                            plainText += encoding.find(e => e.encoding === block).char;
+                        const enc = encoding.find(e => e.encoding === block);
+                        if (enc) {
+                            plainText += enc.char;
                             block = '';
                         }
                     } else {
@@ -194,15 +184,15 @@ export default {
                     }
                 }
                 return plainText;
-            } else if (unique.length > 0) {  // or we have the steganograph
+            } else if ((ciphertext || '').length > 0) {  // or we have the steganograph
                 const lowerCase = /[a-z]/;
                 const upperCase = /[A-Z]/;
                 let encoding = '';
                 for (const char of ciphertext) {
                     if (lowerCase.test(char)) {
-                        encoding += 'a';
+                        encoding += '0';
                     } else if (upperCase.test(char)) {
-                        encoding += 'b';
+                        encoding += '1';
                     }
                 }
                 return this.decrypt(encoding, key);
