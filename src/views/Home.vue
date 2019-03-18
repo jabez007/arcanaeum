@@ -34,34 +34,9 @@
 <script>
 const BOXES = [
   {
-    name: 'hello',
+    path: '/cryptotron/about',
+    name: 'CryptoTron',
     pos: [4, 0, 0],
-    to: '/hello'
-  },
-  {
-    name: 'world',
-    pos: [0, 4, 0],
-    to: '/world'
-  },
-  {
-    name: 'foo',
-    pos: [0, 0, 4],
-    to: '/foo'
-  },
-  {
-    name: 'bar',
-    pos: [-4, 0, 0],
-    to: '/bar'
-  },
-  {
-    name: 'good',
-    pos: [0, -4, 0],
-    to: '/good'
-  },
-  {
-    name: 'bye',
-    pos: [0, 0, -4],
-    to: '/bye'
   },
 ]; 
 
@@ -93,8 +68,8 @@ export default {
   },
   mounted() {
     const self = this;
-    window.removeEventListener('click', this.pickMesh);
-    window.addEventListener('click', this.pickMesh);
+    window.removeEventListener('click', this.navigateToBox);
+    window.addEventListener('click', this.navigateToBox);
     window.removeEventListener('mousemove', this.showTooltip);
     window.addEventListener('mousemove', this.showTooltip);
     //
@@ -104,10 +79,20 @@ export default {
     });
   },
   beforeDestroy() {
-    window.removeEventListener('click', this.pickMesh);
+    window.removeEventListener('click', this.navigateToBox);
     window.removeEventListener('mousemove', this.showTooltip);
   },
   methods: {
+    pickMesh() {
+      const pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY);
+      if (pickResult.hit) {
+        const index = this.nodes.findIndex(n => n.id === pickResult.pickedMesh.id);
+        if (index >= 0) {
+          return BOXES[index];
+        }
+      }
+      return {};
+    },
     showTooltip() {
       if (this.$refs.tooltip) {
         const box = this.pickMesh();
@@ -122,16 +107,12 @@ export default {
         }
       }
     },
-    pickMesh() {
-      const pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY);
-      if (pickResult.hit) {
-        const index = this.nodes.findIndex(n => n.id === pickResult.pickedMesh.id);
-        if (index >= 0) {
-          return BOXES[index];
-        }
+    navigateToBox() {
+      const box = this.pickMesh();
+      if (box.path) {
+        this.$router.replace(box.path);
       }
-      return {};
-    }
+    },
   }
 };
 </script>
