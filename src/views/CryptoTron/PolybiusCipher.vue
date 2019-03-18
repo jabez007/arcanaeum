@@ -57,8 +57,10 @@
             xs9>
       <v-form ref="polybiusKeyForm"
               v-model="keyIsValid">
-          <v-layout row>
-            <v-flex xs9>
+          <v-layout row
+                    wrap>
+            <v-flex xs12
+                    md9>
               <v-text-field label="Keyword"
                             v-model.trim="keyword"
                             :rules="[rules.required, rules.word]"
@@ -67,7 +69,8 @@
               </v-text-field>
             </v-flex>
             <v-spacer></v-spacer>
-            <v-flex xs2>
+            <v-flex xs12
+                    md2>
               <v-text-field label="Ciphertext Characters"
                             v-model.trim="cipherChars"
                             :rules="[rules.required, rules.min]"
