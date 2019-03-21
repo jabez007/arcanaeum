@@ -38,6 +38,31 @@ const BOXES = [
     name: 'CryptoTron',
     pos: [4, 0, 0],
   },
+  {
+    path: '/conservatoire/about',
+    name: 'Conservatoire',
+    pos: [-4, 0, 0],
+  },
+  {
+    path: '/oracle',
+    name: 'Oracle',
+    pos: [0, 4, 0],
+  },
+  {
+    path: '',
+    name: '',
+    pos: [0, -4, 0],
+  },
+  {
+    path: '',
+    name: '',
+    pos: [0, 0, 4],
+  },
+  {
+    path: '',
+    name: '',
+    pos: [0, 0, -4],
+  },
 ]; 
 
 export default {
