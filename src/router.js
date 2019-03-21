@@ -49,5 +49,31 @@ export default new Router({
         },
       ],
     },
+    {
+      path:'/conservatoire',
+      name: 'conservatoire',
+      component: () => import('./views/Conservatoire/Home.vue'),
+      children: [
+        {
+          path: 'about',
+          component: () => import('./views/Conservatoire/About.vue'),
+        },
+        {
+          path: 'allonsy',
+          component: () => import('./views/Conservatoire/ProjectAllons-y.vue'),
+        },
+      ],
+    },
+    {
+      path:'/oracle',
+      name: 'oracle',
+      component: () => import('./views/Oracle/Home.vue'),
+      children: [
+        {
+          path: '',
+          component: () => import('./views/Oracle/Oracle.vue'),
+        },
+      ],
+    },
   ],
 });
