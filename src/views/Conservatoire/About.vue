@@ -1,6 +1,6 @@
 <template>
   <v-card class="text-xs-center">
-    <!-- img alt="Conservatoire logo" src="../../assets/Conservatoire/logo.png" -->
+    <img alt="Conservatoire logo" src="../../assets/Conservatoire/logo.png">
     <v-card-title>
         <v-spacer></v-spacer>
         <h2 class="display-3">Welcome to the Conservatoire</h2>
