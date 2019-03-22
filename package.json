@@ -9,6 +9,7 @@
     "deploy": "vue-cli-service build && push-dir --dir=dist --branch=master --cleanup"
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^1.0.2",
     "vue": "^2.6.6",
     "vue-babylonjs": "^1.0.0-beta.6",
     "vue-clipboard2": "^0.3.0",
