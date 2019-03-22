@@ -86,7 +86,7 @@ export default {
     generatedText: ''
   }),
   async created() {
-    this.model = await tf.loadLayersModel('/weights/model.json');
+    this.model = await tf.loadLayersModel('https://raw.githubusercontent.com/jabez007/arcanaeum/master/weights/model.json');
     const char2vec = require('@/assets/Oracle/char2vec.json');
     this.charVectors = Object.keys(char2vec).map(key => ({char: key, vec: char2vec[key]}));
   },
