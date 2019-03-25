@@ -22,28 +22,29 @@
       <v-card-title>
         <v-text-field :label="`Seed text (${(seed || '').length} / 17)`"
                       v-model.trim="seed"
-                      @blur="generateText(seed)"
+                      :disabled="!model || (charVectors || []).length < 38"
                       :readonly="(seed || '').length >= 17"
-                      clearable>
+                      clearable
+                      required>
         </v-text-field>
         <v-spacer></v-spacer>
         <v-slider label="Temperature"
                   hint="Closer to 0 will generate more accurate text, closer to 1 generate more 'creative' text"
                   persistent-hint
                   v-model="temperature"
-                  @blur="generateText(seed)"
                   validate-on-blur
                   :min="0.01"
                   :max="1"
                   :step="0.01"
                   thumb-label
+                  :disabled="!model || (charVectors || []).length < 38"
                   :readonly="running">
         </v-slider>
         <v-spacer></v-spacer>
         <v-text-field label="Generated Length"
                       type="number"
                       v-model.number="maxLength"
-                      @blur="generateText(seed)"
+                      :disabled="!model || (charVectors || []).length < 38"
                       :readonly="running">
         </v-text-field>
       </v-card-title>
@@ -51,6 +52,8 @@
         <v-textarea label="Generated text"
                     v-model="generatedText"
                     :loading="running"
+                    prepend-inner-icon="refresh"
+                    @click:prepend-inner="generateText(seed)"
                     append-icon="share"
                     @click:append=""
                     readonly>
