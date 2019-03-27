@@ -79,8 +79,8 @@ export default {
       const self = this;
       return {
         name: `group${i}`,
-        x: self.konvaCircleRadius * (i - 1) + self.konvaCircleRadius * i,
-        y: self.konvaCircleRadius * (i - 1) + self.konvaCircleRadius * i
+        x: (self.konvaCircleRadius * (i - 1)) + (self.konvaCircleRadius * i),
+        y: (self.konvaCircleRadius * (i - 1)) + (self.konvaCircleRadius * i)
       };
     },
     getKonvaCircleConfig(i) {
@@ -101,13 +101,14 @@ export default {
     getKonvaTextConfig(i) {
       const self = this;
       return {
-        x: -Math.floor(self.konvaCircleRadius / 3),
-        y: -Math.floor(self.konvaCircleRadius / 2),
+        x: -(i < 10 ? (self.konvaCircleRadius / 3.33) : (self.konvaCircleRadius / 1.67)),
+        y: -(self.konvaCircleRadius / 2),
         text: `${i}`,
         fontSize: self.konvaCircleRadius,
-        align: "center",
-        verticalAlign: "middle",
-        fill: "#C4CED4" //silver
+        align: 'center',
+        verticalAlign: 'middle',
+        fontFamily: 'courier',  // monospaced font
+        fill: "#C4CED4", //silver
       };
     },
     getKonvaLineConfig() {
