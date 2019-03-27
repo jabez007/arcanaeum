@@ -32,8 +32,7 @@
             <v-container fluid
                          fill-height>
                 <v-layout justify-center
-                          align-center
-                          fill-height>
+                          align-center>
                     <transition :name="transitionName"
                                 mode="out-in">
                         <router-view />

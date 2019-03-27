@@ -1,51 +1,50 @@
 <template>
-<v-flex xs12>
-    <v-layout column>
-        <v-card>
-          <v-card-title>
-            <h1>hello world</h1>
-          </v-card-title>
-          <v-card-text></v-card-text>
-          <v-layout ref="konvaRow" 
-                    row 
-                    fill-height>
-            <v-flex ref="konva" d-flex xs11>
-              <v-stage ref="stage" :config="konvaConfig">
-                <v-layer ref="layer">
-                  <v-group
-                    v-for="i in slider"
-                    :key="`node${i}`"
-                    :ref="`node${i}`"
-                    :config="getKonvaGroupConfig(i)"
-                  >
-                    <v-circle :config="getKonvaCircleConfig(i)"/>
-                    <v-text :config="getKonvaTextConfig(i)"/>
-                  </v-group>
-                </v-layer>
-              </v-stage>
-            </v-flex>
-            <v-flex xs1>
-              <div class="vertical-slider">
-                <v-slider
-                  v-model="slider"
-                  :style="`width: ${sliderWidth}px;`"
-                  max="11"
-                  min="1"
-                  readonly
-                  prepend-icon="remove"
-                  @click:prepend="slider -= 1"
-                  append-icon="add"
-                  @click:append="slider += 1"
-                  thumb-label="always"
-                  always-dirty
-                ></v-slider>
-              </div>
-            </v-flex>
-          </v-layout>
-          <v-card-actions></v-card-actions>
-        </v-card>
+  <v-card width="100%" height="100%" style="overflow: hidden;">
+    <v-card-title>
+      <h1>hello world</h1>
+    </v-card-title>
+    <v-card-text>
+      <p>description...</p>
+      <p>more description...</p>
+    </v-card-text>
+    <v-card-actions>
+      actions...
+    </v-card-actions>
+    <v-layout row fill-height>
+      <v-flex ref="konva" xs10 offset-xs1>
+        <v-stage ref="stage" :config="konvaConfig">
+          <v-layer ref="layer">
+            <v-group
+              v-for="i in slider"
+              :key="`node${i}`"
+              :ref="`node${i}`"
+              :config="getKonvaGroupConfig(i)"
+            >
+              <v-circle :config="getKonvaCircleConfig(i)"/>
+              <v-text :config="getKonvaTextConfig(i)"/>
+            </v-group>
+          </v-layer>
+        </v-stage>
+      </v-flex>
+      <v-flex xs1>
+        <div class="vertical-slider">
+          <v-slider
+            v-model="slider"
+            :style="`width: ${sliderWidth}px;`"
+            max="11"
+            min="1"
+            readonly
+            prepend-icon="remove"
+            @click:prepend="slider -= 1"
+            append-icon="add"
+            @click:append="slider += 1"
+            thumb-label="always"
+            always-dirty
+          ></v-slider>
+        </div>
+      </v-flex>
     </v-layout>
-</v-flex>
+  </v-card>
 </template>
 
 <script>
@@ -60,8 +59,8 @@ export default {
     konvaConfig() {
       const self = this;
       return {
-        width: self.konvaWidth,
-        height: self.konvaHeight
+        width: Math.min(self.konvaWidth, self.konvaHeight),
+        height: Math.min(self.konvaWidth, self.konvaHeight)
       };
     },
     konvaCircleRadius() {
@@ -73,29 +72,15 @@ export default {
   mounted() {
     this.konvaWidth = this.$refs.konva.clientWidth;
     this.konvaHeight = this.$refs.konva.clientHeight;
-    //
-    this.sliderWidth = this.$refs.konvaRow.clientHeight;
-    //
-    const self = this;
-    this.$watch("$refs.konvaRow.clientHeight", (newVal) => {
-      // console.log("new slider width!");
-      self.sliderWidth = newVal;
-    });
-    this.$watch("$refs.konva.clientHeight", (newVal) => {
-      // console.log("new konva height!");
-      self.konvaHeight = newVal;
-    });
-    this.$watch("$refs.konva.clientWidth", (newVal) => {
-      // console.log("new konva width!");
-      self.konvaWidth = newVal;
-    });
+    this.sliderWidth = Math.min(this.konvaWidth, this.konvaHeight);
   },
   methods: {
     getKonvaGroupConfig(i) {
+      const self = this;
       return {
-        name: "groupi",
-        x: 50,
-        y: 50
+        name: `group${i}`,
+        x: self.konvaCircleRadius * (i - 1) + self.konvaCircleRadius * i,
+        y: self.konvaCircleRadius * (i - 1) + self.konvaCircleRadius * i
       };
     },
     getKonvaCircleConfig(i) {
@@ -116,10 +101,13 @@ export default {
     getKonvaTextConfig(i) {
       const self = this;
       return {
-        x: 0,
-        y: 0,
+        x: -Math.floor(self.konvaCircleRadius / 3),
+        y: -Math.floor(self.konvaCircleRadius / 2),
         text: `${i}`,
-        fontSize: 15
+        fontSize: self.konvaCircleRadius,
+        align: "center",
+        verticalAlign: "middle",
+        fill: "#C4CED4" //silver
       };
     },
     getKonvaLineConfig() {
@@ -140,7 +128,7 @@ export default {
 .vertical-slider .v-input--slider {
   position: absolute;
   top: -3em;
-  right: 2em;
+  right: 1em;
   transform: rotate(270deg);
   transform-origin: right;
 }

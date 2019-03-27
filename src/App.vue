@@ -20,11 +20,11 @@ export default {
 </script>
 
 <style>
-html, body {
+/* html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-}
+} */
 
 #background {
   width: 100%; 
@@ -36,7 +36,7 @@ html, body {
 }
 
 .stretch {
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
 }
 </style>
