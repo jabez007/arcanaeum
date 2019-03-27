@@ -8,8 +8,7 @@
            v-model="scene">
       <Camera v-model="camera"
               type="arcRotate" 
-              :radius="20" 
-              :position="[0, 0, -25]">
+              :radius="20">
       </Camera>
       <HemisphericLight diffuse="#512da8"></HemisphericLight>
       <RotatingEntity :duration="60">
