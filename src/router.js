@@ -62,6 +62,10 @@ export default new Router({
           path: 'allonsy',
           component: () => import('./views/Conservatoire/ProjectAllons-y.vue'),
         },
+        {
+          path: 'construct',
+          component: () => import('./views/Conservatoire/ManaConstruct.vue'),
+        },
       ],
     },
     {
