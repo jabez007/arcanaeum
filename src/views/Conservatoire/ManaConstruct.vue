@@ -13,16 +13,19 @@
     <v-layout row fill-height>
       <v-flex ref="konva" xs10 offset-xs1>
         <v-stage ref="stage" :config="konvaConfig">
-          <v-layer ref="layer">
-            <v-group
-              v-for="i in slider"
-              :key="`node${i}`"
-              :ref="`node${i}`"
-              :config="getKonvaGroupConfig(i)"
-            >
-              <v-circle :config="getKonvaCircleConfig(i)"/>
-              <v-text :config="getKonvaTextConfig(i)"/>
-            </v-group>
+          <v-layer v-for="(layer, k) in construct"
+                   :key="`layer${k}`" 
+                   :ref="`layer${k}`">
+            <template v-for="(row, j) in layer">
+              <v-group v-for="(node, i) in row"
+                       v-if="node > 0"
+                       :key="`node${i}${j}${k}`"
+                       :ref="`node${i}${j}${k}`"
+                       :config="getKonvaGroupConfig(i, j)">
+                <v-circle :config="getKonvaCircleConfig()"/>
+                <v-text :config="getKonvaTextConfig(node)"/>
+              </v-group>
+            </template>
           </v-layer>
         </v-stage>
       </v-flex>
@@ -31,7 +34,7 @@
           <v-slider
             v-model="slider"
             :style="`width: ${sliderWidth}px;`"
-            max="11"
+            :max="construct.length"
             min="1"
             readonly
             prepend-icon="remove"
@@ -48,6 +51,22 @@
 </template>
 
 <script>
+const CONSTRUCT = [
+  [
+    [3,0,0,3,0,0,2,0,1,0,0],
+    [0,2,0,0,0,3,0,5,0,0,3],
+    [2,0,0,0,0,0,0,0,0,0,0],
+    [0,3,0,3,0,4,0,7,0,0,5],
+    [2,0,2,0,3,0,2,0,1,0,0],
+    [0,2,0,0,0,2,0,5,0,4,0],
+    [0,0,0,2,0,0,1,0,0,0,2],
+    [2,0,0,0,0,3,0,6,0,4,0],
+    [0,2,0,0,0,0,0,0,0,0,2],
+    [2,0,0,3,0,3,0,5,0,4,0],
+    [0,0,1,0,2,0,2,0,2,0,3],
+  ],
+];
+
 export default {
   data: () => ({
     konvaHeight: 0,
@@ -56,6 +75,12 @@ export default {
     sliderWidth: 0
   }),
   computed: {
+    construct() {
+      return CONSTRUCT;
+    },
+    dim() {
+      return this.construct[0].length;
+    },
     konvaConfig() {
       const self = this;
       return {
@@ -65,7 +90,7 @@ export default {
     },
     konvaCircleRadius() {
       return Math.floor(
-        Math.min(this.konvaWidth, this.konvaHeight) / this.slider / 2
+        Math.min(this.konvaWidth, this.konvaHeight) / this.dim / 2
       );
     }
   },
@@ -75,15 +100,15 @@ export default {
     this.sliderWidth = Math.min(this.konvaWidth, this.konvaHeight);
   },
   methods: {
-    getKonvaGroupConfig(i) {
+    getKonvaGroupConfig(i, j) {
       const self = this;
       return {
-        name: `group${i}`,
-        x: (self.konvaCircleRadius * (i - 1)) + (self.konvaCircleRadius * i),
-        y: (self.konvaCircleRadius * (i - 1)) + (self.konvaCircleRadius * i)
+        name: `group${i}${j}`,
+        x: (self.konvaCircleRadius * i) + (self.konvaCircleRadius * (i + 1)),
+        y: (self.konvaCircleRadius * j) + (self.konvaCircleRadius * (j + 1)),
       };
     },
-    getKonvaCircleConfig(i) {
+    getKonvaCircleConfig() {
       const self = this;
       return {
         x: 0,
@@ -98,12 +123,12 @@ export default {
         shadowOpacity: 0.6
       };
     },
-    getKonvaTextConfig(i) {
+    getKonvaTextConfig(node) {
       const self = this;
       return {
-        x: -(i < 10 ? (self.konvaCircleRadius / 3.33) : (self.konvaCircleRadius / 1.67)),
+        x: -(node < 10 ? (self.konvaCircleRadius / 3.33) : (self.konvaCircleRadius / 1.67)),
         y: -(self.konvaCircleRadius / 2),
-        text: `${i}`,
+        text: `${node}`,
         fontSize: self.konvaCircleRadius,
         align: 'center',
         verticalAlign: 'middle',
