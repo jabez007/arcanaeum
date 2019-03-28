@@ -64,6 +64,19 @@ const CONSTRUCT = [
     [2,0,0,3,0,3,0,5,0,4,0],
     [0,0,1,0,2,0,2,0,2,0,3],
   ],
+  [
+    [4,0,0,2,0,3,0,2,0,2,0],
+    [0,3,0,0,3,0,0,0,0,0,1],
+    [4,0,0,2,0,0,3,0,0,4,0],
+    [0,0,0,0,2,0,0,2,0,0,3],
+    [0,3,0,6,0,3,0,0,0,3,0],
+    [3,0,2,0,3,0,2,0,0,0,3],
+    [0,5,0,1,0,2,0,4,0,3,0],
+    [5,0,0,0,0,0,3,0,0,0,2],
+    [0,4,0,0,4,0,0,1,0,0,0],
+    [1,0,0,0,0,0,3,0,0,4,0],
+    [0,1,0,2,0,3,0,2,0,0,5]
+  ],
 ];
 
 export default {
@@ -95,14 +108,14 @@ export default {
   },
   watch: {
     slider(to, from) {
-      if ((to <= this.construct.length && from <= this.construct.length) &&
-          (to > 0 && from > 0)) {
-        const toLayer = this.$refs[`layer${to - 1}`].getNode();
+      if ((0 < to && to <= this.construct.length) &&
+          (0 < from && from <= this.construct.length)) {
+        const toLayer = this.$refs[`layer${to - 1}`][0].getNode();
         toLayer.to({
           duration: 0.5,
           opacity: 1,
         });
-        const fromLayer = this.$refs[`layer${from - 1}`].getNode();
+        const fromLayer = this.$refs[`layer${from - 1}`][0].getNode();
         fromLayer.to({
           duration: 0.5,
           opacity: 0,
@@ -117,11 +130,15 @@ export default {
     //
     this.sliderWidth = Math.min(this.konvaWidth, this.konvaHeight);
     //
-    for (let k = 0; k < this.construct.length; k += 1) {
-      if (k + 1 !== this.slider) {
-        this.$refs[`layer${k}`].getNode().opacity(0);
+    const self = this;
+    this.$nextTick(() => {
+      for (let k = 0; k < self.construct.length; k += 1) {
+        if (k + 1 !== self.slider) {
+          self.$refs[`layer${k}`][0].getNode().opacity(0);
+        }
       }
-    }
+      self.$refs.stage.getNode().draw();
+    });
   },
   methods: {
     getKonvaGroupConfig(i, j) {
