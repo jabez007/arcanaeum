@@ -1,15 +1,41 @@
 <template>
   <v-card width="100%" height="100%" style="overflow: hidden;">
     <v-card-title>
-      <h1>hello world</h1>
+      <h6 class="title">Mana Construct Cure for the Creeping Corruption</h6>
     </v-card-title>
     <v-card-text>
-      <p>description...</p>
-      <p>more description...</p>
+      <p class="subheading">
+        Discovered December of 265 with the final test of the solution done November of 266,
+        <br /> 
+        this was a cube of sorts of mana 'islands' that once unlocked, by connecting all of the 'islands' in a particular fashion,
+        gave us a cure for the creeping corruption.
+      </p>
+      <p class="body-2">
+        Chronicles and reports:
+        <ul>
+          <li><a href="http://lasthope.kitsufox.com/wiki/order-report-mana-construct-escort-mission-september-266/" target="_blank">Excort to New Hope</a></li>
+          <li><a href="http://lasthope.kitsufox.com/wiki/order-report-corruption-cure-expedition-november-266/" target="_blank">Cure Expedition</a></li>
+        </ul>
+      </p>
+      <p class="body-1">
+        The goal was to connect all of the 'islands' by building a series of 'bridges' between the 'islands'.
+        The 'bridges' must follow certain criteria:
+        <ul>
+          <li>They must begin and end at distinct 'islands', travelling a straight line in between.</li>
+          <li>They must not cross any other 'bridges' or 'islands'.</li>
+          <li>They may only run orthogonally (North-South or East-West).</li>
+          <li>At most two 'bridges' connect a pair of 'islands'.</li>
+          <li>The number of 'bridges' connected to each 'island' must match the number on that 'island'.</li>
+          <li>The 'bridges' must connect the 'islands' into a single connected group.</li>
+        </ul>
+      </p>
     </v-card-text>
     <v-card-actions>
-      actions...
+      <v-spacer></v-spacer>
+      <v-btn>Load</v-btn>
+      <v-btn>Save</v-btn>
     </v-card-actions>
+    <br />
     <v-layout row fill-height>
       <v-flex ref="konva" xs10 offset-xs1>
         <v-stage ref="stage" :config="konvaConfig">
