@@ -31,19 +31,18 @@
       </v-flex>
       <v-flex xs1>
         <div class="vertical-slider">
-          <v-slider
-            v-model="slider"
-            :style="`width: ${sliderWidth}px;`"
-            :max="construct.length"
-            min="1"
-            readonly
-            prepend-icon="remove"
-            @click:prepend="slider -= 1"
-            append-icon="add"
-            @click:append="slider += 1"
-            thumb-label="always"
-            always-dirty
-          ></v-slider>
+          <v-slider v-model="slider"
+                    :style="`width: ${sliderWidth}px;`"
+                    :max="construct.length"
+                    min="1"
+                    readonly
+                    prepend-icon="remove"
+                    @click:prepend="slider -= 1"
+                    append-icon="add"
+                    @click:append="slider += 1"
+                    thumb-label="always"
+                    always-dirty>
+          </v-slider>
         </div>
       </v-flex>
     </v-layout>
@@ -94,10 +93,35 @@ export default {
       );
     }
   },
+  watch: {
+    slider(to, from) {
+      if ((to <= this.construct.length && from <= this.construct.length) &&
+          (to > 0 && from > 0)) {
+        const toLayer = this.$refs[`layer${to - 1}`].getNode();
+        toLayer.to({
+          duration: 0.5,
+          opacity: 1,
+        });
+        const fromLayer = this.$refs[`layer${from - 1}`].getNode();
+        fromLayer.to({
+          duration: 0.5,
+          opacity: 0,
+        });
+        this.$refs.stage.getNode().draw();
+      }
+    },
+  },
   mounted() {
     this.konvaWidth = this.$refs.konva.clientWidth;
     this.konvaHeight = this.$refs.konva.clientHeight;
+    //
     this.sliderWidth = Math.min(this.konvaWidth, this.konvaHeight);
+    //
+    for (let k = 0; k < this.construct.length; k += 1) {
+      if (k + 1 !== this.slider) {
+        this.$refs[`layer${k}`].getNode().opacity(0);
+      }
+    }
   },
   methods: {
     getKonvaGroupConfig(i, j) {
