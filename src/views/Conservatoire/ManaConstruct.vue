@@ -41,7 +41,8 @@
         <v-stage ref="stage" :config="konvaConfig">
           <v-layer v-for="(layer, k) in construct"
                    :key="`layer${k}`" 
-                   :ref="`layer${k}`">
+                   :ref="`layer${k}`"
+                   @click="onClick">
             <template v-for="(row, j) in layer">
               <v-group v-for="(node, i) in row"
                        v-if="node > 0"
@@ -110,7 +111,8 @@ export default {
     konvaHeight: 0,
     konvaWidth: 0,
     slider: 1,
-    sliderWidth: 0
+    sliderWidth: 0,
+    lineStart: null,
   }),
   computed: {
     construct() {
@@ -146,6 +148,7 @@ export default {
           duration: 0.5,
           opacity: 0,
         });
+        toLayer.moveToTop();
         this.$refs.stage.getNode().draw();
       }
     },
@@ -161,6 +164,8 @@ export default {
       for (let k = 0; k < self.construct.length; k += 1) {
         if (k + 1 !== self.slider) {
           self.$refs[`layer${k}`][0].getNode().opacity(0);
+        } else if (k + 1 === self.slider) {
+            self.$refs[`layer${k}`][0].getNode().moveToTop();
         }
       }
       self.$refs.stage.getNode().draw();
@@ -203,8 +208,45 @@ export default {
         fill: "#C4CED4", //silver
       };
     },
+    onClick(e) {
+        const group = e.target.getParent();
+        if (!this.lineStart) {
+            // start line creation
+            this.lineStart = {
+                x: group.x(),
+                y: group.y(),
+            };
+            group
+                .getChildren(node => node.getClassName() === 'Circle')
+                .forEach(node => {
+                    node.to({
+                        duration: 0.5, 
+                        shadowOffsetX: 15,
+                        shadowOffsetY: 15,
+                        scaleX: 1.2,
+                        scaleY: 1.2,
+                    });
+                });
+        } else if (this.lineStart.x === group.x() && this.lineStart.y === group.y()) {
+            // cancel line creation
+            this.lineStart = null;
+            group
+                .getChildren(node => node.getClassName() === 'Circle')
+                .forEach(node => {
+                    node.to({
+                        duration: 0.5,
+                        shadowOffsetX: 5,
+                        shadowOffsetY: 5,
+                        scaleX: 1,
+                        scaleY: 1,
+                    });
+                });
+        } else {
+            // finish line creation
+        }
+        group.getParent().draw();
+    },
     getKonvaLineConfig() {
-      const self = this;
       return {
         stroke: "#C4CED4" //silver
       };
