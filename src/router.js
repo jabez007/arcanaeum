@@ -59,6 +59,10 @@ export default new Router({
           component: () => import('./views/Conservatoire/About.vue'),
         },
         {
+          path: 'journal',
+          component: () => import('./views/Conservatoire/RedEyedJournal.vue'),
+        },
+        {
           path: 'allonsy',
           component: () => import('./views/Conservatoire/ProjectAllons-y.vue'),
         },

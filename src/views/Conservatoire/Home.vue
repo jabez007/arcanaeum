@@ -11,6 +11,15 @@
                     <v-list-tile-title>Home</v-list-tile-title>
                 </v-list-tile-content>
             </v-list-tile>
+            <v-list-tile to="/conservatoire/journal"
+                         ripple>
+                <v-list-tile-action>
+                    <v-icon>book</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                    <v-list-tile-title>Syndar Journal</v-list-tile-title>
+                </v-list-tile-content>
+            </v-list-tile>
             <v-list-tile to="/conservatoire/allonsy"
                          ripple>
                 <v-list-tile-action>
