@@ -209,40 +209,41 @@ export default {
       };
     },
     onClick(e) {
+        const self = this;
         const group = e.target.getParent();
         if (!this.lineStart) {
             // start line creation
             this.lineStart = {
                 x: group.x(),
                 y: group.y(),
+                z: self.slider
             };
-            group
-                .getChildren(node => node.getClassName() === 'Circle')
-                .forEach(node => {
-                    node.to({
-                        duration: 0.5, 
-                        shadowOffsetX: 15,
-                        shadowOffsetY: 15,
-                        scaleX: 1.2,
-                        scaleY: 1.2,
-                    });
+            group.to({
+                duration: 0.2, 
+                shadowOffsetX: 15,
+                shadowOffsetY: 15,
+                scaleX: 1.2,
+                scaleY: 1.2,
+            });
+        } else if (this.lineStart.z === self.slider) {
+            // make sure we are in the same plane
+            if (this.lineStart.x === group.x() && this.lineStart.y === group.y()) {
+                // same node clicked, cancel line creation
+                this.lineStart = null;
+                group.to({
+                    duration: 0.2,
+                    shadowOffsetX: 5,
+                    shadowOffsetY: 5,
+                    scaleX: 1,
+                    scaleY: 1,
                 });
-        } else if (this.lineStart.x === group.x() && this.lineStart.y === group.y()) {
-            // cancel line creation
-            this.lineStart = null;
-            group
-                .getChildren(node => node.getClassName() === 'Circle')
-                .forEach(node => {
-                    node.to({
-                        duration: 0.5,
-                        shadowOffsetX: 5,
-                        shadowOffsetY: 5,
-                        scaleX: 1,
-                        scaleY: 1,
-                    });
-                });
+            } else if (this.lineStart.x === group.x() || this.lineStart.y === group.y()){
+                // finish line creation
+            } else {
+                // diagonal lines don't work
+            }
         } else {
-            // finish line creation
+            // lines between planes?
         }
         group.getParent().draw();
     },
