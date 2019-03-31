@@ -77,6 +77,8 @@
 </template>
 
 <script>
+import Konva from 'konva'
+
 const CONSTRUCT = [
   [
     [3,0,0,3,0,0,2,0,1,0,0],
@@ -149,7 +151,12 @@ export default {
           opacity: 0,
         });
         toLayer.moveToTop();
-        this.$refs.stage.getNode().draw();
+        this.$nextTick(() => {
+            toLayer.getChildren(node => node.getClassName() === 'Line').forEach(node => {
+                node.moveToBottom();
+            });
+        })
+        //this.$refs.stage.getNode().draw();
       }
     },
   },
@@ -187,7 +194,7 @@ export default {
         y: 0,
         radius: self.konvaCircleRadius,
         fill: "#0077C0", // blue
-        opacity: 0.8,
+        opacity: 1,
         shadowColor: "black",
         shadowBlur: 10,
         shadowOffsetX: 5,
@@ -211,20 +218,28 @@ export default {
     onClick(e) {
         const self = this;
         const group = e.target.getParent();
+        const layer = group.getParent();
         if (!this.lineStart) {
             // start line creation
-            this.lineStart = {
-                x: group.x(),
-                y: group.y(),
-                z: self.slider
-            };
-            group.to({
-                duration: 0.2, 
-                shadowOffsetX: 15,
-                shadowOffsetY: 15,
-                scaleX: 1.2,
-                scaleY: 1.2,
-            });
+            const currLines = layer.getChildren(node => node.getClassName() === 'Line' && node.name().includes(group.name()));
+            // currLines.forEach(console.log);
+            const maxLines = Number(group.getChildren(node => node.getClassName() === 'Text')[0].text());
+            if (currLines.length < maxLines) {
+                // this node can accept another line
+                this.lineStart = {
+                    name: group.name(),
+                    x: group.x(),
+                    y: group.y(),
+                    z: self.slider
+                };
+                group.to({
+                    duration: 0.2, 
+                    shadowOffsetX: 15,
+                    shadowOffsetY: 15,
+                    scaleX: 1.2,
+                    scaleY: 1.2,
+                });
+            }
         } else if (this.lineStart.z === self.slider) {
             // make sure we are in the same plane
             if (this.lineStart.x === group.x() && this.lineStart.y === group.y()) {
@@ -239,19 +254,91 @@ export default {
                 });
             } else if (this.lineStart.x === group.x() || this.lineStart.y === group.y()){
                 // finish line creation
+                let currLines = layer.getChildren(node => node.getClassName() === 'Line' && node.name().includes(group.name()));
+                // currLines.forEach(console.log);
+                const maxLines = Number(group.getChildren(node => node.getClassName() === 'Text')[0].text());
+                if (currLines.length < maxLines) {
+                    // this node can accept another line
+                    const lineName = [this.lineStart.name, group.name()].sort().join();
+                    // how do we check for crossed nodes or crossed lines?
+                    const currLines = layer.getChildren(node => node.name() === lineName);
+                    // currLines.forEach(console.log);
+                    if (currLines.length < 2) {
+                        // we haven't reached our max yet
+                        const lineWidth = Math.floor(self.konvaCircleRadius / 4);
+                        const newLine = new Konva.Line({
+                            name: lineName,
+                            points: [self.lineStart.x, self.lineStart.y, group.x(), group.y()],
+                            stroke: "#C4CED4", //silver
+                            strokeWidth: lineWidth,
+                            lineCap: 'round',
+                            lineJoin: 'round'
+                            });
+                        newLine.on('click', this.deleteLine);
+                        if (currLines.length === 0) {
+                            // this is our first line between these nodes
+                            //layer.add(newLine);
+                            //newLine.moveToBottom();
+                        } else if (currLines.length === 1) {
+                            // this is our second line between these nodes
+                            const oldLine = currLines[0];
+                            if (this.lineStart.x === group.x()) {
+                                // both nodes in same column, so shift x
+                                oldLine.move({
+                                    x: -lineWidth,
+                                    y: 0
+                                });
+                                newLine.move({
+                                    x: lineWidth,
+                                    y: 0
+                                });
+                            } else if (this.lineStart.y === group.y()) {
+                                // both nodes in same row, so shift y
+                                oldLine.move({
+                                    x: 0,
+                                    y: -lineWidth
+                                });
+                                newLine.move({
+                                    x: 0,
+                                    y: lineWidth
+                                });
+                            }
+                        }
+                        layer.add(newLine);
+                        newLine.moveToBottom();
+                    }
+                    this.lineStart = null;
+                    layer.getChildren(node => node.getClassName() === 'Group').forEach(node => {
+                        node.to({
+                            duration: 0.2,
+                            shadowOffsetX: 5,
+                            shadowOffsetY: 5,
+                            scaleX: 1,
+                            scaleY: 1,
+                        });
+                    });
+                }
             } else {
                 // diagonal lines don't work
             }
         } else {
             // lines between planes?
         }
-        group.getParent().draw();
     },
-    getKonvaLineConfig() {
-      return {
-        stroke: "#C4CED4" //silver
-      };
-    }
+    deleteLine(e) {
+        const toDelete = e.target;
+        const lineName = toDelete.name();
+        const layer = toDelete.getParent();
+        toDelete.destroy();
+        layer.getChildren(node => node.name() === lineName).forEach(node => {
+            const pos = node.position();
+            node.position({
+                x: pos.x - pos.x,
+                y: pos.y - pos.y
+            });
+        });
+        layer.draw();
+    },
   }
 };
 </script>
