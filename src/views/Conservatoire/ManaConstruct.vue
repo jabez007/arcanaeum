@@ -32,8 +32,18 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn>Load</v-btn>
-      <v-btn>Save</v-btn>
+      <v-btn @click="onLoad" 
+             ripple
+             round>
+        <span class="hidden-md-and-down">Load</span>
+        <v-icon class="hidden-md-and-up">open_in_browser</v-icon>
+      </v-btn>
+      <v-btn @click="onSave"
+             ripple
+             round>
+        <span class="hidden-md-and-down">Save</span>
+        <v-icon class="hidden-md-and-up">save</v-icon>
+      </v-btn>
     </v-card-actions>
     <br />
     <v-layout row fill-height>
@@ -106,6 +116,9 @@ const CONSTRUCT = [
     [1,0,0,0,0,0,3,0,0,4,0],
     [0,1,0,2,0,3,0,2,0,0,5]
   ],
+  [
+
+  ],
 ];
 
 export default {
@@ -166,6 +179,8 @@ export default {
     //
     this.sliderWidth = Math.min(this.konvaWidth, this.konvaHeight);
     //
+    this.onLoad();
+    //
     const self = this;
     this.$nextTick(() => {
       for (let k = 0; k < self.construct.length; k += 1) {
@@ -177,6 +192,9 @@ export default {
       }
       self.$refs.stage.getNode().draw();
     });
+  },
+  beforeDestroy() {
+    this.onSave();
   },
   methods: {
     getKonvaGroupConfig(i, j) {
@@ -338,6 +356,30 @@ export default {
             });
         });
         layer.draw();
+    },
+    onSave() {
+      for (let k = 0; k < this.construct.length; k += 1) {
+        const lines = this.$refs[`layer${k}`][0].getNode()
+          .getChildren(node => node.getClassName() === 'Line')
+          .map(line => line.toJSON());
+        localStorage.setItem(`construct_layer${k}_lines`, JSON.stringify(lines));
+      }
+    },
+    onLoad() {
+      const self = this;
+      for (let k = 0; k < this.construct.length; k += 1) {
+        const lines = JSON.parse(localStorage.getItem(`construct_layer${k}_lines`) || '[]');
+        const layer = this.$refs[`layer${k}`][0].getNode();
+        lines.forEach(line => {
+          const loadLine = Konva.Line.create(line);
+          loadLine.on('click', self.deleteLine);
+          layer.add(loadLine);
+          self.$nextTick(() => {
+            loadLine.moveToBottom();
+            layer.draw();
+          });
+        });
+      }
     },
   }
 };
