@@ -29,6 +29,10 @@
           <li>The 'bridges' must connect the 'islands' into a single connected group.</li>
         </ul>
       </p>
+      <br />
+      <p class="caption">
+        hint: this puzzle is an <a href="https://en.wikipedia.org/wiki/Exact_cover">exact cover</a> problem
+      </p>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
@@ -57,7 +61,6 @@
               <v-group v-for="(node, i) in row"
                        v-if="node > 0"
                        :key="`node${i}${j}${k}`"
-                       :ref="`node${i}${j}${k}`"
                        :config="getKonvaGroupConfig(i, j)">
                 <v-circle :config="getKonvaCircleConfig()"/>
                 <v-text :config="getKonvaTextConfig(node)"/>
@@ -117,7 +120,17 @@ const CONSTRUCT = [
     [0,1,0,2,0,3,0,2,0,0,5]
   ],
   [
-
+    [3,0,4,0,3,0,3,0,1,0,2],
+    [0,5,0,2,0,2,0,2,0,2,0],
+    [4,0,0,0,0,0,3,0,0,0,0],
+    [0,2,0,0,0,3,0,3,0,0,3],
+    [3,0,0,4,0,0,2,0,1,0,0],
+    [0,0,0,0,0,0,0,0,0,1,0],
+    [0,4,0,0,3,0,0,3,0,0,3],
+    [5,0,0,3,0,4,0,0,0,2,0],
+    [0,0,0,0,2,0,4,0,4,0,2],
+    [0,2,0,3,0,2,0,0,0,2,0],
+    [3,0,2,0,3,0,4,0,3,0,4],
   ],
 ];
 
@@ -150,26 +163,28 @@ export default {
     }
   },
   watch: {
-    slider(to, from) {
-      if ((0 < to && to <= this.construct.length) &&
-          (0 < from && from <= this.construct.length)) {
-        const toLayer = this.$refs[`layer${to - 1}`][0].getNode();
-        toLayer.to({
-          duration: 0.5,
-          opacity: 1,
-        });
-        const fromLayer = this.$refs[`layer${from - 1}`][0].getNode();
-        fromLayer.to({
-          duration: 0.5,
-          opacity: 0,
-        });
-        toLayer.moveToTop();
-        this.$nextTick(() => {
-            toLayer.getChildren(node => node.getClassName() === 'Line').forEach(node => {
-                node.moveToBottom();
+    slider() {
+      const self = this;
+      for (let k = 0; k < this.construct.length; k += 1) {
+        if (k + 1 !== this.slider) {
+          this.$refs[`layer${k}`][0].getNode().to({
+            duration: 0.5,
+            opacity: 0,
+          });
+        } else if (k + 1 === this.slider) {
+          const active = this.$refs[`layer${k}`][0].getNode();
+          active.to({
+            duration: 0.5,
+            opacity: 1,
+          });
+          active.moveToTop();  // so clicks happen on this layer
+          this.$nextTick(() => {
+            active.getChildren(node => node.getClassName() === 'Line').forEach(line => {
+              line.moveToBottom();
             });
-        })
-        //this.$refs.stage.getNode().draw();
+            self.$refs.stage.getNode().draw();
+          });
+        }
       }
     },
   },
@@ -187,7 +202,7 @@ export default {
         if (k + 1 !== self.slider) {
           self.$refs[`layer${k}`][0].getNode().opacity(0);
         } else if (k + 1 === self.slider) {
-            self.$refs[`layer${k}`][0].getNode().moveToTop();
+            self.$refs[`layer${k}`][0].getNode().moveToTop();  // so clicks happen on this layer
         }
       }
       self.$refs.stage.getNode().draw();
