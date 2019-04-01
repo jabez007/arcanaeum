@@ -7,6 +7,7 @@
     <v-treeview
       slot="navigationDrawerList"
       open-on-click
+      transition
       :open.sync="open"
       :items="challenges"
       activatable
