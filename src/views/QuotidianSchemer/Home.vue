@@ -36,33 +36,29 @@
           </v-card>
         </v-flex>
         <v-flex md5 xs12>
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-card flat>
-                <v-card-title class="caption">
-                  <v-spacer></v-spacer>In-browser code editor by
-                  <a href="https://codemirror.net/">CodeMirror</a>
-                </v-card-title>
-                <v-card-text @keyup.ctrl.enter="runSkulpt">
-                  <codemirror v-model="selected.code" :options="cmOptions"></codemirror>
-                </v-card-text>
-                <v-card-actions class="caption">
-                  In-browser impemenation of Python by
-                  <a href="http://www.skulpt.org/">Skulpt</a>
-                  <v-spacer></v-spacer>
-                  <v-btn @click="runSkulpt">RUN</v-btn>or Ctrl+Enter
-                </v-card-actions>
-              </v-card>
-            </v-flex>
-            <v-flex xs12>
-              <v-card flat color="black">
-                <v-card-text style="max-height: 300px; overflow-y: scroll;">
-                  <pre id="output">{{ selected.output }}</pre>
-                </v-card-text>
-                <div id="canvas"></div>
-              </v-card>
-            </v-flex>
-          </v-layout>
+          <v-card :style="`position: ${$vuetify.breakpoint.mdAndUp ? 'fixed' : 'relative'};`">
+            <v-card flat>
+              <v-card-title class="caption">
+                <v-spacer></v-spacer>In-browser code editor by
+                <a href="https://codemirror.net/">CodeMirror</a>
+              </v-card-title>
+              <v-card-text @keyup.ctrl.enter="runSkulpt">
+                <codemirror v-model="selected.code" :options="cmOptions"></codemirror>
+              </v-card-text>
+              <v-card-actions class="caption">
+                In-browser impemenation of Python by
+                <a href="http://www.skulpt.org/">Skulpt</a>
+                <v-spacer></v-spacer>
+                <v-btn @click="runSkulpt">RUN</v-btn>or Ctrl+Enter
+              </v-card-actions>
+            </v-card>
+            <v-card flat color="black">
+              <v-card-text style="max-height: 300px; overflow-y: scroll;">
+                <pre id="output">{{ selected.output }}</pre>
+              </v-card-text>
+              <div id="canvas"></div>
+            </v-card>
+          </v-card>
         </v-flex>
       </v-layout>
       <v-bottom-sheet :value="!!errorMessage" persistent inset>
