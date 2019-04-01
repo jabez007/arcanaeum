@@ -145,8 +145,8 @@ export default {
 #tooltip {
   position: absolute;
   top: 50%;
-  right: 45%;
-  min-width: 10%;
+  right: 40%;
+  min-width: 20%;
   border-radius: 25px;
   opacity: 0.5;
   color: #212121;
