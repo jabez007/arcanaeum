@@ -48,8 +48,8 @@ const BOXES = [
     pos: [0, 4, 0],
   },
   {
-    path: '',
-    name: '',
+    path: '/quotidian',
+    name: 'Quotidian Schemer',
     pos: [0, -4, 0],
   },
   {

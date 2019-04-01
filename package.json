@@ -10,11 +10,15 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^1.0.2",
+    "babel-runtime": "^6.26.0",
     "konva": "^3.2.3",
+    "skulpt": "^0.11.1",
     "vue": "^2.6.6",
     "vue-babylonjs": "^1.0.0-beta.6",
     "vue-clipboard2": "^0.3.0",
+    "vue-codemirror": "^4.0.6",
     "vue-konva": "^2.0.3",
+    "vue-markdown": "^2.2.4",
     "vue-router": "^3.0.1",
     "vuetify": "^1.5.5"
   },

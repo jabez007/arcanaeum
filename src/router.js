@@ -83,5 +83,10 @@ export default new Router({
         },
       ],
     },
+    {
+      path: '/quotidian',
+      name: 'quotidian',
+      component: () => import('./views/QuotidianSchemer/Home.vue'),
+    },
   ],
 });

@@ -33,10 +33,12 @@
                          fill-height>
                 <v-layout justify-center
                           align-center>
-                    <transition :name="transitionName"
-                                mode="out-in">
-                        <router-view />
-                    </transition>
+                    <slot name="content">
+                        <transition :name="transitionName"
+                                    mode="out-in">
+                            <router-view />
+                        </transition>
+                    </slot>
                 </v-layout>
             </v-container>
         </v-content>
