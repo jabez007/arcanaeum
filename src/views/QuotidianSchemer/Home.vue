@@ -35,9 +35,8 @@
             </v-card-text>
           </v-card>
         </v-flex>
-        <v-flex md5 xs12>
-          <v-card :style="`position: ${$vuetify.breakpoint.mdAndUp ? 'fixed' : 'relative'};`">
-            <v-card flat>
+        <v-flex md5 xs12 style="position: -webkit-sticky; position: sticky; top: 5em;">
+          <v-card flat>
               <v-card-title class="caption">
                 <v-spacer></v-spacer>In-browser code editor by
                 <a href="https://codemirror.net/">CodeMirror</a>
@@ -58,7 +57,6 @@
               </v-card-text>
               <div id="canvas"></div>
             </v-card>
-          </v-card>
         </v-flex>
       </v-layout>
       <v-bottom-sheet :value="!!errorMessage" persistent inset>
@@ -103,7 +101,6 @@ export default {
     AppLayout: () => import("@/components/AppLayout.vue")
   },
   data: () => ({
-    drawer: true,
     errorMessage: "",
     challenges: [
       {
@@ -127,10 +124,10 @@ export default {
     active: [],
     cmOptions: {
       autoCloseBrackets: true,
-      tabSize: 4,
+      // tabSize: 4,
       styleActiveLine: true,
       lineNumbers: true,
-      line: true,
+      // line: true,
       mode: "text/x-python",
       theme: "cobalt"
       // keyMap: "emacs",
