@@ -37,26 +37,26 @@
         </v-flex>
         <v-flex md5 xs12 style="position: -webkit-sticky; position: sticky; top: 5em;">
           <v-card flat>
-              <v-card-title class="caption">
-                <v-spacer></v-spacer>In-browser code editor by
-                <a href="https://codemirror.net/">CodeMirror</a>
-              </v-card-title>
-              <v-card-text @keyup.ctrl.enter="runSkulpt">
-                <codemirror v-model="selected.code" :options="cmOptions"></codemirror>
-              </v-card-text>
-              <v-card-actions class="caption">
-                In-browser impemenation of Python by
-                <a href="http://www.skulpt.org/">Skulpt</a>
-                <v-spacer></v-spacer>
-                <v-btn @click="runSkulpt">RUN</v-btn>or Ctrl+Enter
-              </v-card-actions>
-            </v-card>
-            <v-card flat color="black">
-              <v-card-text style="max-height: 300px; overflow-y: scroll;">
-                <pre id="output">{{ selected.output }}</pre>
-              </v-card-text>
-              <div id="canvas"></div>
-            </v-card>
+            <v-card-title class="caption">
+              <v-spacer></v-spacer>In-browser code editor by
+              <a href="https://codemirror.net/">CodeMirror</a>
+            </v-card-title>
+            <v-card-text @keyup.ctrl.enter="runSkulpt">
+              <codemirror v-model="selected.code" :options="cmOptions"></codemirror>
+            </v-card-text>
+            <v-card-actions class="caption">
+              In-browser impemenation of Python by
+              <a href="http://www.skulpt.org/">Skulpt</a>
+              <v-spacer></v-spacer>
+              <v-btn @click="runSkulpt">RUN</v-btn>or Ctrl+Enter
+            </v-card-actions>
+          </v-card>
+          <v-card flat color="black">
+            <v-card-text style="max-height: 300px; overflow-y: scroll;">
+              <pre id="output">{{ selected.output }}</pre>
+            </v-card-text>
+            <div id="canvas"></div>
+          </v-card>
         </v-flex>
       </v-layout>
       <v-bottom-sheet :value="!!errorMessage" persistent inset>
@@ -155,9 +155,11 @@ export default {
               .find(lvl => lvl.name === challengeLevel[0])
               .children.push({
                 id: child.data.id,
-                name: decodeEntities(child.data.title
-                  .substring(child.data.title.lastIndexOf("]") + 1)
-                  .trim()),
+                name: decodeEntities(
+                  child.data.title
+                    .substring(child.data.title.lastIndexOf("]") + 1)
+                    .trim()
+                ),
                 description: decodeEntities(child.data.selftext),
                 code: "",
                 output: ""
