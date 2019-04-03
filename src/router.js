@@ -73,6 +73,21 @@ export default new Router({
       ],
     },
     {
+      path:'/conungeon',
+      name: 'conungeon',
+      component: () => import('./views/Conungeon/Home.vue'),
+      children: [
+        {
+          path: 'about',
+          component: () => import('./views/Conungeon/About.vue'),
+        },
+        {
+          path: 'fifteen',
+          component: () => import('./views/Conungeon/FifteenPuzzle.vue'),
+        },
+      ],
+    },
+    {
       path:'/oracle',
       name: 'oracle',
       component: () => import('./views/Oracle/Home.vue'),
