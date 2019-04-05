@@ -106,8 +106,14 @@ export default {
     }
   },
   mounted() {
+    window.vueFifteen = window.vueFifteen || this;
     this.konvaWidth = this.$refs.konva.clientWidth;
     this.konvaHeight = this.$refs.konva.clientHeight;
+  },
+  beforeDestroy() {
+      if (window.vueFifteen === this) {
+          window.vueFifteen = null;
+      }
   },
   methods: {
     getKonvaNodeRef(i, j) {
