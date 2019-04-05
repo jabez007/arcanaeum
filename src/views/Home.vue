@@ -53,7 +53,7 @@ const BOXES = [
     pos: [0, -4, 0],
   },
   {
-    path: '/conungeon',
+    path: '/conungeon/about',
     name: 'The Conungeon',
     pos: [0, 0, 4],
   },
