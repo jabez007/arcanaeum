@@ -267,7 +267,7 @@ export default {
     }
   },
   watch: {
-    slider() {
+    slider() {  // could do this better with layer.hide() and layer.show() ?
       const self = this;
       for (let k = 0; k < this.construct.length; k += 1) {
         if (k + 1 !== this.slider) {
@@ -301,7 +301,7 @@ export default {
     this.onLoad();
     //
     const self = this;
-    this.$nextTick(() => {
+    this.$nextTick(() => {  // could do this better with layer.hide() and layer.show() ?
       for (let k = 0; k < self.construct.length; k += 1) {
         if (k + 1 !== self.slider) {
           self.$refs[`layer${k}`][0].getNode().opacity(0);
@@ -330,9 +330,9 @@ export default {
         x: 0,
         y: 0,
         radius: self.konvaCircleRadius,
-        fill: "#0077C0", // blue
+        fill: '#0077C0', // blue
         opacity: 1,
-        shadowColor: "black",
+        shadowColor: 'black',
         shadowBlur: 10,
         shadowOffsetX: 5,
         shadowOffsetY: 5,
@@ -349,7 +349,7 @@ export default {
         align: 'center',
         verticalAlign: 'middle',
         fontFamily: 'courier',  // monospaced font
-        fill: "#C4CED4", //silver
+        fill: '#C4CED4', //silver
       };
     },
     onClick(e) {
@@ -406,7 +406,7 @@ export default {
                         const newLine = new Konva.Line({
                             name: lineName,
                             points: [self.lineStart.x, self.lineStart.y, group.x(), group.y()],
-                            stroke: "#C4CED4", //silver
+                            stroke: '#C4CED4', //silver
                             strokeWidth: lineWidth,
                             lineCap: 'round',
                             lineJoin: 'round'
