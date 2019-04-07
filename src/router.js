@@ -85,6 +85,10 @@ export default new Router({
           path: 'fifteen',
           component: () => import('./views/Conungeon/FifteenPuzzle.vue'),
         },
+        {
+          path: 'bridges',
+          component: () => import('./views/Conungeon/SevenBridges.vue'),
+        },
       ],
     },
     {
