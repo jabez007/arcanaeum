@@ -38,7 +38,7 @@
                   height: konvaGroupWidth * 4,
                   cornerRadius: konvaGroupWidth / 3, 
                   fillPatternImage = backgroundImage,
-                  fillScale: { x: (konvaGroupWidth * 4) / 1080, y: (konvaGroupWidth * 4) / 1080 }, 
+                  fillPatternScale: { x: (konvaGroupWidth * 4) / 1080, y: (konvaGroupWidth * 4) / 1080 }, 
               }"
             ></v-rect>
           </v-layer>
