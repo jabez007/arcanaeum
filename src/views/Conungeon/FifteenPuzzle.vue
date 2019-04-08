@@ -26,7 +26,7 @@
               :config="{
                   width: konvaGroupWidth * 4,
                   height: konvaGroupWidth * 4,
-                  cornerRadius: konvaGroupWidth / 3, 
+                  cornerRadius: konvaGroupWidth * 0.1, 
                   fillLinearGradientStartPoint: { x: (konvaGroupWidth * 4) * getRandom(1, 2), y: -((konvaGroupWidth * 4) * getRandom(0, 1)) },
                   fillLinearGradientEndPoint: { x: -((konvaGroupWidth * 4) * getRandom(0, 1)), y: (konvaGroupWidth * 4) * getRandom(1, 2) },
                   fillLinearGradientColorStops: [0, '#778899', 1, '#2F4F4F'],  // light slate gray -> dark slate gray
@@ -36,7 +36,7 @@
               :config="{
                   width: konvaGroupWidth * 4,
                   height: konvaGroupWidth * 4,
-                  cornerRadius: konvaGroupWidth / 3, 
+                  cornerRadius: konvaGroupWidth * 0.1, 
                   fillPatternImage = backgroundImage,
                   fillPatternScale: { x: (konvaGroupWidth * 4) / 1080, y: (konvaGroupWidth * 4) / 1080 }, 
               }"
@@ -54,38 +54,33 @@
                   }"
                   @click="handleClick"
                 >
-                  <v-ellipse
+                  <v-rect
                     v-if="4 * (j - 1) + i != 16"
                     :config="{
-                        x: konvaGroupWidth / 2,
-                        y: konvaGroupWidth / 2,
-                        radiusX: (konvaGroupWidth / 2) * getRandom(0.75, 1),
-                        radiusY: (konvaGroupWidth / 2) * getRandom(0.5, 0.75),
-                        rotation: 360 * getRandom(0, 1),
+                        width: konvaGroupWidth,
+                        height: konvaGroupWidth,
+                        cornerRadius: konvaGroupWidth * getRandom(0.1, 0.2),
                         fillLinearGradientStartPoint: { x: -(konvaGroupWidth * getRandom(0, 1)), y: -(konvaGroupWidth * getRandom(0, 1)) },
                         fillLinearGradientEndPoint: { x: konvaGroupWidth * getRandom(1, 2), y: konvaGroupWidth * getRandom(1, 2) },
                         fillLinearGradientColorStops: [0, 'blue', 1, 'purple'],
-                        opacity: getRandom(0.5, 0.75),
+                        opacity: 0.8,
                         shadowColor: 'black',
                         shadowBlur: 10,
                         shadowOffsetX: 5,
                         shadowOffsetY: 5,
                         shadowOpacity: 0.6
                     }"
-                  ></v-ellipse>
-                  <v-text
+                  ></v-rect>
+                  <v-rect
                     v-if="4 * (j - 1) + i != 16"
                     :config="{
                         width: konvaGroupWidth,
                         height: konvaGroupWidth,
-                        fontSize: konvaGroupWidth / 2,
-                        align: 'center',
-                        verticalAlign: 'middle',
-                        fontFamily: 'courier',  // monospaced font
-                        fill: '#C4CED4', //silver
-                        text: getKonvaTextText(i, j)
+                        cornerRadius: konvaGroupWidth * 0.2,
+                        fillPatternImage = puzzlePieces[4 * (j - 1) + i],
+                        fillPatternScale: { x: konvaGroupWidth / (1080 / 4), y: konvaGroupWidth / (1080 / 4) }
                     }"
-                  ></v-text>
+                  ></v-rect>
                 </v-group>
               </template>
             </template>
@@ -103,7 +98,7 @@ export default {
     konvaHeight: 0,
     konvaWidth: 0,
     backgroundImage: null,
-    puzzlePieces: new Array(15).fill(null),
+    puzzlePieces: new Array(16).fill(null),
   }),
   computed: {
     konvaConfig() {
@@ -124,6 +119,15 @@ export default {
     bacgroundImage.onLoad = () => {
       self.backgroundImage = backgroundImage;
     };
+    for (let j = 0; j < 4; j += 1) {
+      for (let i = 0; i < 4; i += 1) {
+        const image = new Image();
+        image.src = require(`@/assets/slice_${j}_${i}.png`);
+        image.onLoad = () => {
+          self.puzzlePieces[(4 * j) + i] = image;
+        };
+      }
+    }
   },
   mounted() {
     window.vueFifteen = window.vueFifteen || this;
