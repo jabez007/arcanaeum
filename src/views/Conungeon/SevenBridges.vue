@@ -1,10 +1,20 @@
 <template>
   <v-card width="100%" height="100%" style="overflow: hidden;">
     <v-card-title>
-      <h6 class="title">The Mana Bridges</h6>
+      <h6 class="title">The Seven Channels of Mana</h6>
     </v-card-title>
     <v-card-text>
-      <p class="body-1"></p>
+      <p class="body-1">
+        Recovered by one of our Medicum while havesting medicinal plants from the mountains around the Spire,
+        this granite apparatus holds four mana stones with seven channels carved into the granite connecting the stones.
+        Upon our analysis of the design, 
+        it was understood that one could channel mana into any single stone of the four,
+        then move the mana from stone to stone by way of the channels in the granite.
+        It was witnessed that the movement of mana through a granite channel would thus 'activate' the channel,
+        but moving mana through an already 'active' channel would lead to its 'deactivation'.
+        It is belived the goal of this appliance for all of the granite channels to be 'activated', but for what end we do not grasp yet.
+        Not that the outcome of this 'activation' matters so long as the path to it remains hidden.
+      </p>
       <p>That is where you come in...</p>
     </v-card-text>
     <br>
@@ -35,7 +45,7 @@
               :config="{
                 points: [konvaCircleRadius, konvaHeight / 2, konvaWidth / 7, konvaHeight / 7, konvaWidth / 2, konvaCircleRadius],
                 tension: 0.5,
-                stroke: bridgeOffColor,
+                stroke: channelOffColor,
                 strokeWidth: 11,
                 lineCap: 'round',
               }"
@@ -46,7 +56,7 @@
               :config="{
                 points: [konvaCircleRadius, konvaHeight / 2, konvaWidth / 3, konvaHeight / 3, konvaWidth / 2, konvaCircleRadius],
                 tension: 0.5,
-                stroke: bridgeOffColor,
+                stroke: channelOffColor,
                 strokeWidth: 11,
                 lineCap: 'round',
               }"
@@ -58,7 +68,7 @@
               :config="{
                 points: [konvaWidth - konvaCircleRadius, konvaHeight / 2, konvaWidth - (konvaWidth / 7), konvaHeight / 7, konvaWidth / 2, konvaCircleRadius],
                 tension: 0.5,
-                stroke: bridgeOffColor,
+                stroke: channelOffColor,
                 strokeWidth: 11,
                 lineCap: 'round',
               }"
@@ -69,7 +79,7 @@
               :config="{
                 points: [konvaWidth - konvaCircleRadius, konvaHeight / 2, konvaWidth - (konvaWidth / 3), konvaHeight / 3, konvaWidth / 2, konvaCircleRadius],
                 tension: 0.5,
-                stroke: bridgeOffColor,
+                stroke: channelOffColor,
                 strokeWidth: 11,
                 lineCap: 'round',
               }"
@@ -80,7 +90,7 @@
               ref="bridge5"
               :config="{
                 points: [konvaWidth / 2, konvaCircleRadius, konvaWidth / 2, konvaHeight - konvaCircleRadius],
-                stroke: bridgeOffColor,
+                stroke: channelOffColor,
                 strokeWidth: 11,
                 lineCap: 'round',
               }"
@@ -91,7 +101,7 @@
               ref="bridge6"
               :config="{
                 points: [konvaCircleRadius, konvaHeight / 2, konvaWidth / 2, konvaHeight - konvaCircleRadius],
-                stroke: bridgeOffColor,
+                stroke: channelOffColor,
                 strokeWidth: 11,
                 lineCap: 'round',
               }"
@@ -102,7 +112,7 @@
               ref="bridge7"
               :config="{
                 points: [konvaWidth - konvaCircleRadius, konvaHeight / 2, konvaWidth / 2, konvaHeight - konvaCircleRadius],
-                stroke: bridgeOffColor,
+                stroke: channelOffColor,
                 strokeWidth: 11,
                 lineCap: 'round',
               }"
@@ -113,9 +123,9 @@
               :config="{
                 x: konvaWidth / 2,
                 y: konvaCircleRadius,
-                radiusX: konvaCircleRadius * getRandom(0.5, 0.75),
-                radiusY: konvaCircleRadius * getRandom(0.75, 1),
-                rotation: 360 * getRandom(0, 1),
+                radiusX: konvaCircleRadius * getRandom(0.75, 1),
+                radiusY: konvaCircleRadius * getRandom(0.375, 0.5),
+                rotation: 90 * getRandom(0, 1),
                 fillLinearGradientStartPoint: { x: -(konvaCircleRadius * getRandom(0, 1)), y: -(konvaCircleRadius * getRandom(0, 1)) },
                 fillLinearGradientEndPoint: { x: konvaCircleRadius * getRandom(1, 2), y: konvaCircleRadius * getRandom(1, 2) },
                 fillLinearGradientColorStops: [0, 'blue', 1, 'purple'],
@@ -132,9 +142,9 @@
               :config="{
                 x: konvaCircleRadius,
                 y: konvaHeight / 2,
-                radiusX: konvaCircleRadius * getRandom(0.75, 1),
-                radiusY: konvaCircleRadius * getRandom(0.5, 0.75),
-                rotation: 360 * getRandom(0, 1),
+                radiusX: konvaCircleRadius * getRandom(0.375, 0.5),
+                radiusY: konvaCircleRadius * getRandom(0.75, 1),
+                rotation: 90 * getRandom(0, 1),
                 fillLinearGradientStartPoint: { x: -(konvaCircleRadius * getRandom(0, 1)), y: -(konvaCircleRadius * getRandom(0, 1)) },
                 fillLinearGradientEndPoint: { x: konvaCircleRadius * getRandom(1, 2), y: konvaCircleRadius * getRandom(1, 2) },
                 fillLinearGradientColorStops: [0, 'blue', 1, 'purple'],
@@ -151,9 +161,9 @@
               :config="{
                 x: konvaWidth - konvaCircleRadius,
                 y: konvaHeight / 2,
-                radiusX: konvaCircleRadius * getRandom(0.75, 1),
-                radiusY: konvaCircleRadius * getRandom(0.5, 0.75),
-                rotation: 360 * getRandom(0, 1),
+                radiusX: konvaCircleRadius * getRandom(0.375, 0.5),
+                radiusY: konvaCircleRadius * getRandom(0.75, 1),
+                rotation: 90 * getRandom(0, 1),
                 fillLinearGradientStartPoint: { x: -(konvaCircleRadius * getRandom(0, 1)), y: -(konvaCircleRadius * getRandom(0, 1)) },
                 fillLinearGradientEndPoint: { x: konvaCircleRadius * getRandom(1, 2), y: konvaCircleRadius * getRandom(1, 2) },
                 fillLinearGradientColorStops: [0, 'blue', 1, 'purple'],
@@ -170,9 +180,9 @@
               :config="{
                 x: konvaWidth / 2,
                 y: konvaHeight - konvaCircleRadius,
-                radiusX: konvaCircleRadius * getRandom(0.5, 0.75),
-                radiusY: konvaCircleRadius * getRandom(0.75, 1),
-                rotation: 360 * getRandom(0, 1),
+                radiusX: konvaCircleRadius * getRandom(0.75, 1),
+                radiusY: konvaCircleRadius * getRandom(0.375, 0.5),
+                rotation: 90 * getRandom(0, 1),
                 fillLinearGradientStartPoint: { x: -(konvaCircleRadius * getRandom(0, 1)), y: -(konvaCircleRadius * getRandom(0, 1)) },
                 fillLinearGradientEndPoint: { x: konvaCircleRadius * getRandom(1, 2), y: konvaCircleRadius * getRandom(1, 2) },
                 fillLinearGradientColorStops: [0, 'blue', 1, 'purple'],
@@ -197,8 +207,8 @@ export default {
   data: () => ({
     konvaHeight: 0,
     konvaWidth: 0,
-    bridgeOffColor: "#C4CED4", //silver
-    bridgeOnColor: "#4169E1", // royal blue
+    channelOffColor: 'rgba(196,206,212,1)', //silver
+    channelOnColor: 'rgba(65,105,225,1)', // royal blue
     currentStone: null
   }),
   computed: {
@@ -230,14 +240,52 @@ export default {
       if (!this.currentStone) {
         if (e.target.getClassName() === 'Ellipse') {
           const stone = e.target;
-          console.log(stone.position());
+          // console.log(stone.position());
+          stone.to({
+            duration: 0.5,
+            shadowOffsetX: 15,
+            shadowOffsetY: 15, 
+          });
+          this.currentStone = stone;
         } else {
           // warning to click a starting stone
         }
       } else {
         if (e.target.getClassName() === 'Line') {
           const line = e.target;
-          console.log(line.points());
+          const layer = line.getParent();
+          const linePoints = line.points();
+          // console.log(linePoints);
+          const start = { x: linePoints[0], y: linePoints[1] },
+            end = { x: linePoints[linePoints.length - 2], y: linePoints[linePoints.length - 1] };
+          // console.log(start, end);
+          const currentPosition = this.currentStone.position();
+          // console.log(currentPosition);
+          let nextStone = null;
+          if (currentPosition.x === start.x && currentPosition.y === start.y) {
+            nextStone = layer.findOne(node => node.getClassName('Ellipse') && node.position().x === end.x && node.position().y === end.y);
+          } else if (currentPosition.x === end.x && currentPosition.y === end.y) {
+            nextStone = layer.findOne(node => node.getClassName('Ellipse') && node.position().x === start.x && node.position().y === start.y);
+          }
+          if (nextStone) {
+            // console.log(nextStone.position());
+            this.currentStone.to({
+              duration: 0.25,
+              shadowOffsetX: 5,
+              shadowOffsetY: 5,
+            });
+            nextStone.to({
+              duration: 0.25,
+              shadowOffsetX: 15,
+              shadowOffsetY: 15,
+            });
+            this.currentStone = nextStone;
+            // console.log(line.stroke());
+            line.to({
+              duration: 0.25,
+              stroke: line.stroke() === this.channelOffColor ? this.channelOnColor : this.channelOffColor,
+            });
+          }
         }
       }
     }

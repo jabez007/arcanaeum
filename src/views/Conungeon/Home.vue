@@ -20,13 +20,13 @@
                     <v-list-tile-title>Fifteen Stones</v-list-tile-title>
                 </v-list-tile-content>
             </v-list-tile>
-            <v-list-tile to="/conungeon/bridges"
+            <v-list-tile to="/conungeon/seven"
                          ripple>
                 <v-list-tile-action>
                     <v-icon>device_hub</v-icon>
                 </v-list-tile-action>
                 <v-list-tile-content>
-                    <v-list-tile-title>Mana Bridges</v-list-tile-title>
+                    <v-list-tile-title>Seven Channels</v-list-tile-title>
                 </v-list-tile-content>
             </v-list-tile>
         </v-list>
