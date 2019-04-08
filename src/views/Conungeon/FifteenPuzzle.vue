@@ -6,13 +6,14 @@
     <v-card-text>
       <p class="body-1">
         Unearthed by the Magi of the Archons while reconnoitring the mountains around the Spire,
-        this slate tablet has fifteen mana stones mounted to it in a grid-like fashion.
-        It was quickly discovered that these mana stones could not be removed from the slate by any means known to the Magi,
+        this slate tablet has fifteen chiseled stones mounted to it in a grid-like fashion.
+        It was quickly discovered that these sculpted stones could not be removed from the slate by any means known to the Magi,
         but could be slid along the surface of the tablet to rearrange the order of the lattice structure.
         After much tinkering with this atifact at the Spire,
-        we have yet to ascertain the purpose of the tablet or the consequence of properly aligning the array of mana stones.
-        However, the Magi are all but certain they have discerned the precise distribution required of the mana stones, and labeled them as such.
-        For all of their attempts, the Magi have been able to achieve this pattern except for two stones.
+        we have come to the conclusion that the tablet is a key of some sort activated by properly aligning the array of hewn stones, 
+        but to what this key unlocks we have yet to ascertain.
+        Thus far, the Magi's attempts to achieve the precise distribution required of the fasioned stones have,
+        each time, resulted in all but two stones in their correct place.
       </p>
       <p>That is where you come in...</p>
     </v-card-text>
@@ -29,6 +30,15 @@
                   fillLinearGradientStartPoint: { x: (konvaGroupWidth * 4) * getRandom(1, 2), y: -((konvaGroupWidth * 4) * getRandom(0, 1)) },
                   fillLinearGradientEndPoint: { x: -((konvaGroupWidth * 4) * getRandom(0, 1)), y: (konvaGroupWidth * 4) * getRandom(1, 2) },
                   fillLinearGradientColorStops: [0, '#778899', 1, '#2F4F4F'],  // light slate gray -> dark slate gray
+              }"
+            ></v-rect>
+            <v-rect
+              :config="{
+                  width: konvaGroupWidth * 4,
+                  height: konvaGroupWidth * 4,
+                  cornerRadius: konvaGroupWidth / 3, 
+                  fillPatternImage = backgroundImage,
+                  fillScale: { x: 1.0, y: 1.0 }, 
               }"
             ></v-rect>
           </v-layer>
@@ -92,6 +102,8 @@ export default {
   data: () => ({
     konvaHeight: 0,
     konvaWidth: 0,
+    backgroundImage: null,
+    puzzlePieces: new Array(15).fill(null),
   }),
   computed: {
     konvaConfig() {
@@ -104,6 +116,14 @@ export default {
     konvaGroupWidth() {
       return Math.floor(Math.min(this.konvaWidth, this.konvaHeight) / 4);
     }
+  },
+  created() {
+    const self = this;
+    const backgroundImage = new Image();
+    backgroundImage.src = require('@/assets/Conungeon/FifteenPuzzle/circle of life.png');
+    bacgroundImage.onLoad = () => {
+      self.backgroundImage = backgroundImage;
+    };
   },
   mounted() {
     window.vueFifteen = window.vueFifteen || this;
