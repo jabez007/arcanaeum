@@ -5,15 +5,16 @@
     </v-card-title>
     <v-card-text>
       <p class="body-1">
-        Recovered by one of our Medicum while havesting medicinal plants from the mountains around the Spire,
-        this granite apparatus holds four mana stones with seven channels carved into the granite connecting the stones.
+        Recovered by one of our Medicum while harvesting medicinal plants from the mountains around the Spire, 
+        this granite apparatus holds four mana stones with seven channels carved into the granite connecting the stones. 
         Upon our analysis of the design, 
-        it was understood that one could channel mana into any single stone of the four,
-        then move the mana from stone to stone by way of the channels in the granite.
-        It was witnessed that the movement of mana through a granite channel would thus 'activate' the channel,
-        but moving mana through an already 'active' channel would lead to its 'deactivation'.
-        It is belived the goal of this appliance is for all of the granite channels to be 'activated', but for what end we do not grasp yet.
-        Not that the outcome of this 'activation' matters so long as the path to it remains hidden.
+        it was understood that one could channel mana into any single stone of the four, 
+        then move the mana from stone to stone by way of the channels in the granite. 
+        It was witnessed that the movement of mana through a granite channel would thus 'activate' the channel, 
+        but moving mana through an already 'active' channel would lead to its 'deactivation'. 
+        It is believed the goal of this appliance is for all of the granite channels to be 'activated', 
+        but for what end we do not grasp yet. 
+        Not that the outcome of this 'activation' matters so long as the path to it remains hidden. 
       </p>
       <p>That is where you come in...</p>
     </v-card-text>
