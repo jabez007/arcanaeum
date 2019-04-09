@@ -1,7 +1,7 @@
 <template>
   <v-card width="100%" height="100%" style="overflow: hidden;">
     <v-card-title>
-      <h6 class="title">The Fifteen Mana Stone Tablet</h6>
+      <h6 class="title">The Fifteen Carved Stones Tablet</h6>
     </v-card-title>
     <v-card-text>
       <p class="body-1">
