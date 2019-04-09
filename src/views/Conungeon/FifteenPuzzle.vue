@@ -10,7 +10,7 @@
         It was quickly discovered that these sculpted stones could not be removed from the slate by any means known to the Magi,
         but could be slid along the surface of the tablet to rearrange the order of the lattice structure.
         After much tinkering with this atifact at the Spire,
-        we have come to the conclusion that the tablet is a key of some sort activated by properly aligning the array of hewn stones, 
+        we have come to the conclusion that the tablet is a key of some sort, activated by properly aligning the array of hewn stones,
         but to what this key unlocks we have yet to ascertain.
         Thus far, the Magi's attempts to achieve the precise distribution required of the fasioned stones have,
         each time, resulted in all but two stones in their correct place.
@@ -34,11 +34,11 @@
             ></v-rect>
             <v-rect
               :config="{
-                  width: konvaGroupWidth * 4,
-                  height: konvaGroupWidth * 4,
-                  cornerRadius: konvaGroupWidth * 0.1, 
-                  fillPatternImage = backgroundImage,
-                  fillPatternScale: { x: (konvaGroupWidth * 4) / 1080, y: (konvaGroupWidth * 4) / 1080 }, 
+                width: konvaGroupWidth * 4,
+                height: konvaGroupWidth * 4,
+                cornerRadius: konvaGroupWidth * 0.1,
+                fillPatternImage: backgroundImage,
+                fillPatternScale: { x: (konvaGroupWidth * 4) / 1080, y: (konvaGroupWidth * 4) / 1080 },
               }"
             ></v-rect>
           </v-layer>
@@ -64,11 +64,6 @@
                         fillLinearGradientEndPoint: { x: konvaGroupWidth * getRandom(1, 2), y: konvaGroupWidth * getRandom(1, 2) },
                         fillLinearGradientColorStops: [0, 'blue', 1, 'purple'],
                         opacity: 0.8,
-                        shadowColor: 'black',
-                        shadowBlur: 10,
-                        shadowOffsetX: 5,
-                        shadowOffsetY: 5,
-                        shadowOpacity: 0.6
                     }"
                   ></v-rect>
                   <v-rect
@@ -77,7 +72,7 @@
                         width: konvaGroupWidth,
                         height: konvaGroupWidth,
                         cornerRadius: konvaGroupWidth * 0.2,
-                        fillPatternImage = puzzlePieces[4 * (j - 1) + i],
+                        fillPatternImage: getKonvaRectImage(i, j),
                         fillPatternScale: { x: konvaGroupWidth / (1080 / 4), y: konvaGroupWidth / (1080 / 4) }
                     }"
                   ></v-rect>
@@ -98,7 +93,7 @@ export default {
     konvaHeight: 0,
     konvaWidth: 0,
     backgroundImage: null,
-    puzzlePieces: new Array(16).fill(null),
+    puzzlePieces: new Array(16).fill(null)
   }),
   computed: {
     konvaConfig() {
@@ -115,17 +110,17 @@ export default {
   created() {
     const self = this;
     const backgroundImage = new Image();
-    backgroundImage.src = require('@/assets/Conungeon/FifteenPuzzle/circle of life.png');
-    bacgroundImage.onLoad = () => {
+    backgroundImage.onload = function () {  // assign the onload event before assining the src.
       self.backgroundImage = backgroundImage;
     };
+    backgroundImage.src = require("@/assets/Conungeon/FifteenPuzzle/circle of life.png");
     for (let j = 0; j < 4; j += 1) {
       for (let i = 0; i < 4; i += 1) {
         const image = new Image();
-        image.src = require(`@/assets/slice_${j}_${i}.png`);
-        image.onLoad = () => {
-          self.puzzlePieces[(4 * j) + i] = image;
+        image.onload = () => {  // assign the onload event before assining the src.
+          self.puzzlePieces.splice([4 * j + i], 1, image);
         };
+        image.src = require(`@/assets/Conungeon/FifteenPuzzle/slice_${j}_${i}.png`);
       }
     }
   },
@@ -135,9 +130,9 @@ export default {
     this.konvaHeight = this.$refs.konva.clientHeight;
   },
   beforeDestroy() {
-      if (window.vueFifteen === this) {
-          window.vueFifteen = null;
-      }
+    if (window.vueFifteen === this) {
+      window.vueFifteen = null;
+    }
   },
   methods: {
     getKonvaNodeRef(i, j) {
@@ -157,15 +152,15 @@ export default {
     getRandom(min, max) {
       return Math.random() * (max - min) + min;
     },
-    getKonvaTextText(i, j) {
-      const key = 4 * (j - 1) + i;
-      if (key != 16) {
-        if (key === 14) {
-          return "15";
-        } else if (key === 15) {
-          return "14";
+    getKonvaRectImage(i, j) {
+      const key = 4 * (j - 1) + (i - 1);
+      if (key != 15) {
+        if (key === 13) {
+          return this.puzzlePieces[14];
+        } else if (key === 14) {
+          return this.puzzlePieces[13];
         } else {
-          return key;
+          return this.puzzlePieces[key];
         }
       } else {
         return "";
@@ -173,13 +168,21 @@ export default {
     },
     handleClick(e) {
       const group = e.target.getParent();
-      const groupX = this.konvaGroupWidth * Math.round(group.position().x / this.konvaGroupWidth),
-        groupY = this.konvaGroupWidth * Math.round(group.position().y / this.konvaGroupWidth);
+      const groupX =
+          this.konvaGroupWidth *
+          Math.round(group.position().x / this.konvaGroupWidth),
+        groupY =
+          this.konvaGroupWidth *
+          Math.round(group.position().y / this.konvaGroupWidth);
       // console.log(groupX, groupY);
       // find the empty group
       const empty = this.$refs["empty"][0].getNode();
-      const emptyX = this.konvaGroupWidth * Math.round(empty.position().x / this.konvaGroupWidth),
-        emptyY = this.konvaGroupWidth * Math.round(empty.position().y / this.konvaGroupWidth);
+      const emptyX =
+          this.konvaGroupWidth *
+          Math.round(empty.position().x / this.konvaGroupWidth),
+        emptyY =
+          this.konvaGroupWidth *
+          Math.round(empty.position().y / this.konvaGroupWidth);
       // console.log(emptyX, emptyY);
       // is the empty group next to the clicked group?
       const xDiff = groupX - emptyX,
