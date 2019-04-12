@@ -11,13 +11,13 @@
                     <v-list-tile-title>Home</v-list-tile-title>
                 </v-list-tile-content>
             </v-list-tile>
-            <v-list-tile to="/conungeon/fifteen"
+            <v-list-tile to="/conungeon/three"
                          ripple>
                 <v-list-tile-action>
-                    <v-icon>tablet</v-icon>
+                    <v-icon>local_drink</v-icon>
                 </v-list-tile-action>
                 <v-list-tile-content>
-                    <v-list-tile-title>Fifteen Stones</v-list-tile-title>
+                    <v-list-tile-title>Three of Cups</v-list-tile-title>
                 </v-list-tile-content>
             </v-list-tile>
             <v-list-tile to="/conungeon/seven"
@@ -27,6 +27,15 @@
                 </v-list-tile-action>
                 <v-list-tile-content>
                     <v-list-tile-title>Seven Channels</v-list-tile-title>
+                </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile to="/conungeon/fifteen"
+                         ripple>
+                <v-list-tile-action>
+                    <v-icon>tablet</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                    <v-list-tile-title>Fifteen Stones</v-list-tile-title>
                 </v-list-tile-content>
             </v-list-tile>
         </v-list>

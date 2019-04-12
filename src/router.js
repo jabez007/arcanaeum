@@ -89,6 +89,10 @@ export default new Router({
           path: 'seven',
           component: () => import('./views/Conungeon/SevenBridges.vue'),
         },
+        {
+          path: 'three',
+          component: () => import('./views/Conungeon/ThreeCups.vue'),
+        },
       ],
     },
     {
