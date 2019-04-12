@@ -106,9 +106,6 @@ export default {
     seedLength() {
       return SEEDLENGTH;
     },
-    oauth() {
-      return twitter.oauth;
-    },
   },
   async created() {
     this.model = await tf.loadLayersModel('https://raw.githubusercontent.com/jabez007/arcanaeum/master/weights/model.json');
