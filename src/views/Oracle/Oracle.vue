@@ -20,10 +20,12 @@
     </v-card-text>
     <v-card>
       <v-card-title>
-        <v-text-field :label="`Seed text (${(seed || '').length} / 17)`"
+        <v-text-field :label="`Seed text (${(seed || '').length} / ${seedLength})`"
                       v-model.trim="seed"
+                      :maxlength="seedLength"
                       :disabled="!model || (charVectors || []).length < 38"
-                      :readonly="(seed || '').length >= 17"
+                      :readonly="running"
+                      @keypress.enter="generateText(seed)"
                       clearable
                       required>
         </v-text-field>
@@ -55,7 +57,7 @@
                     prepend-inner-icon="refresh"
                     @click:prepend-inner="generateText(seed)"
                     append-icon="share"
-                    @click:append=""
+                    @click:append="shareWisdom"
                     readonly>
         </v-textarea>
       </v-card-text>
@@ -65,6 +67,9 @@
 
 <script>
 import * as tf from '@tensorflow/tfjs';
+import { Twitter } from 'twitter-node-client';
+
+const SEEDLENGTH = 17;
 
 async function sample(probs, temperature) {
   // https://github.com/tensorflow/tfjs-examples/blob/f979101509211fc8e1485ba527a9cc7bef3237d3/lstm-text-generation/model.js
@@ -77,6 +82,15 @@ async function sample(probs, temperature) {
   });
 }
 
+const twitter = new Twitter(require('@/assets/Oracle/twitter_config.json'));
+
+const onError = (err, response, body) => {
+  console.log('ERROR [%s]', err);
+};
+const onSuccess = (data) => {
+  console.log('Data [%s]', data);
+};
+
 export default {
   name: 'OracleAbout',
   data: () => ({
@@ -88,6 +102,14 @@ export default {
     running: false,
     generatedText: '',
   }),
+  computed: {
+    seedLength() {
+      return SEEDLENGTH;
+    },
+    oauth() {
+      return twitter.oauth;
+    },
+  },
   async created() {
     this.model = await tf.loadLayersModel('https://raw.githubusercontent.com/jabez007/arcanaeum/master/weights/model.json');
     const char2vec = require('@/assets/Oracle/char2vec.json');
@@ -97,9 +119,9 @@ export default {
     async generateText(seed) {
       const self = this;
       seed = (seed || '').replace(/[^0-9a-z_ ]/g, '');
-      if (seed.length >= 17 && seed.length < this.maxLength) {
+      if (seed.length >= this.seedLength && seed.length < this.maxLength) {
         this.running = true;
-        const input = seed.substring(seed.length - 17).split('').map(char => self.charVectors.find(cv => cv.char === char).vec);
+        const input = seed.substring(seed.length - this.seedLength).split('').map(char => self.charVectors.find(cv => cv.char === char).vec);
         const probsArray = await this.model.predict(tf.tensor3d([input]));
         const pred = await sample(probsArray, this.temperature);
         const predChar = this.charVectors.find(cv => cv.vec[pred]).char;
@@ -108,6 +130,16 @@ export default {
       this.running = false;
       this.generatedText = seed;
       return seed;
+    },
+    shareWisdom() {
+      const self = this;
+      if (!this.running) {
+        if (this.generatedText.length >= this.maxLength) {
+          twitter.postTweet({
+            status: self.generatedText.substring(self.generatedText.length - this.maxLength),
+          }, onError, onSuccess);
+        }
+      }
     },
   },
 };

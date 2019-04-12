@@ -19,3 +19,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+# twitter config
+src/assets/Oracle/twitter_config.json
