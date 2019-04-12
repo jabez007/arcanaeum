@@ -73,53 +73,53 @@
 </template>
 
 <script>
-import Skulpt from "skulpt";
-import VueMarkdown from "vue-markdown";
+import Skulpt from 'skulpt';
+import VueMarkdown from 'vue-markdown';
 // require CodeMirror component
-import { codemirror } from "vue-codemirror";
+import { codemirror } from 'vue-codemirror';
 // require CodeMirror styles
-import "codemirror/lib/codemirror.css";
+import 'codemirror/lib/codemirror.css';
 // require other CodeMirror resources
 // language
-import "codemirror/mode/python/python.js";
+import 'codemirror/mode/python/python';
 // theme css
-import "codemirror/theme/cobalt.css";
+import 'codemirror/theme/cobalt.css';
 // require active-line.js
-import "codemirror/addon/selection/active-line.js";
+import 'codemirror/addon/selection/active-line';
 
 function decodeEntities(encodedString) {
-  var textArea = document.createElement("textarea");
+  const textArea = document.createElement('textarea');
   textArea.innerHTML = encodedString;
   return textArea.value;
 }
 
 export default {
-  name: "QuotidianSchemer",
+  name: 'QuotidianSchemer',
   components: {
     VueMarkdown,
     codemirror,
-    AppLayout: () => import("@/components/AppLayout.vue")
+    AppLayout: () => import('@/components/AppLayout.vue'),
   },
   data: () => ({
-    errorMessage: "",
+    errorMessage: '',
     challenges: [
       {
         id: 1,
-        name: "Easy",
-        children: []
+        name: 'Easy',
+        children: [],
       },
       {
         id: 2,
-        name: "Intermediate",
-        children: []
+        name: 'Intermediate',
+        children: [],
       },
       {
         id: 3,
-        name: "Hard",
-        children: []
-      }
+        name: 'Hard',
+        children: [],
+      },
     ],
-    corsError: "",
+    corsError: '',
     open: [],
     active: [],
     cmOptions: {
@@ -128,10 +128,10 @@ export default {
       styleActiveLine: true,
       lineNumbers: true,
       // line: true,
-      mode: "text/x-python",
-      theme: "cobalt"
+      mode: 'text/x-python',
+      theme: 'cobalt',
       // keyMap: "emacs",
-    }
+    },
   }),
   computed: {
     selected() {
@@ -140,15 +140,15 @@ export default {
       return this.challenges
         .find(lvl => lvl.children.find(chlng => chlng.id === id)) // find the level this challenge is from
         .children.find(chlng => chlng.id === id); // then find the challenge itself
-    }
+    },
   },
   created() {
     const self = this;
-    fetch("https://www.reddit.com/r/dailyprogrammer/new.json?limit=1000")
+    fetch('https://www.reddit.com/r/dailyprogrammer/new.json?limit=1000')
       .then(response => response.json())
-      .then(result => {
+      .then((result) => {
         const re = /(Easy|Intermediate|Hard)/gi;
-        result.data.children.forEach(child => {
+        result.data.children.forEach((child) => {
           const challengeLevel = child.data.title.match(re);
           if (challengeLevel) {
             self.challenges
@@ -157,60 +157,58 @@ export default {
                 id: child.data.id,
                 name: decodeEntities(
                   child.data.title
-                    .substring(child.data.title.lastIndexOf("]") + 1)
-                    .trim()
+                    .substring(child.data.title.lastIndexOf(']') + 1)
+                    .trim(),
                 ),
                 description: decodeEntities(child.data.selftext),
-                code: "",
-                output: ""
+                code: '',
+                output: '',
               });
           }
         });
       })
-      .catch(err => {
+      .catch((err) => {
         self.corsError = err.toString();
       });
-    Skulpt.pre = "output";
+    Skulpt.pre = 'output';
     Skulpt.configure({
-      output: text => {
+      output: (text) => {
         if (self.selected) {
           self.selected.output += text;
         }
       },
-      read: x => {
+      read: (x) => {
         if (
-          Skulpt.builtinFiles === undefined ||
-          Skulpt.builtinFiles["files"][x] === undefined
+          Skulpt.builtinFiles === undefined
+          || Skulpt.builtinFiles.files[x] === undefined
         ) {
-          throw "File not found: '" + x + "'";
+          throw `File not found: '${x}'`;
         }
-        return Skulpt.builtinFiles["files"][x];
-      }
+        return Skulpt.builtinFiles.files[x];
+      },
     });
-    (Skulpt.TurtleGraphics || (Skulpt.TurtleGraphics = {})).target = "canvas";
+    (Skulpt.TurtleGraphics || (Skulpt.TurtleGraphics = {})).target = 'canvas';
   },
   methods: {
     runSkulpt() {
       const self = this;
       if (self.selected) {
-        self.selected.output = "";
+        self.selected.output = '';
         Skulpt.misceval
-          .asyncToPromise(() =>
-            Skulpt.importMainWithBody(
-              "<stdin>",
-              false,
-              self.selected.code,
-              true
-            )
-          )
-          .then(mod => {
+          .asyncToPromise(() => Skulpt.importMainWithBody(
+            '<stdin>',
+            false,
+            self.selected.code,
+            true,
+          ))
+          .then((mod) => {
             //
           })
-          .catch(err => {
+          .catch((err) => {
             self.errorMessage = err.toString();
           });
       }
-    }
-  }
+    },
+  },
 };
 </script>

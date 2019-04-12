@@ -1,17 +1,17 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
     {
       path: '/',
       name: 'home',
-      component: () => import('./views/Home.vue')
+      component: () => import('./views/Home.vue'),
     },
     {
-      path:'/cryptotron',
+      path: '/cryptotron',
       name: 'cryptotron',
       component: () => import('./views/CryptoTron/Home.vue'),
       children: [
@@ -50,7 +50,7 @@ export default new Router({
       ],
     },
     {
-      path:'/conservatoire',
+      path: '/conservatoire',
       name: 'conservatoire',
       component: () => import('./views/Conservatoire/Home.vue'),
       children: [
@@ -73,7 +73,7 @@ export default new Router({
       ],
     },
     {
-      path:'/conungeon',
+      path: '/conungeon',
       name: 'conungeon',
       component: () => import('./views/Conungeon/Home.vue'),
       children: [
@@ -92,7 +92,7 @@ export default new Router({
       ],
     },
     {
-      path:'/oracle',
+      path: '/oracle',
       name: 'oracle',
       component: () => import('./views/Oracle/Home.vue'),
       children: [

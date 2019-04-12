@@ -9,14 +9,14 @@
             <v-card-text>
                 <p>
                     The Baconian cipher is a method of steganography (a method of hiding a secret message as opposed to just a cipher) devised by Francis Bacon in 1605.
-                    The Baconian cipher can also be thought of as a substitution cipher in which each letter is replaced by a sequence of 5 characters. 
+                    The Baconian cipher can also be thought of as a substitution cipher in which each letter is replaced by a sequence of 5 characters.
                     In the original cipher, these were sequences of 'A's and 'B's (e.g. the letter 'D' was replaced by 'aaabb', the letter 'O' was replaced by 'abbba' etc).
-                    The steganography aspect involves preparing a false message with the same number of letters as all of the As and Bs in the real, secret message, and choosing two typefaces, one to represent As and the other Bs. 
+                    The steganography aspect involves preparing a false message with the same number of letters as all of the As and Bs in the real, secret message, and choosing two typefaces, one to represent As and the other Bs.
                     Then each letter of the false message must be presented in the appropriate typeface, according to whether it stands for an A or a B.
                 </p>
                 <p>
-                    This cipher offers very little communication security, as it is a substitution cipher. 
-                    As such all the methods used to cryptanalyse substitution ciphers can be used to break Baconian ciphers. 
+                    This cipher offers very little communication security, as it is a substitution cipher.
+                    As such all the methods used to cryptanalyse substitution ciphers can be used to break Baconian ciphers.
                     The main advantage of the cipher is that it allows hiding the fact that a secret message has been sent at all.
                 </p>
             </v-card-text>
@@ -92,123 +92,123 @@
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 
 export default {
-    components: {
-        Cipher,
+  components: {
+    Cipher,
+  },
+  data: () => ({
+    encoding: {
+      A: 'aaaaa',
+      B: 'aaaab',
+      C: 'aaaba',
+      D: 'aaabb',
+      E: 'aabaa',
+      F: 'aabab',
+      G: 'aabba',
+      H: 'aabbb',
+      I: 'abaaa',
+      J: 'abaab',
+      K: 'ababa',
+      L: 'ababb',
+      M: 'abbaa',
+      N: 'abbab',
+      O: 'abbba',
+      P: 'abbbb',
+      Q: 'baaaa',
+      R: 'baaab',
+      S: 'baaba',
+      T: 'baabb',
+      U: 'babaa',
+      V: 'babab',
+      W: 'babba',
+      X: 'babbb',
+      Y: 'bbaaa',
+      Z: 'bbaab',
     },
-    data: () => ({
-        encoding: {
-            A: 'aaaaa',
-            B: 'aaaab',
-            C: 'aaaba',
-            D: 'aaabb',
-            E: 'aabaa',
-            F: 'aabab',
-            G: 'aabba',
-            H: 'aabbb',
-            I: 'abaaa',
-            J: 'abaab',
-            K: 'ababa',
-            L: 'ababb',
-            M: 'abbaa',
-            N: 'abbab',
-            O: 'abbba',
-            P: 'abbbb',
-            Q: 'baaaa',
-            R: 'baaab',
-            S: 'baaba',
-            T: 'baabb', 
-            U: 'babaa',
-            V: 'babab',
-            W: 'babba',
-            X: 'babbb',
-            Y: 'bbaaa',
-            Z: 'bbaab'
-        },
-        message: '',
-        rules: {
-            required: value => !!value || 'this item is required',
-        },
-        keyIsValid: false,
-    }),
-    methods: {
-        encrypt(plaintext, key) {
-            const plainText = plaintext.toUpperCase();
-            let cipherText = '';
-            for (const char of plainText) {
-                if (key.encoding[char]) {
-                    cipherText += key.encoding[char];
-                } else {
-                    cipherText += char;
-                }
-            }
-            return cipherText.replace(/[^ab]/g, '');
-        },
-        enstegano(encoding, message) {
-            const re = /[a-zA-Z]/;
-            let steganograph = '';
-            let i = 0;
-            for (const char of message) {
-                if (re.test(char)) {
-                    if (encoding[i] === 'a') {
-                        steganograph += char.toLowerCase();
-                        i += 1;
-                    } else if (encoding[i] === 'b') {
-                        steganograph += char.toUpperCase();
-                        i += 1;
-                    }
-                } else {
-                    steganograph += char;
-                }
-            }
-            return steganograph;
-        },
-        decrypt(ciphertext, key) {
-            const getUniqueCharacters = (str) => {
-                str = str || '';
-                let unique = '';
-                for (let i = 0; i < str.length; i += 1) {
-                    if (i === str.lastIndexOf(str[i])) {
-                        unique += str[i];
-                    }
-                }
-                return unique;
-            };
-            const unique = getUniqueCharacters((ciphertext || '').toLowerCase().replace(/[^a-z0-9]/g, ''));
-            if (unique.length === 2) {  // we have just the encoding 
-                const cipherText = ciphertext.toLowerCase();
-                const encoding = Object.keys(key.encoding).map(char => ({
-                    char,
-                    encoding: key.encoding[char],
-                }));
-                let block = '';
-                let plainText = '';
-                for (const char of cipherText) {
-                    if (char === 'a' || char === 'b') {
-                        block += char;
-                        if (block.length === 5) {
-                            plainText += encoding.find(e => e.encoding === block).char;
-                            block = '';
-                        }
-                    } else {
-                        plainText += char;
-                    }
-                }
-                return plainText;
-            } else if (unique.length > 0) {  // or we have the steganograph
-                const lowerCase = /[a-z]/;
-                const upperCase = /[A-Z]/;
-                let encoding = '';
-                for (const char of ciphertext) {
-                    if (lowerCase.test(char)) {
-                        encoding += 'a';
-                    } else if (upperCase.test(char)) {
-                        encoding += 'b';
-                    }
-                }
-                return this.decrypt(encoding, key);
-            }
-            return '';
-        },
+    message: '',
+    rules: {
+      required: value => !!value || 'this item is required',
     },
+    keyIsValid: false,
+  }),
+  methods: {
+    encrypt(plaintext, key) {
+      const plainText = plaintext.toUpperCase();
+      let cipherText = '';
+      for (const char of plainText) {
+        if (key.encoding[char]) {
+          cipherText += key.encoding[char];
+        } else {
+          cipherText += char;
+        }
+      }
+      return cipherText.replace(/[^ab]/g, '');
+    },
+    enstegano(encoding, message) {
+      const re = /[a-zA-Z]/;
+      let steganograph = '';
+      let i = 0;
+      for (const char of message) {
+        if (re.test(char)) {
+          if (encoding[i] === 'a') {
+            steganograph += char.toLowerCase();
+            i += 1;
+          } else if (encoding[i] === 'b') {
+            steganograph += char.toUpperCase();
+            i += 1;
+          }
+        } else {
+          steganograph += char;
+        }
+      }
+      return steganograph;
+    },
+    decrypt(ciphertext, key) {
+      const getUniqueCharacters = (str) => {
+        str = str || '';
+        let unique = '';
+        for (let i = 0; i < str.length; i += 1) {
+          if (i === str.lastIndexOf(str[i])) {
+            unique += str[i];
+          }
+        }
+        return unique;
+      };
+      const unique = getUniqueCharacters((ciphertext || '').toLowerCase().replace(/[^a-z0-9]/g, ''));
+      if (unique.length === 2) { // we have just the encoding
+        const cipherText = ciphertext.toLowerCase();
+        const encoding = Object.keys(key.encoding).map(char => ({
+          char,
+          encoding: key.encoding[char],
+        }));
+        let block = '';
+        let plainText = '';
+        for (const char of cipherText) {
+          if (char === 'a' || char === 'b') {
+            block += char;
+            if (block.length === 5) {
+              plainText += encoding.find(e => e.encoding === block).char;
+              block = '';
+            }
+          } else {
+            plainText += char;
+          }
+        }
+        return plainText;
+      } if (unique.length > 0) { // or we have the steganograph
+        const lowerCase = /[a-z]/;
+        const upperCase = /[A-Z]/;
+        let encoding = '';
+        for (const char of ciphertext) {
+          if (lowerCase.test(char)) {
+            encoding += 'a';
+          } else if (upperCase.test(char)) {
+            encoding += 'b';
+          }
+        }
+        return this.decrypt(encoding, key);
+      }
+      return '';
+    },
+  },
 };
 </script>

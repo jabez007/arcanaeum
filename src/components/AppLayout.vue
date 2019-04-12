@@ -53,29 +53,28 @@
 
 <script>
 export default {
-    name: 'AppLayout',
-    data: () => ({
-        drawer: true,
-        transitionName: 'fade-transition',
-    }),
-    computed: {
-        navigationDrawer() {
-            return !!this.$slots.navigationDrawerList;
-        }
+  name: 'AppLayout',
+  data: () => ({
+    drawer: true,
+    transitionName: 'fade-transition',
+  }),
+  computed: {
+    navigationDrawer() {
+      return !!this.$slots.navigationDrawerList;
     },
-    watch: {
-        $route(to, from) {
-            const toDepth = to.path.split('/').length;
-            const fromDepth = from.path.split('/').length;
-            if (toDepth < fromDepth) { // moving up
-                this.transitionName = 'slide-y-reverse-transition';
-            } else if (toDepth > fromDepth) { // moving down
-                this.transitionName = 'slide-y-transition';
-            } else { // moving laterally
-                this.transitionName = 'slide-x-transition';
-            }
-        },
+  },
+  watch: {
+    $route(to, from) {
+      const toDepth = to.path.split('/').length;
+      const fromDepth = from.path.split('/').length;
+      if (toDepth < fromDepth) { // moving up
+        this.transitionName = 'slide-y-reverse-transition';
+      } else if (toDepth > fromDepth) { // moving down
+        this.transitionName = 'slide-y-transition';
+      } else { // moving laterally
+        this.transitionName = 'slide-x-transition';
+      }
     },
+  },
 };
 </script>
-

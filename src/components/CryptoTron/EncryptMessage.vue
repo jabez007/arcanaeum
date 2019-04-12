@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <slot name="plainText" 
+      <slot name="plainText"
             v-bind="{ plainText }">
         <v-textarea label="Plain Text"
                     v-model="plainText"
@@ -9,7 +9,7 @@
                     clearable>
         </v-textarea>
       </slot>
-      <slot name="cipherText" 
+      <slot name="cipherText"
             v-bind="{ cipherText, copyToClipboard }">
         <v-textarea label="Cipher Text"
                     v-model="cipherText"
@@ -43,7 +43,7 @@ export default {
   computed: {
     cipherText() {
       return this.encryptAlgorithm(this.plainText, this.cipherKey);
-    }
+    },
   },
   methods: {
     copyToClipboard(txt) {

@@ -28,15 +28,15 @@
                           :cipherKey="cipherKey"
                           @success="onSuccess"
                           @error="onError">
-            <template slot="plainText" 
+            <template slot="plainText"
                       slot-scope="scope">
-              <slot name="encrypt-plainText" 
+              <slot name="encrypt-plainText"
                     v-bind="scope">
-              </slot> 
-            </template> 
-            <template slot="cipherText" 
+              </slot>
+            </template>
+            <template slot="cipherText"
                       slot-scope="scope">
-              <slot name="encrypt-cipherText" 
+              <slot name="encrypt-cipherText"
                     v-bind="scope">
               </slot>
             </template>
@@ -48,17 +48,17 @@
                           :cipherKey="cipherKey"
                           @success="onSuccess"
                           @error="onError">
-            <template slot="cipherText" 
+            <template slot="cipherText"
                       slot-scope="scope">
-              <slot name="decrypt-cipherText" 
+              <slot name="decrypt-cipherText"
                     v-bind="scope">
               </slot>
             </template>
-            <template slot="plainText" 
+            <template slot="plainText"
                       slot-scope="scope">
-              <slot name="decrypt-plainText" 
+              <slot name="decrypt-plainText"
                     v-bind="scope">
-              </slot> 
+              </slot>
             </template>
           </DecryptMessage>
         </v-tab-item>

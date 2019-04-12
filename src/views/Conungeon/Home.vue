@@ -35,9 +35,9 @@
 
 <script>
 export default {
-    name: 'Conungeon',
-    components: {
-        AppLayout: () => import('@/components/AppLayout.vue'),
-    },
+  name: 'Conungeon',
+  components: {
+    AppLayout: () => import('@/components/AppLayout.vue'),
+  },
 };
 </script>

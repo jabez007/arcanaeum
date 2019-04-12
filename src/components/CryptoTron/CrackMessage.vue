@@ -44,7 +44,7 @@
                     readonly>
         </v-textarea>
       </v-card-text>
-    </v-slide-y-reverse-transition>    
+    </v-slide-y-reverse-transition>
   </v-card>
 </template>
 

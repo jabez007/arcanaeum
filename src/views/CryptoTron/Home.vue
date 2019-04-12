@@ -107,9 +107,9 @@
 
 <script>
 export default {
-    name: 'CryptoTron',
-    components: {
-        AppLayout: () => import('@/components/AppLayout.vue'),
-    },
+  name: 'CryptoTron',
+  components: {
+    AppLayout: () => import('@/components/AppLayout.vue'),
+  },
 };
 </script>

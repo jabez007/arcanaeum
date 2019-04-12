@@ -7,7 +7,7 @@
            :fogDensity="0.01"
            v-model="scene">
       <Camera v-model="camera"
-              type="arcRotate" 
+              type="arcRotate"
               :radius="20">
       </Camera>
       <HemisphericLight diffuse="#512da8"></HemisphericLight>
@@ -26,7 +26,7 @@
     </Scene>
     <div ref="tooltip"
          id="tooltip">
-    </div>    
+    </div>
   </div>
 </template>
 
@@ -62,7 +62,7 @@ const BOXES = [
     name: '',
     pos: [0, 0, -4],
   },
-]; 
+];
 
 export default {
   name: 'home',
@@ -78,7 +78,7 @@ export default {
   computed: {
     boxes() {
       return BOXES;
-    }
+    },
   },
   watch: {
     scene() {
@@ -122,7 +122,7 @@ export default {
         const box = this.pickMesh();
         if (box.name) {
           this.$refs.tooltip.style.background = '#D1C4E9';
-          this.$refs.tooltip.style.border = '1px solid #673ab7'
+          this.$refs.tooltip.style.border = '1px solid #673ab7';
           this.$refs.tooltip.innerText = box.name;
         } else {
           this.$refs.tooltip.style.background = 'transparent';
@@ -137,7 +137,7 @@ export default {
         this.$router.replace(box.path);
       }
     },
-  }
+  },
 };
 </script>
 

@@ -26,7 +26,7 @@
               :config="{
                   width: konvaGroupWidth * 4,
                   height: konvaGroupWidth * 4,
-                  cornerRadius: konvaGroupWidth * 0.1, 
+                  cornerRadius: konvaGroupWidth * 0.1,
                   fillLinearGradientStartPoint: { x: (konvaGroupWidth * 4) * getRandom(1, 2), y: -((konvaGroupWidth * 4) * getRandom(0, 1)) },
                   fillLinearGradientEndPoint: { x: -((konvaGroupWidth * 4) * getRandom(0, 1)), y: (konvaGroupWidth * 4) * getRandom(1, 2) },
                   fillLinearGradientColorStops: [0, '#778899', 1, '#2F4F4F'],  // light slate gray -> dark slate gray
@@ -55,7 +55,7 @@
                   @click="handleClick"
                 >
                   <v-rect
-                    v-if="4 * (j - 1) + i != 16"
+                    v-if="4 * (j - 1) + i !== 16"
                     :config="{
                         width: konvaGroupWidth,
                         height: konvaGroupWidth,
@@ -67,7 +67,7 @@
                     }"
                   ></v-rect>
                   <v-rect
-                    v-if="4 * (j - 1) + i != 16"
+                    v-if="4 * (j - 1) + i !== 16"
                     :config="{
                         width: konvaGroupWidth,
                         height: konvaGroupWidth,
@@ -88,36 +88,36 @@
 
 <script>
 export default {
-  name: "FifteenPuzzle",
+  name: 'FifteenPuzzle',
   data: () => ({
     konvaHeight: 0,
     konvaWidth: 0,
     backgroundImage: null,
-    puzzlePieces: new Array(16).fill(null)
+    puzzlePieces: new Array(16).fill(null),
   }),
   computed: {
     konvaConfig() {
       const self = this;
       return {
         width: Math.min(self.konvaWidth, self.konvaHeight),
-        height: Math.min(self.konvaWidth, self.konvaHeight)
+        height: Math.min(self.konvaWidth, self.konvaHeight),
       };
     },
     konvaGroupWidth() {
       return Math.floor(Math.min(this.konvaWidth, this.konvaHeight) / 4);
-    }
+    },
   },
   created() {
     const self = this;
     const backgroundImage = new Image();
-    backgroundImage.onload = function () {  // assign the onload event before assining the src.
+    backgroundImage.onload = () => { // assign the onload event before assining the src.
       self.backgroundImage = backgroundImage;
     };
-    backgroundImage.src = require("@/assets/Conungeon/FifteenPuzzle/circle of life.png");
+    backgroundImage.src = require('@/assets/Conungeon/FifteenPuzzle/circle of life.png');
     for (let j = 0; j < 4; j += 1) {
       for (let i = 0; i < 4; i += 1) {
         const image = new Image();
-        image.onload = () => {  // assign the onload event before assining the src.
+        image.onload = () => { // assign the onload event before assining the src.
           self.puzzlePieces.splice([4 * j + i], 1, image);
         };
         image.src = require(`@/assets/Conungeon/FifteenPuzzle/slice_${j}_${i}.png`);
@@ -137,83 +137,75 @@ export default {
   methods: {
     getKonvaNodeRef(i, j) {
       const key = 4 * (j - 1) + i;
-      if (key != 16) {
+      if (key !== 16) {
         if (key === 14) {
-          return "node15";
-        } else if (key === 15) {
-          return "node14";
-        } else {
-          return `node${key}`;
+          return 'node15';
+        } if (key === 15) {
+          return 'node14';
         }
-      } else {
-        return "empty";
+        return `node${key}`;
       }
+      return 'empty';
     },
     getRandom(min, max) {
       return Math.random() * (max - min) + min;
     },
     getKonvaRectImage(i, j) {
       const key = 4 * (j - 1) + (i - 1);
-      if (key != 15) {
+      if (key !== 15) {
         if (key === 13) {
           return this.puzzlePieces[14];
-        } else if (key === 14) {
+        } if (key === 14) {
           return this.puzzlePieces[13];
-        } else {
-          return this.puzzlePieces[key];
         }
-      } else {
-        return "";
+        return this.puzzlePieces[key];
       }
+      return '';
     },
     handleClick(e) {
       const group = e.target.getParent();
-      const groupX =
-          this.konvaGroupWidth *
-          Math.round(group.position().x / this.konvaGroupWidth),
-        groupY =
-          this.konvaGroupWidth *
-          Math.round(group.position().y / this.konvaGroupWidth);
+      const groupX = this.konvaGroupWidth
+          * Math.round(group.position().x / this.konvaGroupWidth);
+      const groupY = this.konvaGroupWidth
+          * Math.round(group.position().y / this.konvaGroupWidth);
       // console.log(groupX, groupY);
       // find the empty group
-      const empty = this.$refs["empty"][0].getNode();
-      const emptyX =
-          this.konvaGroupWidth *
-          Math.round(empty.position().x / this.konvaGroupWidth),
-        emptyY =
-          this.konvaGroupWidth *
-          Math.round(empty.position().y / this.konvaGroupWidth);
+      const empty = this.$refs.empty[0].getNode();
+      const emptyX = this.konvaGroupWidth
+          * Math.round(empty.position().x / this.konvaGroupWidth);
+      const emptyY = this.konvaGroupWidth
+          * Math.round(empty.position().y / this.konvaGroupWidth);
       // console.log(emptyX, emptyY);
       // is the empty group next to the clicked group?
-      const xDiff = groupX - emptyX,
-        yDiff = groupY - emptyY;
+      const xDiff = groupX - emptyX;
+      const yDiff = groupY - emptyY;
       //
       if (
-        Math.abs(xDiff) === this.konvaGroupWidth ||
-        Math.abs(yDiff) === this.konvaGroupWidth
+        Math.abs(xDiff) === this.konvaGroupWidth
+        || Math.abs(yDiff) === this.konvaGroupWidth
       ) {
         // ignore diagonals
         if (
           !(
-            Math.abs(xDiff) >= this.konvaGroupWidth &&
-            Math.abs(yDiff) >= this.konvaGroupWidth
+            Math.abs(xDiff) >= this.konvaGroupWidth
+            && Math.abs(yDiff) >= this.konvaGroupWidth
           )
         ) {
           group.to({
             duration: 0.5,
             x: groupX - xDiff,
-            y: groupY - yDiff
+            y: groupY - yDiff,
           });
           empty.to({
             duration: 0.5,
             x: emptyX + xDiff,
-            y: emptyY + yDiff
+            y: emptyY + yDiff,
           });
           // const layer = group.getParent();
           // layer.draw();
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>

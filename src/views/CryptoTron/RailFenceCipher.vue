@@ -238,12 +238,11 @@ export default {
       return '';
     },
     possibleKeys(key, ciphertext) {
-      if (!key) {  // first pass is '' 
+      if (!key) { // first pass is ''
         return { rails: 1 };
       }
-      if (key.rails >= ciphertext.length)
-      {
-        return;
+      if (key.rails >= ciphertext.length) {
+        return null;
       }
       return { rails: key.rails + 1 };
     },
@@ -255,8 +254,8 @@ export default {
       }
     },
     onUpdateKey(newKey) {
-        this.rails = newKey.rails;
-    }
+      this.rails = newKey.rails;
+    },
   },
 };
 </script>

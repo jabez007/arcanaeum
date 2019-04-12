@@ -27,11 +27,11 @@ export default {
 } */
 
 #background {
-  width: 100%; 
+  width: 100%;
   height: 100%;
-  position: fixed; 
-  left: 0px; 
-  top: 0px; 
+  position: fixed;
+  left: 0px;
+  top: 0px;
   z-index: -1; /* Ensure div tag stays behind content; -999 might work, too. */
 }
 

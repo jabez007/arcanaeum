@@ -6,9 +6,9 @@
 
 <script>
 export default {
-    name: 'Oracle',
-    components: {
-        AppLayout: () => import('@/components/AppLayout.vue'),
-    },
+  name: 'Oracle',
+  components: {
+    AppLayout: () => import('@/components/AppLayout.vue'),
+  },
 };
 </script>

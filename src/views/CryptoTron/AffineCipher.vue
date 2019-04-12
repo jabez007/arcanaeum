@@ -134,19 +134,17 @@ export default {
       return '';
     },
     possibleKeys(key) {
-      if (!key) {  // first pass is '' 
+      if (!key) { // first pass is ''
         return { alpha: 1, beta: 0 };
       }
-      let alpha = key.alpha;
-      let beta = key.beta;
-      if (alpha >= 25 && beta >= 25)
-      {
-        return;
+      let { alpha } = key;
+      let { beta } = key;
+      if (alpha >= 25 && beta >= 25) {
+        return null;
       }
-      if (alpha < 25 && beta === 25)
-      {
+      if (alpha < 25 && beta === 25) {
         // restart beta and roll alpha up
-        beta = 0; 
+        beta = 0;
         alpha = (alpha + 1) % 26;
         while (this.gcd(alpha, 26) !== 1) {
           alpha += 1;
@@ -160,7 +158,7 @@ export default {
     onUpdateKey(newKey) {
       this.alpha = newKey.alpha;
       this.beta = newKey.beta;
-    }
+    },
   },
 };
 </script>

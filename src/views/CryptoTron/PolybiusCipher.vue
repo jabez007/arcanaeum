@@ -77,7 +77,7 @@
                             required
                             clearable>
               </v-text-field>
-            </v-flex>              
+            </v-flex>
           </v-layout>
       </v-form>
     </v-flex>
@@ -124,7 +124,7 @@ export default {
       return cipherSquare;
     },
     chars() {
-        return (this.cipherChars || '').substring(0, 5);
+      return (this.cipherChars || '').substring(0, 5);
     },
   },
   methods: {
@@ -168,7 +168,7 @@ export default {
         let plaintext = '';
         let i = 0;
         while (i < ciphertext.length) {
-          if (cipherKey.chars.indexOf(String(ciphertext.charAt(i))) !== -1 ) {
+          if (cipherKey.chars.indexOf(String(ciphertext.charAt(i))) !== -1) {
             const row = cipherKey.chars.indexOf(String(ciphertext.charAt(i)));
             i += 1;
             const column = cipherKey.chars.indexOf(String(ciphertext.charAt(i)));
@@ -183,44 +183,43 @@ export default {
       return '';
     },
     possibleKeys(cipherKey, cipherText, bestCipherKey) {
-      if (!bestCipherKey) {  // first pass is ''
+      if (!bestCipherKey) { // first pass is ''
         const self = this;
         return { square: self.square, chars: self.chars };
-      } else {
-        const flatKey = [];
-        for (let j = 0; j < 5; j += 1) {
-            for (let i = 0; i < 5; i += 1) {
-                flatKey.push(bestCipherKey.square[i][j]);
-            }
-        }
-        // swap two letters in the current key.
-        const a = Math.floor((Math.random() * flatKey.length));
-        const b = Math.floor((Math.random() * flatKey.length));
-        flatKey[a] = flatKey.splice(b, 1, flatKey[a])[0];
-        // reassemble new cipherKey.
-        let key = '';
-        const cipherSquare = new Array(5).fill(null).map(() => (new Array(5).fill(null)));
-        for (let i = 0; i < 25; i += 1) {
-            const char = flatKey[i];
-            if (char !== 'j' && key.indexOf(char) === -1) {
-                key += char;
-                const column = (key.length - 1) % 5;
-                const row = Math.floor((key.length - 1) / 5);
-                cipherSquare[column][row] = char;
-            }
-        }
-        return { square: cipherSquare, chars: String(bestCipherKey.chars) };
       }
+      const flatKey = [];
+      for (let j = 0; j < 5; j += 1) {
+        for (let i = 0; i < 5; i += 1) {
+          flatKey.push(bestCipherKey.square[i][j]);
+        }
+      }
+      // swap two letters in the current key.
+      const a = Math.floor((Math.random() * flatKey.length));
+      const b = Math.floor((Math.random() * flatKey.length));
+      flatKey[a] = flatKey.splice(b, 1, flatKey[a])[0];
+      // reassemble new cipherKey.
+      let key = '';
+      const cipherSquare = new Array(5).fill(null).map(() => (new Array(5).fill(null)));
+      for (let i = 0; i < 25; i += 1) {
+        const char = flatKey[i];
+        if (char !== 'j' && key.indexOf(char) === -1) {
+          key += char;
+          const column = (key.length - 1) % 5;
+          const row = Math.floor((key.length - 1) / 5);
+          cipherSquare[column][row] = char;
+        }
+      }
+      return { square: cipherSquare, chars: String(bestCipherKey.chars) };
     },
     onUpdateKey(newKey) {
-        let key = '';
-        for (let j = 0; j < 5; j += 1) {
-          for (let i = 0; i < 5; i += 1) {
-            key += newKey.square[i][j];
-          }
+      let key = '';
+      for (let j = 0; j < 5; j += 1) {
+        for (let i = 0; i < 5; i += 1) {
+          key += newKey.square[i][j];
         }
-        this.keyword = key;
-    }
+      }
+      this.keyword = key;
+    },
   },
 };
 </script>

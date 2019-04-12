@@ -9,7 +9,7 @@
         <p class="subheading">
             This 'Oracle' generates its messages from a
             <a href="https://www.kaggle.com/jabez007/archonsoracletrainer" target="_blank">Long-Short-Term-Memory machine learning model</a>
-            trained on 
+            trained on
             <a href="https://repl.it/@jabez007/LastHopeScrape" target="_blank">text compiled</a>
             from the
             <a href="http://lasthope.kitsufox.com/wiki/player-driven-content/" target="_blank">Last Hope LARP player driven content</a>
@@ -86,12 +86,12 @@ export default {
     temperature: 0.5,
     maxLength: 140,
     running: false,
-    generatedText: ''
+    generatedText: '',
   }),
   async created() {
     this.model = await tf.loadLayersModel('https://raw.githubusercontent.com/jabez007/arcanaeum/master/weights/model.json');
     const char2vec = require('@/assets/Oracle/char2vec.json');
-    this.charVectors = Object.keys(char2vec).map(key => ({char: key, vec: char2vec[key]}));
+    this.charVectors = Object.keys(char2vec).map(key => ({ char: key, vec: char2vec[key] }));
   },
   methods: {
     async generateText(seed) {
@@ -100,13 +100,14 @@ export default {
       if (seed.length >= 17 && seed.length < this.maxLength) {
         this.running = true;
         const input = seed.substring(seed.length - 17).split('').map(char => self.charVectors.find(cv => cv.char === char).vec);
-        const probsArray = await this.model.predict(tf.tensor3d([input, ]));
+        const probsArray = await this.model.predict(tf.tensor3d([input]));
         const pred = await sample(probsArray, this.temperature);
         const predChar = this.charVectors.find(cv => cv.vec[pred]).char;
-        return await this.generateText(seed + predChar);
+        return this.generateText(seed + predChar);
       }
       this.running = false;
       this.generatedText = seed;
+      return seed;
     },
   },
 };

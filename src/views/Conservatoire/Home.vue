@@ -44,9 +44,9 @@
 
 <script>
 export default {
-    name: 'Conservatoire',
-    components: {
-        AppLayout: () => import('@/components/AppLayout.vue'),
-    },
+  name: 'Conservatoire',
+  components: {
+    AppLayout: () => import('@/components/AppLayout.vue'),
+  },
 };
 </script>

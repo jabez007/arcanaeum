@@ -6,7 +6,7 @@
     <v-card-text>
       <p class="subheading">
         Discovered December of 265 with the final test of the solution done November of 266,
-        <br /> 
+        <br />
         this was a cube of sorts of mana 'islands' that once unlocked, by connecting all of the 'islands' in a particular fashion,
         gave us a cure for the creeping corruption.
       </p>
@@ -36,7 +36,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn @click="onLoad" 
+      <v-btn @click="onLoad"
              ripple
              round>
         <span class="hidden-md-and-down">Load</span>
@@ -54,7 +54,7 @@
       <v-flex ref="konva" xs10 offset-xs1>
         <v-stage ref="stage" :config="konvaConfig">
           <v-layer v-for="(layer, k) in construct"
-                   :key="`layer${k}`" 
+                   :key="`layer${k}`"
                    :ref="`layer${k}`"
                    @click="onClick">
             <template v-for="(row, j) in layer">
@@ -90,151 +90,151 @@
 </template>
 
 <script>
-import Konva from 'konva'
+import Konva from 'konva';
 
 const CONSTRUCT = [
   [ // 1
-    [3,0,0,3,0,0,2,0,1,0,0],
-    [0,2,0,0,0,3,0,5,0,0,3],
-    [2,0,0,0,0,0,0,0,0,0,0],
-    [0,3,0,3,0,4,0,7,0,0,5],
-    [2,0,2,0,3,0,2,0,1,0,0],
-    [0,2,0,0,0,2,0,5,0,4,0],
-    [0,0,0,2,0,0,1,0,0,0,2],
-    [2,0,0,0,0,3,0,6,0,4,0],
-    [0,2,0,0,0,0,0,0,0,0,2],
-    [2,0,0,3,0,3,0,5,0,4,0],
-    [0,0,1,0,2,0,2,0,2,0,3],
+    [3, 0, 0, 3, 0, 0, 2, 0, 1, 0, 0],
+    [0, 2, 0, 0, 0, 3, 0, 5, 0, 0, 3],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 3, 0, 3, 0, 4, 0, 7, 0, 0, 5],
+    [2, 0, 2, 0, 3, 0, 2, 0, 1, 0, 0],
+    [0, 2, 0, 0, 0, 2, 0, 5, 0, 4, 0],
+    [0, 0, 0, 2, 0, 0, 1, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 3, 0, 6, 0, 4, 0],
+    [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 3, 0, 3, 0, 5, 0, 4, 0],
+    [0, 0, 1, 0, 2, 0, 2, 0, 2, 0, 3],
   ],
   [ // 2
-    [4,0,0,2,0,3,0,2,0,2,0],
-    [0,3,0,0,3,0,0,0,0,0,1],
-    [4,0,0,2,0,0,3,0,0,4,0],
-    [0,0,0,0,2,0,0,2,0,0,3],
-    [0,3,0,6,0,3,0,0,0,3,0],
-    [3,0,2,0,3,0,2,0,0,0,3],
-    [0,5,0,1,0,2,0,4,0,3,0],
-    [5,0,0,0,0,0,3,0,0,0,2],
-    [0,4,0,0,4,0,0,1,0,0,0],
-    [1,0,0,0,0,0,3,0,0,4,0],
-    [0,1,0,2,0,3,0,2,0,0,5],
+    [4, 0, 0, 2, 0, 3, 0, 2, 0, 2, 0],
+    [0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 1],
+    [4, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0],
+    [0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 3],
+    [0, 3, 0, 6, 0, 3, 0, 0, 0, 3, 0],
+    [3, 0, 2, 0, 3, 0, 2, 0, 0, 0, 3],
+    [0, 5, 0, 1, 0, 2, 0, 4, 0, 3, 0],
+    [5, 0, 0, 0, 0, 0, 3, 0, 0, 0, 2],
+    [0, 4, 0, 0, 4, 0, 0, 1, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 3, 0, 0, 4, 0],
+    [0, 1, 0, 2, 0, 3, 0, 2, 0, 0, 5],
   ],
   [ // 3
-    [3,0,4,0,3,0,3,0,1,0,2],
-    [0,5,0,2,0,2,0,2,0,2,0],
-    [4,0,0,0,0,0,3,0,0,0,0],
-    [0,2,0,0,0,3,0,3,0,0,3],
-    [3,0,0,4,0,0,2,0,1,0,0],
-    [0,0,0,0,0,0,0,0,0,1,0],
-    [0,4,0,0,3,0,0,3,0,0,3],
-    [5,0,0,3,0,4,0,0,0,2,0],
-    [0,0,0,0,2,0,4,0,4,0,2],
-    [0,2,0,3,0,2,0,0,0,2,0],
-    [3,0,2,0,3,0,4,0,3,0,4],
+    [3, 0, 4, 0, 3, 0, 3, 0, 1, 0, 2],
+    [0, 5, 0, 2, 0, 2, 0, 2, 0, 2, 0],
+    [4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0],
+    [0, 2, 0, 0, 0, 3, 0, 3, 0, 0, 3],
+    [3, 0, 0, 4, 0, 0, 2, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 4, 0, 0, 3, 0, 0, 3, 0, 0, 3],
+    [5, 0, 0, 3, 0, 4, 0, 0, 0, 2, 0],
+    [0, 0, 0, 0, 2, 0, 4, 0, 4, 0, 2],
+    [0, 2, 0, 3, 0, 2, 0, 0, 0, 2, 0],
+    [3, 0, 2, 0, 3, 0, 4, 0, 3, 0, 4],
   ],
   [ // 4
-    [3,0,5,0,2,0,0,2,0,0,2],
-    [0,0,0,3,0,0,5,0,2,0,0],
-    [4,0,6,0,0,0,0,1,0,0,3],
-    [0,0,0,0,3,0,4,0,2,0,0],
-    [0,0,0,2,0,4,0,2,0,0,0],
-    [4,0,6,0,3,0,3,0,3,0,5],
-    [0,0,0,0,0,0,0,2,0,0,0],
-    [0,0,0,2,0,5,0,0,0,0,0],
-    [2,0,0,0,0,0,3,0,6,0,5],
-    [0,0,3,0,0,5,0,3,0,0,0],
-    [4,0,0,5,0,0,4,0,3,0,1],
+    [3, 0, 5, 0, 2, 0, 0, 2, 0, 0, 2],
+    [0, 0, 0, 3, 0, 0, 5, 0, 2, 0, 0],
+    [4, 0, 6, 0, 0, 0, 0, 1, 0, 0, 3],
+    [0, 0, 0, 0, 3, 0, 4, 0, 2, 0, 0],
+    [0, 0, 0, 2, 0, 4, 0, 2, 0, 0, 0],
+    [4, 0, 6, 0, 3, 0, 3, 0, 3, 0, 5],
+    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0],
+    [0, 0, 0, 2, 0, 5, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 3, 0, 6, 0, 5],
+    [0, 0, 3, 0, 0, 5, 0, 3, 0, 0, 0],
+    [4, 0, 0, 5, 0, 0, 4, 0, 3, 0, 1],
   ],
   [ // 5
-    [3,0,0,2,0,3,0,2,0,1,0],
-    [0,0,3,0,4,0,5,0,4,0,3],
-    [0,0,0,0,0,2,0,0,0,0,0],
-    [2,0,5,0,10,0,5,0,8,0,6],
-    [0,0,0,0,0,4,0,0,0,0,0],
-    [5,0,7,0,6,0,2,0,6,0,6],
-    [0,0,0,0,0,2,0,1,0,0,0],
-    [2,0,7,0,5,0,3,0,3,0,4],
-    [0,0,0,0,0,1,0,3,0,1,0],
-    [3,0,6,0,3,0,1,0,0,0,0],
-    [0,1,0,4,0,2,0,3,0,0,4],
+    [3, 0, 0, 2, 0, 3, 0, 2, 0, 1, 0],
+    [0, 0, 3, 0, 4, 0, 5, 0, 4, 0, 3],
+    [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+    [2, 0, 5, 0, 10, 0, 5, 0, 8, 0, 6],
+    [0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0],
+    [5, 0, 7, 0, 6, 0, 2, 0, 6, 0, 6],
+    [0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0],
+    [2, 0, 7, 0, 5, 0, 3, 0, 3, 0, 4],
+    [0, 0, 0, 0, 0, 1, 0, 3, 0, 1, 0],
+    [3, 0, 6, 0, 3, 0, 1, 0, 0, 0, 0],
+    [0, 1, 0, 4, 0, 2, 0, 3, 0, 0, 4],
   ],
   [ // 6
-    [5,0,3,0,3,0,4,0,3,0,1],
-    [0,4,0,3,0,4,0,0,0,0,0],
-    [2,0,0,0,0,0,2,0,0,0,0],
-    [0,0,2,0,4,0,0,0,5,0,4],
-    [0,3,0,2,0,0,3,0,0,2,0],
-    [2,0,0,0,0,2,0,0,0,0,3],
-    [0,3,0,0,3,0,0,1,0,3,0],
-    [0,0,1,0,0,0,3,0,2,0,0],
-    [4,0,0,0,2,0,0,0,0,0,3],
-    [0,2,0,0,0,3,0,3,0,3,0],
-    [2,0,4,0,4,0,5,0,3,0,4],
+    [5, 0, 3, 0, 3, 0, 4, 0, 3, 0, 1],
+    [0, 4, 0, 3, 0, 4, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
+    [0, 0, 2, 0, 4, 0, 0, 0, 5, 0, 4],
+    [0, 3, 0, 2, 0, 0, 3, 0, 0, 2, 0],
+    [2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3],
+    [0, 3, 0, 0, 3, 0, 0, 1, 0, 3, 0],
+    [0, 0, 1, 0, 0, 0, 3, 0, 2, 0, 0],
+    [4, 0, 0, 0, 2, 0, 0, 0, 0, 0, 3],
+    [0, 2, 0, 0, 0, 3, 0, 3, 0, 3, 0],
+    [2, 0, 4, 0, 4, 0, 5, 0, 3, 0, 4],
   ],
   [ // 7
-    [3,0,3,0,6,0,4,0,4,0,3],
-    [0,0,0,0,0,4,0,4,0,4,0],
-    [2,0,0,0,2,0,0,0,0,0,2],
-    [0,0,1,0,0,6,0,6,0,4,0],
-    [2,0,0,4,0,0,0,0,0,0,2],
-    [0,2,0,0,0,3,0,5,0,3,0],
-    [2,0,0,0,0,0,0,0,0,0,0],
-    [0,4,0,8,0,5,0,0,5,0,5],
-    [4,0,0,0,0,0,1,0,0,0,0],
-    [0,4,0,5,0,3,0,0,0,0,0],
-    [4,0,4,0,3,0,6,0,4,0,4],
+    [3, 0, 3, 0, 6, 0, 4, 0, 4, 0, 3],
+    [0, 0, 0, 0, 0, 4, 0, 4, 0, 4, 0],
+    [2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2],
+    [0, 0, 1, 0, 0, 6, 0, 6, 0, 4, 0],
+    [2, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2],
+    [0, 2, 0, 0, 0, 3, 0, 5, 0, 3, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 4, 0, 8, 0, 5, 0, 0, 5, 0, 5],
+    [4, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 4, 0, 5, 0, 3, 0, 0, 0, 0, 0],
+    [4, 0, 4, 0, 3, 0, 6, 0, 4, 0, 4],
   ],
   [ // 8
-    [2,0,3,0,4,0,0,2,0,1,0],
-    [0,3,0,3,0,0,0,0,0,0,0],
-    [0,0,0,0,0,1,0,4,0,0,2],
-    [2,0,0,0,3,0,2,0,0,0,0],
-    [0,4,0,5,0,0,0,4,0,3,0],
-    [2,0,2,0,3,0,0,0,0,0,3],
-    [0,2,0,0,0,0,3,0,0,1,0],
-    [3,0,0,4,0,0,0,3,0,0,4],
-    [0,2,0,0,2,0,4,0,0,0,0],
-    [2,0,1,0,0,0,0,2,0,2,0],
-    [0,2,0,4,0,0,5,0,3,0,3],
+    [2, 0, 3, 0, 4, 0, 0, 2, 0, 1, 0],
+    [0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 4, 0, 0, 2],
+    [2, 0, 0, 0, 3, 0, 2, 0, 0, 0, 0],
+    [0, 4, 0, 5, 0, 0, 0, 4, 0, 3, 0],
+    [2, 0, 2, 0, 3, 0, 0, 0, 0, 0, 3],
+    [0, 2, 0, 0, 0, 0, 3, 0, 0, 1, 0],
+    [3, 0, 0, 4, 0, 0, 0, 3, 0, 0, 4],
+    [0, 2, 0, 0, 2, 0, 4, 0, 0, 0, 0],
+    [2, 0, 1, 0, 0, 0, 0, 2, 0, 2, 0],
+    [0, 2, 0, 4, 0, 0, 5, 0, 3, 0, 3],
   ],
   [ // 9
-    [3,0,0,2,0,2,0,0,2,0,1],
-    [0,2,0,0,4,0,3,0,0,0,0],
-    [3,0,3,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,3,0,4,0,4],
-    [2,0,6,0,3,0,0,0,0,0,0],
-    [0,3,0,0,0,0,0,1,0,3,0],
-    [4,0,2,0,0,0,4,0,2,0,2],
-    [0,5,0,0,5,0,0,0,0,4,0],
-    [2,0,0,0,0,0,0,0,1,0,2],
-    [0,3,0,0,3,0,3,0,0,3,0],
-    [4,0,0,0,0,2,0,0,3,0,2],
+    [3, 0, 0, 2, 0, 2, 0, 0, 2, 0, 1],
+    [0, 2, 0, 0, 4, 0, 3, 0, 0, 0, 0],
+    [3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 3, 0, 4, 0, 4],
+    [2, 0, 6, 0, 3, 0, 0, 0, 0, 0, 0],
+    [0, 3, 0, 0, 0, 0, 0, 1, 0, 3, 0],
+    [4, 0, 2, 0, 0, 0, 4, 0, 2, 0, 2],
+    [0, 5, 0, 0, 5, 0, 0, 0, 0, 4, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2],
+    [0, 3, 0, 0, 3, 0, 3, 0, 0, 3, 0],
+    [4, 0, 0, 0, 0, 2, 0, 0, 3, 0, 2],
   ],
   [ // 10
-    [4,0,2,0,4,0,0,1,0,1,0],
-    [0,2,0,3,0,0,0,0,0,0,1],
-    [4,0,0,0,0,2,0,5,0,5,0],
-    [0,4,0,0,5,0,1,0,0,0,2],
-    [2,0,0,0,0,2,0,2,0,4,0],
-    [0,5,0,0,4,0,3,0,1,0,0],
-    [4,0,0,1,0,1,0,0,0,0,2],
-    [0,0,0,0,4,0,4,0,0,3,0],
-    [0,4,0,6,0,1,0,1,0,0,3],
-    [1,0,0,0,0,0,0,0,0,0,0],
-    [0,2,0,3,0,0,4,0,4,0,4],
+    [4, 0, 2, 0, 4, 0, 0, 1, 0, 1, 0],
+    [0, 2, 0, 3, 0, 0, 0, 0, 0, 0, 1],
+    [4, 0, 0, 0, 0, 2, 0, 5, 0, 5, 0],
+    [0, 4, 0, 0, 5, 0, 1, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 2, 0, 2, 0, 4, 0],
+    [0, 5, 0, 0, 4, 0, 3, 0, 1, 0, 0],
+    [4, 0, 0, 1, 0, 1, 0, 0, 0, 0, 2],
+    [0, 0, 0, 0, 4, 0, 4, 0, 0, 3, 0],
+    [0, 4, 0, 6, 0, 1, 0, 1, 0, 0, 3],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 2, 0, 3, 0, 0, 4, 0, 4, 0, 4],
   ],
   [ // 11
-    [0,0,1,0,4,0,1,0,2,0,2],
-    [2,0,0,3,0,2,0,3,0,2,0],
-    [0,0,0,0,0,0,1,0,0,0,2],
-    [2,0,2,0,3,0,0,1,0,0,0],
-    [0,0,0,0,0,0,3,0,0,3,0],
-    [2,0,0,1,0,2,0,0,0,0,3],
-    [0,2,0,0,3,0,0,4,0,4,0],
-    [0,0,0,2,0,0,2,0,0,0,3],
-    [2,0,0,0,2,0,0,3,0,2,0],
-    [0,2,0,3,0,1,0,0,0,0,0],
-    [2,0,2,0,3,0,4,0,2,0,4],
+    [0, 0, 1, 0, 4, 0, 1, 0, 2, 0, 2],
+    [2, 0, 0, 3, 0, 2, 0, 3, 0, 2, 0],
+    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2],
+    [2, 0, 2, 0, 3, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0],
+    [2, 0, 0, 1, 0, 2, 0, 0, 0, 0, 3],
+    [0, 2, 0, 0, 3, 0, 0, 4, 0, 4, 0],
+    [0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 3],
+    [2, 0, 0, 0, 2, 0, 0, 3, 0, 2, 0],
+    [0, 2, 0, 3, 0, 1, 0, 0, 0, 0, 0],
+    [2, 0, 2, 0, 3, 0, 4, 0, 2, 0, 4],
   ],
 ];
 
@@ -257,17 +257,17 @@ export default {
       const self = this;
       return {
         width: Math.min(self.konvaWidth, self.konvaHeight),
-        height: Math.min(self.konvaWidth, self.konvaHeight)
+        height: Math.min(self.konvaWidth, self.konvaHeight),
       };
     },
     konvaCircleRadius() {
       return Math.floor(
-        Math.min(this.konvaWidth, this.konvaHeight) / this.dim / 2
+        Math.min(this.konvaWidth, this.konvaHeight) / this.dim / 2,
       );
-    }
+    },
   },
   watch: {
-    slider() {  // could do this better with layer.hide() and layer.show() ?
+    slider() { // could do this better with layer.hide() and layer.show() ?
       const self = this;
       for (let k = 0; k < this.construct.length; k += 1) {
         if (k + 1 !== this.slider) {
@@ -281,9 +281,9 @@ export default {
             duration: 0.5,
             opacity: 1,
           });
-          active.moveToTop();  // so clicks happen on this layer
+          active.moveToTop(); // so clicks happen on this layer
           this.$nextTick(() => {
-            active.getChildren(node => node.getClassName() === 'Line').forEach(line => {
+            active.getChildren(node => node.getClassName() === 'Line').forEach((line) => {
               line.moveToBottom();
             });
             self.$refs.stage.getNode().draw();
@@ -301,12 +301,12 @@ export default {
     this.onLoad();
     //
     const self = this;
-    this.$nextTick(() => {  // could do this better with layer.hide() and layer.show() ?
+    this.$nextTick(() => { // could do this better with layer.hide() and layer.show() ?
       for (let k = 0; k < self.construct.length; k += 1) {
         if (k + 1 !== self.slider) {
           self.$refs[`layer${k}`][0].getNode().opacity(0);
         } else if (k + 1 === self.slider) {
-            self.$refs[`layer${k}`][0].getNode().moveToTop();  // so clicks happen on this layer
+          self.$refs[`layer${k}`][0].getNode().moveToTop(); // so clicks happen on this layer
         }
       }
       self.$refs.stage.getNode().draw();
@@ -336,7 +336,7 @@ export default {
         shadowBlur: 10,
         shadowOffsetX: 5,
         shadowOffsetY: 5,
-        shadowOpacity: 0.6
+        shadowOpacity: 0.6,
       };
     },
     getKonvaTextConfig(node) {
@@ -348,133 +348,133 @@ export default {
         fontSize: self.konvaCircleRadius,
         align: 'center',
         verticalAlign: 'middle',
-        fontFamily: 'courier',  // monospaced font
-        fill: '#C4CED4', //silver
+        fontFamily: 'courier', // monospaced font
+        fill: '#C4CED4', // silver
       };
     },
     onClick(e) {
-        const self = this;
-        const group = e.target.getParent();
-        const layer = group.getParent();
-        if (!this.lineStart) {
-            // start line creation
-            const currLines = layer.getChildren(node => node.getClassName() === 'Line' && node.name().includes(group.name()));
-            // currLines.forEach(console.log);
-            const maxLines = Number(group.getChildren(node => node.getClassName() === 'Text')[0].text());
-            if (currLines.length < maxLines) {
-                // this node can accept another line
-                this.lineStart = {
-                    name: group.name(),
-                    x: group.x(),
-                    y: group.y(),
-                    z: self.slider
-                };
-                group.to({
-                    duration: 0.2, 
-                    shadowOffsetX: 15,
-                    shadowOffsetY: 15,
-                    scaleX: 1.2,
-                    scaleY: 1.2,
-                });
-            }
-        } else if (this.lineStart.z === self.slider) {
-            // make sure we are in the same plane
-            if (this.lineStart.x === group.x() && this.lineStart.y === group.y()) {
-                // same node clicked, cancel line creation
-                this.lineStart = null;
-                group.to({
-                    duration: 0.2,
-                    shadowOffsetX: 5,
-                    shadowOffsetY: 5,
-                    scaleX: 1,
-                    scaleY: 1,
-                });
-            } else if (this.lineStart.x === group.x() || this.lineStart.y === group.y()){
-                // finish line creation
-                let currLines = layer.getChildren(node => node.getClassName() === 'Line' && node.name().includes(group.name()));
-                // currLines.forEach(console.log);
-                const maxLines = Number(group.getChildren(node => node.getClassName() === 'Text')[0].text());
-                if (currLines.length < maxLines) {
-                    // this node can accept another line
-                    const lineName = [this.lineStart.name, group.name()].sort().join();
-                    // how do we check for crossed nodes or crossed lines?
-                    const currLines = layer.getChildren(node => node.name() === lineName);
-                    // currLines.forEach(console.log);
-                    if (currLines.length < 2) {
-                        // we haven't reached our max yet
-                        const lineWidth = Math.floor(self.konvaCircleRadius / 4);
-                        const newLine = new Konva.Line({
-                            name: lineName,
-                            points: [self.lineStart.x, self.lineStart.y, group.x(), group.y()],
-                            stroke: '#C4CED4', //silver
-                            strokeWidth: lineWidth,
-                            lineCap: 'round',
-                            lineJoin: 'round'
-                            });
-                        newLine.on('click', this.deleteLine);
-                        if (currLines.length === 0) {
-                            // this is our first line between these nodes
-                            //layer.add(newLine);
-                            //newLine.moveToBottom();
-                        } else if (currLines.length === 1) {
-                            // this is our second line between these nodes
-                            const oldLine = currLines[0];
-                            if (this.lineStart.x === group.x()) {
-                                // both nodes in same column, so shift x
-                                oldLine.move({
-                                    x: -lineWidth,
-                                    y: 0
-                                });
-                                newLine.move({
-                                    x: lineWidth,
-                                    y: 0
-                                });
-                            } else if (this.lineStart.y === group.y()) {
-                                // both nodes in same row, so shift y
-                                oldLine.move({
-                                    x: 0,
-                                    y: -lineWidth
-                                });
-                                newLine.move({
-                                    x: 0,
-                                    y: lineWidth
-                                });
-                            }
-                        }
-                        layer.add(newLine);
-                        newLine.moveToBottom();
-                    }
-                    this.lineStart = null;
-                    layer.getChildren(node => node.getClassName() === 'Group').forEach(node => {
-                        node.to({
-                            duration: 0.2,
-                            shadowOffsetX: 5,
-                            shadowOffsetY: 5,
-                            scaleX: 1,
-                            scaleY: 1,
-                        });
-                    });
-                }
-            } else {
-                // diagonal lines don't work
-            }
-        } else {
-            // lines between planes?
+      const self = this;
+      const group = e.target.getParent();
+      const layer = group.getParent();
+      if (!this.lineStart) {
+        // start line creation
+        const currLines = layer.getChildren(node => node.getClassName() === 'Line' && node.name().includes(group.name()));
+        // currLines.forEach(console.log);
+        const maxLines = Number(group.getChildren(node => node.getClassName() === 'Text')[0].text());
+        if (currLines.length < maxLines) {
+          // this node can accept another line
+          this.lineStart = {
+            name: group.name(),
+            x: group.x(),
+            y: group.y(),
+            z: self.slider,
+          };
+          group.to({
+            duration: 0.2,
+            shadowOffsetX: 15,
+            shadowOffsetY: 15,
+            scaleX: 1.2,
+            scaleY: 1.2,
+          });
         }
+      } else if (this.lineStart.z === self.slider) {
+        // make sure we are in the same plane
+        if (this.lineStart.x === group.x() && this.lineStart.y === group.y()) {
+          // same node clicked, cancel line creation
+          this.lineStart = null;
+          group.to({
+            duration: 0.2,
+            shadowOffsetX: 5,
+            shadowOffsetY: 5,
+            scaleX: 1,
+            scaleY: 1,
+          });
+        } else if (this.lineStart.x === group.x() || this.lineStart.y === group.y()) {
+          // finish line creation
+          const currLines = layer.getChildren(node => node.getClassName() === 'Line' && node.name().includes(group.name()));
+          // currLines.forEach(console.log);
+          const maxLines = Number(group.getChildren(node => node.getClassName() === 'Text')[0].text());
+          if (currLines.length < maxLines) {
+            // this node can accept another line
+            const lineName = [this.lineStart.name, group.name()].sort().join();
+            // how do we check for crossed nodes or crossed lines?
+            const currLines = layer.getChildren(node => node.name() === lineName);
+            // currLines.forEach(console.log);
+            if (currLines.length < 2) {
+              // we haven't reached our max yet
+              const lineWidth = Math.floor(self.konvaCircleRadius / 4);
+              const newLine = new Konva.Line({
+                name: lineName,
+                points: [self.lineStart.x, self.lineStart.y, group.x(), group.y()],
+                stroke: '#C4CED4', // silver
+                strokeWidth: lineWidth,
+                lineCap: 'round',
+                lineJoin: 'round',
+              });
+              newLine.on('click', this.deleteLine);
+              if (currLines.length === 0) {
+                // this is our first line between these nodes
+                // layer.add(newLine);
+                // newLine.moveToBottom();
+              } else if (currLines.length === 1) {
+                // this is our second line between these nodes
+                const oldLine = currLines[0];
+                if (this.lineStart.x === group.x()) {
+                  // both nodes in same column, so shift x
+                  oldLine.move({
+                    x: -lineWidth,
+                    y: 0,
+                  });
+                  newLine.move({
+                    x: lineWidth,
+                    y: 0,
+                  });
+                } else if (this.lineStart.y === group.y()) {
+                  // both nodes in same row, so shift y
+                  oldLine.move({
+                    x: 0,
+                    y: -lineWidth,
+                  });
+                  newLine.move({
+                    x: 0,
+                    y: lineWidth,
+                  });
+                }
+              }
+              layer.add(newLine);
+              newLine.moveToBottom();
+            }
+            this.lineStart = null;
+            layer.getChildren(node => node.getClassName() === 'Group').forEach((node) => {
+              node.to({
+                duration: 0.2,
+                shadowOffsetX: 5,
+                shadowOffsetY: 5,
+                scaleX: 1,
+                scaleY: 1,
+              });
+            });
+          }
+        } else {
+          // diagonal lines don't work
+        }
+      } else {
+        // lines between planes?
+      }
     },
     deleteLine(e) {
-        const toDelete = e.target;
-        const lineName = toDelete.name();
-        const layer = toDelete.getParent();
-        toDelete.destroy();
-        layer.getChildren(node => node.name() === lineName).forEach(node => {
-            const pos = node.position();
-            node.position({
-                x: pos.x - pos.x,
-                y: pos.y - pos.y
-            });
+      const toDelete = e.target;
+      const lineName = toDelete.name();
+      const layer = toDelete.getParent();
+      toDelete.destroy();
+      layer.getChildren(node => node.name() === lineName).forEach((node) => {
+        const pos = node.position();
+        node.position({
+          x: pos.x - pos.x,
+          y: pos.y - pos.y,
         });
-        layer.draw();
+      });
+      layer.draw();
     },
     onSave() {
       for (let k = 0; k < this.construct.length; k += 1) {
@@ -489,7 +489,7 @@ export default {
       for (let k = 0; k < this.construct.length; k += 1) {
         const lines = JSON.parse(localStorage.getItem(`construct_layer${k}_lines`) || '[]');
         const layer = this.$refs[`layer${k}`][0].getNode();
-        lines.forEach(line => {
+        lines.forEach((line) => {
           const loadLine = Konva.Line.create(line);
           loadLine.on('click', self.deleteLine);
           layer.add(loadLine);
@@ -500,7 +500,7 @@ export default {
         });
       }
     },
-  }
+  },
 };
 </script>
 

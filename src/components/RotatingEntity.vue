@@ -27,126 +27,123 @@
 
 <script>
 function getRandomInt(min, max) {
-    min = Math.ceil(Math.min(min, max));
-    max = Math.floor(Math.max(min, max));
-    // dont give a  0
-    const rand = Math.floor(Math.random() * (max - min)) + min;  // The maximum is exclusive and the minimum is inclusive
-    if (rand == 0) {
-        return getRandomInt(min, max);
-    } else {
-        return rand ; 
-    }
+  min = Math.ceil(Math.min(min, max));
+  max = Math.floor(Math.max(min, max));
+  // dont give a  0
+  const rand = Math.floor(Math.random() * (max - min)) + min; // The maximum is exclusive and the minimum is inclusive
+  if (rand === 0) {
+    return getRandomInt(min, max);
+  }
+  return rand;
 }
 
 function getRandom(min, max) {
-    min = Math.min(min, max);
-    max = Math.max(min, max);
-    // dont give a 0
-    const rand = Math.random() * (max - min) + min;  // The maximum is exclusive and the minimum is inclusive
-    if (rand == 0) {
-        return getRandom(min, max);
-    } else {
-        return rand;
-    }
+  min = Math.min(min, max);
+  max = Math.max(min, max);
+  // dont give a 0
+  const rand = Math.random() * (max - min) + min; // The maximum is exclusive and the minimum is inclusive
+  if (rand === 0) {
+    return getRandom(min, max);
+  }
+  return rand;
 }
 
 export default {
-    name: "RotatingEntity",
-    props: {
-        position: {
-            type: Array,
-            default: () => [0, 0, 0],
-        },
-        duration: {
-            type: Number,
-            default: () => getRandomInt(5, 25),
-        },
-        xStart: {
-            type: Number,
-            default: () => getRandom(0, 2),
-        },
-        xDirection: {
-            type: Number,
-            default: () => getRandomInt(-1, 2),
-        },
-        yStart: {
-            type: Number,
-            default: () => getRandom(0, 2),
-        },
-        yDirection: {
-            type: Number,
-            default: () => getRandomInt(-1, 2),
-        },
-        zStart: {
-            type: Number,
-            default: () => getRandom(0, 2),
-        },
-        zDirection: {
-            type: Number,
-            default: () => getRandomInt(-1, 2),
-        },
+  name: 'RotatingEntity',
+  props: {
+    position: {
+      type: Array,
+      default: () => [0, 0, 0],
     },
-    computed: {
-        _xStart() {
-            return Math.PI * this.xStart * this.xDirection;
-        },
-        _x25() {
-            return Math.PI * 0.25 * this.xDirection;
-        },
-        _x75() {
-            return Math.PI * 0.75 * this.xDirection;
-        },
-        _x125() {
-            return Math.PI * 1.25 * this.xDirection;
-        },
-        _x175() {
-            return Math.PI * 1.75 * this.xDirection;
-        },
-        _xEnd() {
-            return this._xStart + (Math.PI * 2 * this.xDirection);
-        },
-        _yStart() {
-            return Math.PI * this.yStart * this.yDirection;
-        },
-        _y25() {
-            return Math.PI * 0.25 * this.yDirection;
-        },
-        _y75() {
-            return Math.PI* 0.75 * this.yDirection;
-        },
-        _y125() {
-            return Math.PI * 1.25 * this.yDirection;
-        },
-        _y175() {
-            return Math.PI * 1.75 * this.yDirection;
-        },
-        _yEnd() {
-            return this._yStart + (Math.PI * 2 * this.yDirection);
-        },
-        _zStart() {
-            return Math.PI * this.zStart * this.zDirection;
-        },
-        _z25() {
-            return Math.PI * 0.25 * this.zDirection;
-        },
-        _z75() {
-            return Math.PI * 0.75 * this.zDirection;
-        },
-        _z125() {
-            return Math.PI * 1.25 * this.zDirection;
-        },
-        _z175() {
-            return Math.PI * 1.75 * this.zDirection;
-        },
-        _zEnd() {
-            return this._zStart + (Math.PI * 2 * this.zDirection);
-        },
+    duration: {
+      type: Number,
+      default: () => getRandomInt(5, 25),
     },
-    methods: {
-        getRandom(min, max) {
-            return getRandom(min, max);
-        }
-    }
-}
+    xStart: {
+      type: Number,
+      default: () => getRandom(0, 2),
+    },
+    xDirection: {
+      type: Number,
+      default: () => getRandomInt(-1, 2),
+    },
+    yStart: {
+      type: Number,
+      default: () => getRandom(0, 2),
+    },
+    yDirection: {
+      type: Number,
+      default: () => getRandomInt(-1, 2),
+    },
+    zStart: {
+      type: Number,
+      default: () => getRandom(0, 2),
+    },
+    zDirection: {
+      type: Number,
+      default: () => getRandomInt(-1, 2),
+    },
+  },
+  computed: {
+    _xStart() {
+      return Math.PI * this.xStart * this.xDirection;
+    },
+    _x25() {
+      return Math.PI * 0.25 * this.xDirection;
+    },
+    _x75() {
+      return Math.PI * 0.75 * this.xDirection;
+    },
+    _x125() {
+      return Math.PI * 1.25 * this.xDirection;
+    },
+    _x175() {
+      return Math.PI * 1.75 * this.xDirection;
+    },
+    _xEnd() {
+      return this._xStart + (Math.PI * 2 * this.xDirection);
+    },
+    _yStart() {
+      return Math.PI * this.yStart * this.yDirection;
+    },
+    _y25() {
+      return Math.PI * 0.25 * this.yDirection;
+    },
+    _y75() {
+      return Math.PI * 0.75 * this.yDirection;
+    },
+    _y125() {
+      return Math.PI * 1.25 * this.yDirection;
+    },
+    _y175() {
+      return Math.PI * 1.75 * this.yDirection;
+    },
+    _yEnd() {
+      return this._yStart + (Math.PI * 2 * this.yDirection);
+    },
+    _zStart() {
+      return Math.PI * this.zStart * this.zDirection;
+    },
+    _z25() {
+      return Math.PI * 0.25 * this.zDirection;
+    },
+    _z75() {
+      return Math.PI * 0.75 * this.zDirection;
+    },
+    _z125() {
+      return Math.PI * 1.25 * this.zDirection;
+    },
+    _z175() {
+      return Math.PI * 1.75 * this.zDirection;
+    },
+    _zEnd() {
+      return this._zStart + (Math.PI * 2 * this.zDirection);
+    },
+  },
+  methods: {
+    getRandom(min, max) {
+      return getRandom(min, max);
+    },
+  },
+};
 </script>
-

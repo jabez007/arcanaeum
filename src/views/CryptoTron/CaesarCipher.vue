@@ -78,17 +78,17 @@ export default {
       return '';
     },
     possibleKeys(key) {
-      if (!key) {  // first pass is '' 
+      if (!key) { // first pass is ''
         return { shift: 1 };
       }
       if (key.shift >= 26) {
-        return;
+        return null;
       }
       return { shift: key.shift + 1 };
     },
     onUpdateKey(newKey) {
-        this.shift = newKey.shift;
-    }
+      this.shift = newKey.shift;
+    },
   },
 };
 </script>
