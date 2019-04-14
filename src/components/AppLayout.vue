@@ -39,31 +39,31 @@
 
 <script>
 export default {
-  name: "AppLayout",
+  name: 'AppLayout',
   data: () => ({
     drawer: true,
-    transitionName: "fade-transition"
+    transitionName: 'fade-transition',
   }),
   computed: {
     navigationDrawer() {
       return !!this.$slots.navigationDrawerList;
-    }
+    },
   },
   watch: {
     $route(to, from) {
-      const toDepth = to.path.split("/").length;
-      const fromDepth = from.path.split("/").length;
+      const toDepth = to.path.split('/').length;
+      const fromDepth = from.path.split('/').length;
       if (toDepth < fromDepth) {
         // moving up
-        this.transitionName = "slide-y-reverse-transition";
+        this.transitionName = 'slide-y-reverse-transition';
       } else if (toDepth > fromDepth) {
         // moving down
-        this.transitionName = "slide-y-transition";
+        this.transitionName = 'slide-y-transition';
       } else {
         // moving laterally
-        this.transitionName = "slide-x-transition";
+        this.transitionName = 'slide-x-transition';
       }
-    }
-  }
+    },
+  },
 };
 </script>
