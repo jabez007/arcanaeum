@@ -22,13 +22,13 @@
             <v-slide-x-transition hide-on-leave>
               <span
                 key="upright"
-                v-show="$refs[`${cup.name}OfCups`][0].getNode().fillPatternRotation() === 0"
+                v-show="$refs[`${cup.name}OfCups`][0].getNode().rotation() === 0"
               >{{ cup.upright }}</span>
             </v-slide-x-transition>
             <v-slide-x-reverse-transition hide-on-leave>
               <span
                 key="reversed"
-                v-show="$refs[`${cup.name}OfCups`][0].getNode().fillPatternRotation() === 180"
+                v-show="$refs[`${cup.name}OfCups`][0].getNode().rotation() === 180"
               >{{ cup.reversed }}</span>
             </v-slide-x-reverse-transition>
           </p>
@@ -41,9 +41,9 @@
         <v-stage
           ref="stage"
           :config="{
-                width: cardWidth * 3,
-                height: konvaHeight,
-            }"
+            width: cardWidth * 3,
+            height: konvaHeight,
+          }"
         >
           <v-layer>
             <v-rect
@@ -171,7 +171,7 @@ export default {
       this.$refs.konva.clientWidth,
     );
     const self = this;
-    this.$nextTick(() => setTimeout(() => self.$forceUpdate(), 100));
+    this.$nextTick(() => setTimeout(() => self.$forceUpdate(), 200));
   },
   beforeDestroy() {
     if (window.vueCups === this) {
@@ -202,11 +202,13 @@ export default {
               shadowColor: 'black',
               shadowOffsetX: 5,
               shadowOffsetY: 5,
-              fillPatternRotation: cc.fillPatternRotation() === 0 ? 180 : 0,
+              rotation: cc.rotation() === 0 ? 180 : 0,
+              offsetX: cc.rotation() === 0 ? self.cardWidth : 0,
+              offsetY: cc.rotation() === 0 ? self.konvaHeight : 0,
             });
           });
           self.selected.splice(0, self.selected.length);
-          self.$forceUpdate();
+          setTimeout(() => self.$forceUpdate(), 500);
         });
       }
     },
