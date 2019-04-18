@@ -173,7 +173,7 @@ export default {
       this.$refs.konva.clientWidth,
     );
     const self = this;
-    this.$nextTick(() => setTimeout(() => self.$forceUpdate(), 200));
+    this.$nextTick(() => setTimeout(() => self.$forceUpdate(), 500));
   },
   beforeDestroy() {
     if (window.vueCups === this) {
