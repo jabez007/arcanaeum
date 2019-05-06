@@ -36,6 +36,10 @@ export default new Router({
           component: () => import('./views/CryptoTron/CaesarCipher.vue'),
         },
         {
+          path: 'desideratum',
+          component: () => import('./views/CryptoTron/Desideratum.vue'),
+        },
+        {
           path: 'huffmanian',
           component: () => import('./views/CryptoTron/HuffmanianCipher.vue'),
         },

@@ -67,7 +67,7 @@
 
 <script>
 import * as tf from '@tensorflow/tfjs';
-//import { Twitter } from 'twitter-node-client';
+// import { Twitter } from 'twitter-node-client';
 
 const SEEDLENGTH = 17;
 
@@ -82,14 +82,14 @@ async function sample(probs, temperature) {
   });
 }
 
-//const twitter = new Twitter(require('@/assets/Oracle/twitter_config.json'));
+// const twitter = new Twitter(require('@/assets/Oracle/twitter_config.json'));
 
-/*const onError = (err, response, body) => {
+/* const onError = (err, response, body) => {
   console.log('ERROR [%s]', err);
 };
 const onSuccess = (data) => {
   console.log('Data [%s]', data);
-};*/
+}; */
 
 export default {
   name: 'OracleAbout',
@@ -132,9 +132,9 @@ export default {
       const self = this;
       if (!this.running) {
         if (this.generatedText.length >= this.maxLength) {
-          /*twitter.postTweet({
+          /* twitter.postTweet({
             status: self.generatedText.substring(self.generatedText.length - this.maxLength),
-          }, onError, onSuccess);*/
+          }, onError, onSuccess); */
         }
       }
     },
