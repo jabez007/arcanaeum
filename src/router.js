@@ -51,6 +51,10 @@ export default new Router({
           path: 'railfence',
           component: () => import('./views/CryptoTron/RailFenceCipher.vue'),
         },
+        {
+          path: 'substitution',
+          component: () => import('./views/CryptoTron/SubstitutionCipher.vue'),
+        },
       ],
     },
     {

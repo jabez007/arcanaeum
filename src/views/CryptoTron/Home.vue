@@ -25,8 +25,9 @@
             </v-subheader>
             <v-list-group prepend-icon="find_replace"
                           active-class=""
-                          value="">
-                <v-list-tile slot="activator">
+                          :value="$router.currentRoute.path === '/cryptotron/substitution'">
+                <v-list-tile slot="activator"
+                             @click="$router.push('/cryptotron/substitution')">
                     <v-list-tile-content>
                         <v-list-tile-title>Substitution</v-list-tile-title>
                     </v-list-tile-content>
