@@ -6,7 +6,7 @@
           @update-key="onUpdateKey">
     <v-card slot="description">
       <v-card-title>
-        <h5 class="headline">The Polybius Cipher</h5>
+        <h5 class="headline">The Polybius Square Cipher</h5>
       </v-card-title>
       <v-card-text>
         <p>
