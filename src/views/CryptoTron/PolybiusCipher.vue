@@ -132,7 +132,7 @@ export default {
       str = str || '';
       let unique = '';
       for (let i = 0; i < str.length; i += 1) {
-        if (i === str.lastIndexOf(str[i])) {
+        if (!unique.includes(str[i])) {
           unique += str[i];
         }
       }
