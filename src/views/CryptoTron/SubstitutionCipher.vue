@@ -44,13 +44,28 @@
     <v-flex slot="key" xs11>
       <v-layout row>
         <div>
-          <v-chip v-for="char in plainAlphabet" :key="char" small>{{ char.toLowerCase() }}</v-chip>
+          <v-chip 
+            v-for="char in plainAlphabet" 
+            :key="char"
+            style="margin: 1px !important"
+            label
+            small>
+              {{ char.toLowerCase() }}
+          </v-chip>
         </div>
       </v-layout>
       <v-layout row>
         <draggable v-model="cipherAlphabet" group="cipherAlphabet">
           <transition-group>
-            <v-chip v-for="char in cipherAlphabet" :key="char" color="info" small>{{ char }}</v-chip>
+            <v-chip 
+              v-for="char in cipherAlphabet" 
+              :key="char" 
+              color="info"
+              style="margin: 1px !important"
+              label 
+              small>
+                {{ char }}
+            </v-chip>
           </transition-group>
         </draggable>
       </v-layout>
