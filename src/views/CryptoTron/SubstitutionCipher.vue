@@ -2,7 +2,10 @@
   <Cipher
     :encryptAlgorithm="encrypt"
     :decryptAlgorithm="decrypt"
-    :cipherKey="{ cipherAlphabet }"
+    :cipherKey="{
+      plainAlphabet: plainAlphabet.map(char => char.toLowerCase()), 
+      cipherAlphabet
+    }"
     :keysGenerator="possibleKeys"
     @update-key="onUpdateKey"
   >
@@ -70,7 +73,11 @@
         </draggable>
       </v-layout>
       <v-layout row>
-        <v-text-field v-model.trim="keyword" label="Key Word" maxlength="26"></v-text-field>
+        <v-text-field 
+          v-model.trim="keyword" 
+          label="Key Word" 
+          clearable>
+        </v-text-field>
       </v-layout>
     </v-flex>
   </Cipher>
@@ -106,7 +113,7 @@ export default {
   watch: {
     keyword(newVal) {
       this.cipherAlphabet.sort();
-      const str = getUniqueCharacters(newVal.toLowerCase());
+      const str = getUniqueCharacters(newVal.toLowerCase().replace(/[^a-z]/g, ''));
       for (let i = 0; i < str.length; i += 1) {
         const char = str.charAt(i);
         if (this.cipherAlphabet.includes(char)) {
@@ -117,7 +124,23 @@ export default {
     },
   },
   methods: {
-    encrypt(plainText, key) {},
+    encrypt(plainText, key) {
+      if (plainText) {
+        const plaintext = plainText.toLowerCase();
+        let ciphertext = '';
+        const re = /[a-z]/;
+        for (const char of plaintext) {
+          if (re.test(char)) {
+            const pos = key.plainAlphabet.indexOf(char);
+            ciphertext += key.cipherAlphabet[pos];
+          } else {
+            ciphertext += char;
+          }
+        }
+        return ciphertext;
+      }
+      return '';
+    },
     decrypt(ciphertext, key) {},
     possibleKeys(cipherKey, cipherText, bestCipherKey) {},
     onUpdateKey(newKey) {},
