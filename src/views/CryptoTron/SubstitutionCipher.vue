@@ -160,8 +160,28 @@ export default {
       }
       return '';
     },
-    possibleKeys(cipherKey, cipherText, bestCipherKey) {},
-    onUpdateKey(newKey) {},
+    possibleKeys(cipherKey, cipherText, bestCipherKey) {
+      if (!bestCipherKey) { // first pass is ''
+        const self = this;
+        return {
+          plainAlphabet: self.plainAlphabet.map(char => char.toLowerCase()),
+          cipherAlphabet: self.cipherAlphabet, 
+        };
+      }
+      // swap two letters in the current best key.
+      const cipherAlphabet = bestCipherKey.cipherAlphabet.slice();
+      const a = Math.floor((Math.random() * cipherAlphabet.length));
+      const b = Math.floor((Math.random() * cipherAlphabet.length));
+      cipherAlphabet[a] = cipherAlphabet.splice(b, 1, cipherAlphabet[a])[0];
+      // reassemble new cipherKey to attempt.
+      return {
+        plainAlphabet: bestCipherKey.plainAlphabet,
+        cipherAlphabet,
+      };
+    },
+    onUpdateKey(newKey) {
+      this.cipherAlphabet.splice(0, this.cipherAlphabet.length, ...newKey.cipherAlphabet);
+    },
   },
 };
 </script>
