@@ -56,7 +56,7 @@
           <v-chip
             v-for="char in plainAlphabet"
             :key="char"
-            style="margin: 1px !important"
+            style="margin: 1px !important; font-family: monospace, monospace;"
             label
             small
           >{{ char.toLowerCase() }}</v-chip>
@@ -69,7 +69,7 @@
               v-for="char in cipherAlphabet"
               :key="char"
               color="info"
-              style="margin: 1px !important"
+              style="margin: 1px !important; font-family: monospace, monospace;"
               label
               small
             >{{ char }}</v-chip>
