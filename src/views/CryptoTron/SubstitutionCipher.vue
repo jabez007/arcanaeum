@@ -3,7 +3,7 @@
     :encryptAlgorithm="encrypt"
     :decryptAlgorithm="decrypt"
     :cipherKey="{
-      plainAlphabet: plainAlphabet.map(char => char.toLowerCase()), 
+      plainAlphabet: plainAlphabet.map(char => char.toLowerCase()),
       cipherAlphabet
     }"
     :keysGenerator="possibleKeys"
@@ -34,50 +34,50 @@
         <p>
           When generating keys it is popular to use a key word, e.g.
           <a
-            @click="keyword = 'zebra'"
-          >'zebra'</a> to generate it,
-          since it is much easier to remember a key word compared to a random jumble of 26 characters.
+            @click="keyword = 'uncopyrightable'"
+          >'uncopyrightable'</a>,
+          or a phrase, e.g.
+          <a
+            @click="keyword = 'the quick brown fox jumps over the lazy dog'"
+          >'the quick brown fox jumps over the lazy dog'</a>,
+          to generate it,
+          since it is much easier to remember a key word or phrase compared to a random jumble of 26 characters.
           Or, another popular key for the Simple Substitution cipher is known as the
           <a
             @click="keyword = 'qwertyuiopasdfghjklzxcvbnm'"
-          >'QWERTY'</a> key.
+          >'QWERTY'</a>
+          key, based on the standard layout for a US keyboard.
         </p>
       </v-card-text>
     </v-card>
     <v-flex slot="key" xs11>
       <v-layout row>
         <div>
-          <v-chip 
-            v-for="char in plainAlphabet" 
+          <v-chip
+            v-for="char in plainAlphabet"
             :key="char"
             style="margin: 1px !important"
             label
-            small>
-              {{ char.toLowerCase() }}
-          </v-chip>
+            small
+          >{{ char.toLowerCase() }}</v-chip>
         </div>
       </v-layout>
       <v-layout row>
         <draggable v-model="cipherAlphabet" group="cipherAlphabet">
           <transition-group>
-            <v-chip 
-              v-for="char in cipherAlphabet" 
-              :key="char" 
+            <v-chip
+              v-for="char in cipherAlphabet"
+              :key="char"
               color="info"
               style="margin: 1px !important"
-              label 
-              small>
-                {{ char }}
-            </v-chip>
+              label
+              small
+            >{{ char }}</v-chip>
           </transition-group>
         </draggable>
       </v-layout>
       <v-layout row>
-        <v-text-field 
-          v-model.trim="keyword" 
-          label="Key Word" 
-          clearable>
-        </v-text-field>
+        <v-text-field v-model.trim="keyword" label="Key Word" clearable></v-text-field>
       </v-layout>
     </v-flex>
   </Cipher>
@@ -113,7 +113,9 @@ export default {
   watch: {
     keyword(newVal) {
       this.cipherAlphabet.sort();
-      const str = getUniqueCharacters(newVal.toLowerCase().replace(/[^a-z]/g, ''));
+      const str = getUniqueCharacters(
+        newVal.toLowerCase().replace(/[^a-z]/g, ''),
+      );
       for (let i = 0; i < str.length; i += 1) {
         const char = str.charAt(i);
         if (this.cipherAlphabet.includes(char)) {
