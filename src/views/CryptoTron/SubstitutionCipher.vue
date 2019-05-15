@@ -143,7 +143,23 @@ export default {
       }
       return '';
     },
-    decrypt(ciphertext, key) {},
+    decrypt(cipherText, key) {
+      if (cipherText) {
+        const ciphertext = cipherText.toLowerCase();
+        let plaintext = '';
+        const re = /[a-z]/;
+        for (const char of ciphertext) {
+          if (re.test(char)) {
+            const pos = key.cipherAlphabet.indexOf(char);
+            plaintext += key.plainAlphabet[pos];
+          } else {
+            plaintext += char;
+          }
+        }
+        return plaintext;
+      }
+      return '';
+    },
     possibleKeys(cipherKey, cipherText, bestCipherKey) {},
     onUpdateKey(newKey) {},
   },
