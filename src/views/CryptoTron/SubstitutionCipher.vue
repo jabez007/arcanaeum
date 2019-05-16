@@ -113,14 +113,16 @@ export default {
   watch: {
     keyword(newVal) {
       this.cipherAlphabet.sort();
-      const str = getUniqueCharacters(
-        newVal.toLowerCase().replace(/[^a-z]/g, ''),
-      );
-      for (let i = 0; i < str.length; i += 1) {
-        const char = str.charAt(i);
-        if (this.cipherAlphabet.includes(char)) {
-          this.cipherAlphabet.splice(this.cipherAlphabet.indexOf(char), 1);
-          this.cipherAlphabet.splice(i, 0, char);
+      if (newVal) {
+        const str = getUniqueCharacters(
+          newVal.toLowerCase().replace(/[^a-z]/g, ''),
+        );
+        for (let i = 0; i < str.length; i += 1) {
+          const char = str.charAt(i);
+          if (this.cipherAlphabet.includes(char)) {
+            this.cipherAlphabet.splice(this.cipherAlphabet.indexOf(char), 1);
+            this.cipherAlphabet.splice(i, 0, char);
+          }
         }
       }
     },
