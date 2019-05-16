@@ -4,7 +4,7 @@ import Babylon from 'vue-babylonjs';
 import VueClipboard from 'vue-clipboard2';
 import VueKonva from 'vue-konva';
 import App from './App.vue';
-import router from './router';
+import router from './router/index';
 
 Vue.use(Babylon);
 Vue.use(VueClipboard);

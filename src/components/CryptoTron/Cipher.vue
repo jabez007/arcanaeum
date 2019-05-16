@@ -73,55 +73,55 @@
 
 <script>
 export default {
-  name: "Cipher",
+  name: 'Cipher',
   components: {
     // @ is an alias to /src
-    EncryptMessage: () => import("@/components/CryptoTron/EncryptMessage.vue"),
-    DecryptMessage: () => import("@/components/CryptoTron/DecryptMessage.vue"),
-    CrackMessage: () => import("@/components/CryptoTron/CrackMessage.vue")
+    EncryptMessage: () => import('@/components/CryptoTron/EncryptMessage.vue'),
+    DecryptMessage: () => import('@/components/CryptoTron/DecryptMessage.vue'),
+    CrackMessage: () => import('@/components/CryptoTron/CrackMessage.vue'),
   },
   props: {
     encryptAlgorithm: {
       type: Function,
-      required: true
+      required: true,
     },
     decryptAlgorithm: {
       type: Function,
-      required: true
+      required: true,
     },
     cipherKey: {
       type: Object,
-      required: true
+      required: true,
     },
     keysGenerator: {
       type: Function,
-      required: false
+      required: false,
     },
     ngramsFile: {
       type: String,
-      default: "quadgrams"
-    }
+      default: 'quadgrams',
+    },
   },
   data: () => ({
     openSnackbar: false,
     snackbarTimeout: 2000,
-    status: "",
-    statusMessage: ""
+    status: '',
+    statusMessage: '',
   }),
   methods: {
     onSuccess(message) {
       this.openSnackbar = false;
-      this.status = "success";
+      this.status = 'success';
       this.statusMessage = message;
       this.openSnackbar = true;
     },
     onError(message) {
       this.openSnackbar = false;
-      this.status = "error";
+      this.status = 'error';
       this.statusMessage = message;
       this.openSnackbar = true;
-    }
-  }
+    },
+  },
 };
 </script>
 

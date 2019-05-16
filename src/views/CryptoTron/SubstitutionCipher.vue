@@ -167,7 +167,7 @@ export default {
         const self = this;
         return {
           plainAlphabet: self.plainAlphabet.map(char => char.toLowerCase()),
-          cipherAlphabet: self.cipherAlphabet, 
+          cipherAlphabet: self.cipherAlphabet,
         };
       }
       // swap two letters in the current best key.
