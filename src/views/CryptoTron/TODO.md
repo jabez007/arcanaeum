@@ -3,8 +3,8 @@
     * ~~ROT13 Cipher~~
   * ~~Affine Cipher~~
     * ~~Atbash Cipher~~
-  * Simple Substitution Cipher
-    * QWERTY
+  * ~~Simple Substitution Cipher~~
+    * ~~QWERTY~~
   * ~~Autokey Cipher~~
   * Beaufort Cipher
   * Running Key Cipher
