@@ -25,10 +25,9 @@
           <v-spacer></v-spacer>
           <v-flex xs12
                   md2>
-            <v-text-field label="Max Steps"
+            <v-text-field label="Max key attempts"
                           v-model.number="maxSteps"
                           type="number"
-                          hint="maximum number of keys to attempt after finding a 'best key'"
                           persistent-hint
                           clearable
                           required>
