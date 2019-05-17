@@ -18,45 +18,16 @@
         <p>
           The 'key' for the Autokey cipher is a plaintext prepended with a word (the primer).
           That key is then used with the following table (the 'tabula recta') to encipher the plaintext:
-          <pre>
-                A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
-                ---------------------------------------------------
-            A   A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
-            B   B C D E F G H I J K L M N O P Q R S T U V W X Y Z A
-            C   C D E F G H I J K L M N O P Q R S T U V W X Y Z A B
-            D   D E F G H I J K L M N O P Q R S T U V W X Y Z A B C
-            E   E F G H I J K L M N O P Q R S T U V W X Y Z A B C D
-            F   F G H I J K L M N O P Q R S T U V W X Y Z A B C D E
-            G   G H I J K L M N O P Q R S T U V W X Y Z A B C D E F
-            H   H I J K L M N O P Q R S T U V W X Y Z A B C D E F G
-            I   I J K L M N O P Q R S T U V W X Y Z A B C D E F G H
-            J   J K L M N O P Q R S T U V W X Y Z A B C D E F G H I
-            K   K L M N O P Q R S T U V W X Y Z A B C D E F G H I J
-            L   L M N O P Q R S T U V W X Y Z A B C D E F G H I J K
-            M   M N O P Q R S T U V W X Y Z A B C D E F G H I J K L
-            N   N O P Q R S T U V W X Y Z A B C D E F G H I J K L M
-            O   O P Q R S T U V W X Y Z A B C D E F G H I J K L M N
-            P   P Q R S T U V W X Y Z A B C D E F G H I J K L M N O
-            Q   Q R S T U V W X Y Z A B C D E F G H I J K L M N O P
-            R   R S T U V W X Y Z A B C D E F G H I J K L M N O P Q
-            S   S T U V W X Y Z A B C D E F G H I J K L M N O P Q R
-            T   T U V W X Y Z A B C D E F G H I J K L M N O P Q R S
-            U   U V W X Y Z A B C D E F G H I J K L M N O P Q R S T
-            V   V W X Y Z A B C D E F G H I J K L M N O P Q R S T U
-            W   W X Y Z A B C D E F G H I J K L M N O P Q R S T U V
-            X   X Y Z A B C D E F G H I J K L M N O P Q R S T U V W
-            Y   Y Z A B C D E F G H I J K L M N O P Q R S T U V W X
-            Z   Z A B C D E F G H I J K L M N O P Q R S T U V W X Y
-          </pre>
+          <TabulaRecta></TabulaRecta>
           To encrypt a message, place the key above the plaintext.
           Now we take a letter from the plaintext, and find it on the first column on the table.
           Then, we move along that row of the table until we come to the column with the corresponding letter from the key.
           The intersection is our ciphertext character.
           <pre>
-            Primer:     QUEENLY
-            Plaintext:  ATTACK AT DAWN...
-            Key:        QUEENL YA TTACK AT DAWN....
-            Ciphertext: QNXEPV YT WTWP...
+  Primer:     QUEENLY
+  Plaintext:  ATTACK AT DAWN...
+  Key:        QUEENL YA TTACK AT DAWN....
+  Ciphertext: QNXEPV YT WTWP...
           </pre>
         </p>
         <p>
@@ -97,10 +68,12 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
+import TabulaRecta from '@/components/CryptoTron/TabulaRecta.vue';
 
 export default {
   components: {
     Cipher,
+    TabulaRecta,
   },
   data: () => ({
     primer: '',
