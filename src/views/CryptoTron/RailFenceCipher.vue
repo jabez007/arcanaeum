@@ -28,16 +28,15 @@
           >substitution cipher</a>,
           the combination of which is more difficult to break than either cipher on it's own.
         </p>
-
         <h6 class="title">Example</h6>
         <p>
           The key for the railfence cipher is just the number of rails.
           To encrypt a piece of text, the plain text is written downwards and diagonally on successive "rails" of an imaginary fence,
           then moving up when we reach the bottom rail.
-          When we reach the top rail, the message is written downwards again until the whole plaintext is written out.
+          When we reach the top rail, the message is written downwards again.
+          This continues until the whole plaintext is written out.
           The message is then read off in rows.
         </p>
-        <p></p>
         <p>
           For example, if we have
           <a @click="rails=3">3 rails</a>
@@ -47,11 +46,14 @@
           <q>WECRLTEERDSOEEFEAOCAIVDEN</q>
         </p>
         <v-scale-transition>
-          <v-card v-if="rails === 3">
+          <v-card v-if="rails >= 3 && rails <= 5">
             <v-card-text>
-              <v-layout v-for="i in 3" :key="i" align-center row>
-                <v-flex v-for="j in 12" :key="j" style="color: orange;" xs12>{{ cipherGrid[i-1][j-1] }}</v-flex>
-              </v-layout>
+              <v-text-field v-model="exampleMsg"></v-text-field>
+              <table>
+                <tr v-for="i in cipherGrid.length" :key="i">
+                  <td v-for="j in cipherGrid[i-1].length" :key="j">{{ cipherGrid[i-1][j-1] }}</td>
+                </tr>
+              </table>
             </v-card-text>
           </v-card>
         </v-scale-transition>
@@ -75,7 +77,7 @@
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 
 function cycleLength(rails) {
-  return Math.max(0, (2 * rails) - 2); // 0 is our min cycle length
+  return Math.max(0, 2 * rails - 2); // 0 is our min cycle length
 }
 
 export default {
@@ -84,8 +86,6 @@ export default {
   },
   data: () => ({
     rails: 1,
-    cipherGrid: new Array(3).fill('-').map(() => new Array(12).fill('-')),
-    cipherGridText: '',
     rules: {
       required: value => !!value || 'A key is required',
       number: value => (!!value && Number.isInteger(Number(value)))
@@ -93,44 +93,56 @@ export default {
       positive: value => (!!value && value > 0) || 'The key must be positive',
     },
     keyIsValid: true,
+    exampleMsg: '',
   }),
-  watch: {
-    cipherGridText(newVal) {
-      const self = this;
-      this.$nextTick(() => {
-        const rails = self.cipherGrid.length; // 3
+  computed: {
+    cipherGrid() {
+      if (this.rails >= 3 && this.rails <= 5) {
+        const msg = this.exampleMsg.toLowerCase().replace(/[^a-z]/g, '');
+        const grid = new Array(this.rails)
+          .fill('-')
+          .map(() => new Array(msg.length).fill('-'));
         let column = 0; // each character has it's own column
         let row = 0;
-        while (column < self.cipherGrid[row].length) {
-          while (row < rails - 1) {
-            if (newVal.charAt(column)) {
-              self.cipherGrid[row].splice(column, 1, newVal.charAt(column));
+        while (column < grid[row].length) {
+          while (row < this.rails - 1) {
+            if (msg.charAt(column)) {
+              grid[row].splice(column, 1, msg.charAt(column));
             } else {
-              self.cipherGrid[row].splice(column, 1, '-');
+              grid[row].splice(column, 1, '-');
             }
             column += 1;
             row += 1;
+            if (column >= grid[row].length) {
+              break;
+            }
+          }
+          if (column >= grid[row].length) {
+            break;
           }
           while (row > 0) {
-            if (newVal.charAt(column)) {
-              self.cipherGrid[row].splice(column, 1, newVal.charAt(column));
+            if (msg.charAt(column)) {
+              grid[row].splice(column, 1, msg.charAt(column));
             } else {
-              self.cipherGrid[row].splice(column, 1, '-');
+              grid[row].splice(column, 1, '-');
             }
             column += 1;
             row -= 1;
+            if (column >= grid[row].length) {
+              break;
+            }
           }
         }
-      });
+        return grid;
+      }
+      return [[]];
     },
   },
   methods: {
     encrypt(plainText, cipherKey) {
       if (this.$refs.railFenceKeyForm.validate() && plainText) {
         const plaintext = plainText.toLowerCase().replace(/[^a-z]/g, '');
-        //this.cipherGridText = plaintext;
         if (cipherKey.rails === 1) {
-          this.computedCipherText = plaintext;
           return plaintext;
         }
         let ciphertext = '';
@@ -158,17 +170,14 @@ export default {
             }
           }
         }
-        console.log(ciphertext);
         return ciphertext;
       }
-      //this.cipherGridText = '';
       return '';
     },
     decrypt(cipherText, cipherKey) {
       if (this.$refs.railFenceKeyForm.validate() && cipherText) {
         const ciphertext = cipherText.toLowerCase().replace(/[^a-z]/g, '');
         if (cipherKey.rails === 1) {
-          //this.cipherGridText = ciphertext;
           return ciphertext;
         }
         const plaintext = new Array(ciphertext.length);
@@ -199,11 +208,8 @@ export default {
           }
         }
         const ptext = plaintext.join('');
-        console.log(ptext);
-        //this.cipherGridText = ptext;
         return ptext;
       }
-      //this.cipherGridText = '';
       return '';
     },
     possibleKeys(key, ciphertext) {
@@ -224,4 +230,23 @@ export default {
 </script>
 
 <style scoped>
+table {
+  width: 100%;
+  border-spacing: 1px;
+  border-collapse: separate;
+  font-family: monospace, monospace;
+}
+tr {
+  background: var(--v-secondary-base);
+}
+tr:nth-child(odd) {
+  background: var(--v-secondary-lighten1);
+}
+tr:nth-child(even) {
+  background: var(--v-secondary-darken1);
+}
+td {
+  color: orange;
+  text-align: center;
+}
 </style>

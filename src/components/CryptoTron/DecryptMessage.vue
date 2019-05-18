@@ -12,7 +12,7 @@
       <slot name="plainText"
             v-bind="{ plainText, copyToClipboard }">
         <v-textarea label="Plain Text"
-                    v-model="plainText"
+                    :value="plainText"
                     prepend-inner-icon="file_copy"
                     @click:prepend-inner="copyToClipboard(plainText)"
                     outline

@@ -12,7 +12,7 @@
       <slot name="cipherText"
             v-bind="{ cipherText, copyToClipboard }">
         <v-textarea label="Cipher Text"
-                    v-model="cipherText"
+                    :value="cipherText"
                     prepend-inner-icon="file_copy"
                     @click:prepend-inner="copyToClipboard(cipherText)"
                     outline

@@ -29,7 +29,7 @@
     Y   Y Z A B C D E F G H I J K L M N O P Q R S T U V W X
     Z   Z A B C D E F G H I J K L M N O P Q R S T U V W X Y
   </pre-->
-  <table style="font-family: monospace, monospace;">
+  <table>
       <thead>
           <th></th>
           <th v-for="i in 26" :key="i">
@@ -58,6 +58,7 @@ table {
     width: 100%;
     border-spacing: 1px;
     border-collapse: separate;
+    font-family: monospace, monospace;
 }
 th {
     text-align: center;
