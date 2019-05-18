@@ -67,10 +67,10 @@ tr {
     background: var(--v-primary-base);
 }
 tr:nth-child(odd) {
-    background: var(--v-info-lighten1)
+    background: var(--v-secondary-lighten1)
 }
 tr:nth-child(even) {
-    background: var(--v-info-darken1)
+    background: var(--v-secondary-darken1)
 }
 td {
   text-align: center;
