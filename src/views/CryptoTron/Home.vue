@@ -171,16 +171,16 @@
                         <v-list-tile-title>Steganography</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile to="/cryptotron/baconian"
+                <v-list-tile to="/cryptotron/bacon"
                              ripple>
                     <v-list-tile-content>
-                        <v-list-tile-title class="text-xs-center">Baconian</v-list-tile-title>
+                        <v-list-tile-title class="text-xs-center">Bacon Encoding</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile to="/cryptotron/huffmanian"
+                <v-list-tile to="/cryptotron/huffman"
                              ripple>
                     <v-list-tile-content>
-                        <v-list-tile-title class="text-xs-center">Huffmanian</v-list-tile-title>
+                        <v-list-tile-title class="text-xs-center">Huffman Encoding</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile @click=""

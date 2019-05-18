@@ -16,8 +16,8 @@ export default {
       component: () => import('@/views/CryptoTron/AutokeyCipher.vue'),
     },
     {
-      path: 'baconian',
-      component: () => import('@/views/CryptoTron/BaconianCipher.vue'),
+      path: 'bacon',
+      component: () => import('@/views/CryptoTron/BaconEncoding.vue'),
     },
     {
       path: 'caesar',
@@ -28,8 +28,8 @@ export default {
       component: () => import('@/views/CryptoTron/Desideratum.vue'),
     },
     {
-      path: 'huffmanian',
-      component: () => import('@/views/CryptoTron/HuffmanianCipher.vue'),
+      path: 'huffman',
+      component: () => import('@/views/CryptoTron/HuffmanEncoding.vue'),
     },
     {
       path: 'polybius',
