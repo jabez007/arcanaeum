@@ -54,6 +54,10 @@
                   <td v-for="j in cipherGrid[i-1].length" :key="j">{{ cipherGrid[i-1][j-1] }}</td>
                 </tr>
               </table>
+              <br/>
+              <p class="body-2">
+                {{ cipherGrid.flat().map(c => c.replace(/[^a-z]/, '')).join('') }}
+              </p>
             </v-card-text>
           </v-card>
         </v-scale-transition>
