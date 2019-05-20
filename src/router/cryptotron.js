@@ -24,6 +24,10 @@ export default {
       component: () => import('@/views/CryptoTron/CaesarCipher.vue'),
     },
     {
+      path: 'columnar-transposition',
+      component: () => import('@/views/CryptoTron/ColumnarTranspositionCipher.vue'),
+    },
+    {
       path: 'desideratum',
       component: () => import('@/views/CryptoTron/Desideratum.vue'),
     },
