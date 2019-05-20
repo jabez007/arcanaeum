@@ -17,7 +17,7 @@ export default {
     },
     {
       path: 'bacon',
-      component: () => import('@/views/CryptoTron/BaconEncoding.vue'),
+      component: () => import('@/views/CryptoTron/BaconianCipher.vue'),
     },
     {
       path: 'caesar',
@@ -29,7 +29,7 @@ export default {
     },
     {
       path: 'huffman',
-      component: () => import('@/views/CryptoTron/HuffmanEncoding.vue'),
+      component: () => import('@/views/CryptoTron/HuffmanianCipher.vue'),
     },
     {
       path: 'polybius',

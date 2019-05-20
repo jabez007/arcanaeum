@@ -44,12 +44,6 @@
                         <v-list-tile-title class="text-xs-center">Affine</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile to="/cryptotron/autokey"
-                             ripple>
-                    <v-list-tile-content>
-                        <v-list-tile-title class="text-xs-center">Autokey</v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
                 <v-list-tile @click=""
                              ripple>
                     <v-list-tile-content>
@@ -90,6 +84,27 @@
                     </v-list-tile-content>
                 </v-list-tile>
             </v-list-group>
+            <v-list-group prepend-icon="message"
+                          active-class=""
+                          value="">
+                <v-list-tile slot="activator">
+                    <v-list-tile-content>
+                        <v-list-tile-title>Steganography</v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile to="/cryptotron/bacon"
+                             ripple>
+                    <v-list-tile-content>
+                        <v-list-tile-title class="text-xs-center">Baconian</v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile to="/cryptotron/huffman"
+                             ripple>
+                    <v-list-tile-content>
+                        <v-list-tile-title class="text-xs-center">Huffmanian</v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+            </v-list-group>
             <v-list-group prepend-icon="border_inner"
                           active-class=""
                           :value="$router.currentRoute.path === '/cryptotron/polybius'">
@@ -126,6 +141,12 @@
                         <v-list-tile-title>Polyalphabetic</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
+                <v-list-tile to="/cryptotron/autokey"
+                             ripple>
+                    <v-list-tile-content>
+                        <v-list-tile-title class="text-xs-center">Autokey</v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
                 <v-list-tile @click=""
                              ripple>
                     <v-list-tile-content>
@@ -157,36 +178,6 @@
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">Playfair</v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-            </v-list-group>
-            <v-subheader>
-                non-Ciphers
-            </v-subheader>
-            <v-list-group prepend-icon="message"
-                          active-class=""
-                          value="">
-                <v-list-tile slot="activator">
-                    <v-list-tile-content>
-                        <v-list-tile-title>Steganography</v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile to="/cryptotron/bacon"
-                             ripple>
-                    <v-list-tile-content>
-                        <v-list-tile-title class="text-xs-center">Bacon Encoding</v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile to="/cryptotron/huffman"
-                             ripple>
-                    <v-list-tile-content>
-                        <v-list-tile-title class="text-xs-center">Huffman Encoding</v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click=""
-                             ripple>
-                    <v-list-tile-content>
-                        <v-list-tile-title class="text-xs-center">Grille</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
             </v-list-group>
