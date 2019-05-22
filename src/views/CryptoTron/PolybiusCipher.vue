@@ -128,8 +128,8 @@ export default {
     },
   },
   methods: {
-    getUniqueCharacters(str) {
-      str = str || '';
+    getUniqueCharacters(input) {
+      const str = input || '';
       let unique = '';
       for (let i = 0; i < str.length; i += 1) {
         if (!unique.includes(str[i])) {
@@ -139,7 +139,7 @@ export default {
       return unique;
     },
     encrypt(plainText, cipherKey) {
-      if (plainText) {
+      if (this.$refs.polybiusKeyForm.validate() && plainText) {
         const plaintext = plainText.toLowerCase();
         let key = '';
         for (let j = 0; j < 5; j += 1) {
@@ -149,7 +149,8 @@ export default {
         }
         let ciphertext = '';
         const re = /[a-z]/;
-        for (const char of plaintext) {
+        for (let i = 0; i < plaintext.length; i += 1) {
+          const char = plaintext[i];
           if (re.test(char)) {
             const pos = key.indexOf(char);
             const column = pos % 5;
@@ -164,7 +165,7 @@ export default {
       return '';
     },
     decrypt(ciphertext, cipherKey) {
-      if (ciphertext) {
+      if (this.$refs.polybiusKeyForm.validate() && ciphertext) {
         let plaintext = '';
         let i = 0;
         while (i < ciphertext.length) {
@@ -196,7 +197,7 @@ export default {
       // swap two letters in the current key.
       const a = Math.floor((Math.random() * flatKey.length));
       const b = Math.floor((Math.random() * flatKey.length));
-      flatKey[a] = flatKey.splice(b, 1, flatKey[a])[0];
+      [flatKey[a]] = flatKey.splice(b, 1, flatKey[a]);
       // reassemble new cipherKey.
       let key = '';
       const cipherSquare = new Array(5).fill(null).map(() => (new Array(5).fill(null)));

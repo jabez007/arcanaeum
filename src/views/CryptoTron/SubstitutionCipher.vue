@@ -88,8 +88,8 @@ import draggable from 'vuedraggable';
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 
-function getUniqueCharacters(str) {
-  str = str || '';
+function getUniqueCharacters(input) {
+  const str = input || '';
   let unique = '';
   for (let i = 0; i < str.length; i += 1) {
     if (!unique.includes(str[i])) {
@@ -105,9 +105,9 @@ export default {
     draggable,
   },
   data: () => ({
-    plainAlphabet: Array.apply(null, Array(26)).map((v, i) => String.fromCharCode(65 + i)),
+    plainAlphabet: [...Array(26)].map((v, i) => String.fromCharCode(65 + i)),
     keyword: '',
-    cipherAlphabet: Array.apply(null, Array(26)).map((v, i) => String.fromCharCode(97 + i)),
+    cipherAlphabet: [...Array(26)].map((v, i) => String.fromCharCode(97 + i)),
     keyIsValid: false,
   }),
   watch: {
@@ -129,38 +129,34 @@ export default {
   },
   methods: {
     encrypt(plainText, key) {
-      if (plainText) {
-        const plaintext = plainText.toLowerCase();
-        let ciphertext = '';
-        const re = /[a-z]/;
-        for (const char of plaintext) {
-          if (re.test(char)) {
-            const pos = key.plainAlphabet.indexOf(char);
-            ciphertext += key.cipherAlphabet[pos];
-          } else {
-            ciphertext += char;
-          }
+      const plaintext = (plainText || '').toLowerCase();
+      let ciphertext = '';
+      const re = /[a-z]/;
+      for (let i = 0; i < plaintext.length; i += 1) {
+        const char = plaintext[i];
+        if (re.test(char)) {
+          const pos = key.plainAlphabet.indexOf(char);
+          ciphertext += key.cipherAlphabet[pos];
+        } else {
+          ciphertext += char;
         }
-        return ciphertext;
       }
-      return '';
+      return ciphertext;
     },
     decrypt(cipherText, key) {
-      if (cipherText) {
-        const ciphertext = cipherText.toLowerCase();
-        let plaintext = '';
-        const re = /[a-z]/;
-        for (const char of ciphertext) {
-          if (re.test(char)) {
-            const pos = key.cipherAlphabet.indexOf(char);
-            plaintext += key.plainAlphabet[pos];
-          } else {
-            plaintext += char;
-          }
+      const ciphertext = (cipherText || '').toLowerCase();
+      let plaintext = '';
+      const re = /[a-z]/;
+      for (let i = 0; i < ciphertext.length; i += 1) {
+        const char = ciphertext[i];
+        if (re.test(char)) {
+          const pos = key.cipherAlphabet.indexOf(char);
+          plaintext += key.plainAlphabet[pos];
+        } else {
+          plaintext += char;
         }
-        return plaintext;
       }
-      return '';
+      return plaintext;
     },
     possibleKeys(cipherKey, cipherText, bestCipherKey) {
       if (!bestCipherKey) { // first pass is ''
@@ -174,7 +170,7 @@ export default {
       const cipherAlphabet = bestCipherKey.cipherAlphabet.slice();
       const a = Math.floor((Math.random() * cipherAlphabet.length));
       const b = Math.floor((Math.random() * cipherAlphabet.length));
-      cipherAlphabet[a] = cipherAlphabet.splice(b, 1, cipherAlphabet[a])[0];
+      [cipherAlphabet[a]] = cipherAlphabet.splice(b, 1, cipherAlphabet[a]);
       // reassemble new cipherKey to attempt.
       return {
         plainAlphabet: bestCipherKey.plainAlphabet,

@@ -144,8 +144,8 @@ export default {
   },
   methods: {
     encrypt(plainText, cipherKey) {
-      if (this.$refs.railFenceKeyForm.validate() && plainText) {
-        const plaintext = plainText.toLowerCase().replace(/[^a-z]/g, '');
+      if (this.$refs.railFenceKeyForm.validate()) {
+        const plaintext = (plainText || '').toLowerCase().replace(/[^a-z]/g, '');
         if (cipherKey.rails === 1) {
           return plaintext;
         }
@@ -179,8 +179,8 @@ export default {
       return '';
     },
     decrypt(cipherText, cipherKey) {
-      if (this.$refs.railFenceKeyForm.validate() && cipherText) {
-        const ciphertext = cipherText.toLowerCase().replace(/[^a-z]/g, '');
+      if (this.$refs.railFenceKeyForm.validate()) {
+        const ciphertext = (cipherText || '').toLowerCase().replace(/[^a-z]/g, '');
         if (cipherKey.rails === 1) {
           return ciphertext;
         }

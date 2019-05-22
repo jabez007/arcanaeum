@@ -35,7 +35,7 @@
               In an irregular columnar transposition,
           </p>
           <p>
-              Although stronger than the Rail-Fence cipher, it is still considered weak on its own, 
+              Although stronger than the Rail-Fence cipher, it is still considered weak on its own,
               but it can be combined with other ciphers, such as a substitution cipher;
               the combination of which can be more difficult to break than either cipher on it's own.
               For example, the ADFGVX cipher also uses a columnar transposition to greatly improve its security.
@@ -45,7 +45,7 @@
     <v-flex slot="key" xs9>
       <v-form ref="columnarKeyForm"
               v-model="keyIsValid">
-        <v-text-field 
+        <v-text-field
           label="Key Word"
           v-model.trim="keyword"
           :rules="[rules.required, rules. min, rules.word]"
@@ -76,7 +76,7 @@ export default {
     rules: {
       required: value => !!value || 'this item is required',
       word: value => !((value || '').toLowerCase().trim().replace(/[a-z]/g, '')) || 'The key word must be a word',
-      min: value => (value || '').length > 1 || 'The key word should be longer than one character'
+      min: value => (value || '').length > 1 || 'The key word should be longer than one character',
     },
     keyIsValid: false,
   }),

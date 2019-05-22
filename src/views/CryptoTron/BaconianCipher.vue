@@ -122,7 +122,8 @@ export default {
     encrypt(plaintext, key) {
       const plainText = plaintext.toUpperCase();
       let cipherText = '';
-      for (const char of plainText) {
+      for (let i = 0; i < plainText.length; i += 1) {
+        const char = plainText[i];
         if (key.encoding[char]) {
           cipherText += key.encoding[char];
         } else {
@@ -135,7 +136,8 @@ export default {
       const re = /[a-zA-Z]/;
       let steganograph = '';
       let i = 0;
-      for (const char of message) {
+      for (let j = 0; j < message.length; j += 1) {
+        const char = message[j];
         if (re.test(char)) {
           if (encoding[i] === 'a') {
             steganograph += char.toLowerCase();
@@ -151,8 +153,8 @@ export default {
       return steganograph;
     },
     decrypt(ciphertext, key) {
-      const getUniqueCharacters = (str) => {
-        str = str || '';
+      const getUniqueCharacters = (input) => {
+        const str = input || '';
         let unique = '';
         for (let i = 0; i < str.length; i += 1) {
           if (i === str.lastIndexOf(str[i])) {
@@ -173,7 +175,8 @@ export default {
         }));
         let block = '';
         let plainText = '';
-        for (const char of cipherText) {
+        for (let i = 0; i < cipherText.length; i += 1) {
+          const char = cipherText[i];
           if (char === 'a' || char === 'b') {
             block += char;
             if (block.length === 5) {

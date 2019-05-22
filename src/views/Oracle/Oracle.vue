@@ -73,7 +73,7 @@ const SEEDLENGTH = 17;
 
 async function sample(probs, temperature) {
   // https://github.com/tensorflow/tfjs-examples/blob/f979101509211fc8e1485ba527a9cc7bef3237d3/lstm-text-generation/model.js
-  return await tf.tidy(async () => {
+  return tf.tidy(async () => {
     const logits = tf.div(tf.log(probs), Math.max(temperature, 1e-6));
     const isNormalized = false;
     // `logits` is for a multinomial distribution, scaled by the temperature.
@@ -113,9 +113,9 @@ export default {
     this.charVectors = Object.keys(char2vec).map(key => ({ char: key, vec: char2vec[key] }));
   },
   methods: {
-    async generateText(seed) {
+    async generateText(seedText) {
       const self = this;
-      seed = (seed || '').replace(/[^0-9a-z_ ]/g, '');
+      const seed = (seedText || '').toLowerCase().replace(/[^0-9a-z_ ]/g, '');
       if (seed.length >= this.seedLength && seed.length < this.maxLength) {
         this.running = true;
         const input = seed.substring(seed.length - this.seedLength).split('').map(char => self.charVectors.find(cv => cv.char === char).vec);
@@ -129,7 +129,7 @@ export default {
       return seed;
     },
     shareWisdom() {
-      const self = this;
+      // const self = this;
       if (!this.running) {
         if (this.generatedText.length >= this.maxLength) {
           /* twitter.postTweet({

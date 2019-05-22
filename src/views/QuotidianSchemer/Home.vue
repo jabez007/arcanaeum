@@ -182,7 +182,7 @@ export default {
           Skulpt.builtinFiles === undefined
           || Skulpt.builtinFiles.files[x] === undefined
         ) {
-          throw `File not found: '${x}'`;
+          throw new Error(`File not found: '${x}'`);
         }
         return Skulpt.builtinFiles.files[x];
       },
@@ -201,7 +201,7 @@ export default {
             self.selected.code,
             true,
           ))
-          .then((mod) => {
+          .then(() => { // mod
             //
           })
           .catch((err) => {
