@@ -194,7 +194,8 @@ export default {
         const lowerCase = /[a-z]/;
         const upperCase = /[A-Z]/;
         let encoding = '';
-        for (const char of ciphertext) {
+        for (let i = 0; i < ciphertext.length; i += 1) {
+          const char = ciphertext[i];
           if (lowerCase.test(char)) {
             encoding += 'a';
           } else if (upperCase.test(char)) {
