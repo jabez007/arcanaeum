@@ -96,7 +96,7 @@ export default {
     keyword: '',
     cipherChars: 'ABCDE',
     rules: {
-      required: value => !!value || 'this item is required',
+      required: value => !!value || value === '' || 'this item is required',
       word: value => !((value || '').toLowerCase().replace(/[a-z]/g, '')) || 'The keyword must be a word',
       min: value => (value || '').length === 5 || 'You must have exactly 5 ciphertext characters',
     },
@@ -139,8 +139,8 @@ export default {
       return unique;
     },
     encrypt(plainText, cipherKey) {
-      if (this.$refs.polybiusKeyForm.validate() && plainText) {
-        const plaintext = plainText.toLowerCase();
+      if (this.$refs.polybiusKeyForm.validate()) {
+        const plaintext = (plainText || '').toLowerCase();
         let key = '';
         for (let j = 0; j < 5; j += 1) {
           for (let i = 0; i < 5; i += 1) {

@@ -82,7 +82,7 @@ export default {
     getScore(text) {
       const textUpper = text.toUpperCase();
       let score = 0;
-      for (let i = 0; i <= textUpper.length - this.L; i++) {
+      for (let i = 0; i <= textUpper.length - this.L; i += 1) {
         if (textUpper.slice(i, i + this.L) in this.ngrams) {
           score += this.getLogProb(textUpper.slice(i, i + this.L));
         } else {

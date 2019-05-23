@@ -1,9 +1,11 @@
 <template>
-  <Cipher :encryptAlgorithm="encrypt"
-          :decryptAlgorithm="decrypt"
-          :cipherKey="{alpha, beta}"
-          :keysGenerator="possibleKeys"
-          @update-key="onUpdateKey">
+  <Cipher
+    :encryptAlgorithm="encrypt"
+    :decryptAlgorithm="decrypt"
+    :cipherKey="{alpha, beta}"
+    :keysGenerator="possibleKeys"
+    @update-key="onUpdateKey"
+  >
     <v-card slot="description">
       <v-card-title>
         <h5 class="headline">The Affine Cipher</h5>
@@ -27,8 +29,7 @@
           When encrypting, we first convert all the letters to numbers ('a'=0, 'b'=1, ..., 'z'=25).
           The ciphertext letter c, for any given letter p is (remember p is the number representing a letter):
           <code>c = alpha * p + beta (mod m)</code>
-          <br />
-          The decryption function then is:
+          <br>The decryption function then is:
           <code>p = alpha^-1 * (c - beta) (mod m)</code>
           where alpha^-1 is the multiplicative inverse of alpha in the group of integers modulo m.
           To find the multiplicative inverse of alpha, we need to find a number x such that:
@@ -36,35 +37,36 @@
           The easiest way to solve this equation (in our small case) is to search each of the numbers 1 to 25, and see which one satisfies the equation.
         </p>
         <p>
-          The <a @click="alpha=25; beta=25">Atbash</a> cipher is also an Affine cipher with alpaha=25 and beta=25.
+          The
+          <a @click="alpha=25; beta=25">Atbash</a> cipher is also an Affine cipher with alpaha=25 and beta=25.
         </p>
       </v-card-text>
     </v-card>
-    <v-form slot="key"
-            ref="affineKeyForm"
-            v-model="keyIsValid">
+    <v-form slot="key" ref="affineKeyForm" v-model="keyIsValid">
       <v-layout row>
         <v-flex xs5>
-          <v-text-field label="Alpha"
-                        type="number"
-                        v-model.number="alpha"
-                        :rules="[rules.required, rules.number, () => gcd(alpha, 26) === 1 || 'The value must be relatively prime to 26']"
-                        clearable
-                        required>
-          </v-text-field>
+          <v-text-field
+            label="Alpha"
+            type="number"
+            v-model.number="alpha"
+            :rules="[rules.required, rules.number, () => gcd(alpha, 26) === 1 || 'The value must be relatively prime to 26']"
+            clearable
+            required
+          ></v-text-field>
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs5>
-          <v-text-field label="Beta"
-                        type="number"
-                        v-model.number="beta"
-                        :rules="[rules.required, rules.number]"
-                        clearable
-                        required>
-          </v-text-field>
+          <v-text-field
+            label="Beta"
+            type="number"
+            v-model.number="beta"
+            :rules="[rules.required, rules.number]"
+            clearable
+            required
+          ></v-text-field>
         </v-flex>
       </v-layout>
-     </v-form>
+    </v-form>
   </Cipher>
 </template>
 
@@ -80,7 +82,7 @@ export default {
     alpha: 1,
     beta: 0,
     rules: {
-      required: value => (!!value || value === 0) || 'A value is required',
+      required: value => !!value || value === 0 || 'A value is required',
       number: value => Number.isInteger(Number(value)) || 'The value must be an integer',
     },
     keyIsValid: true,
@@ -93,13 +95,16 @@ export default {
       return this.gcd(b, a % b);
     },
     encrypt(plainText, key) {
-      if (this.$refs.affineKeyForm.validate() && plainText) {
-        const plaintext = plainText.toLowerCase();
+      if (this.$refs.affineKeyForm.validate()) {
+        const plaintext = (plainText || '').toLowerCase();
         let ciphertext = '';
         const re = /[a-z]/;
         for (let i = 0; i < plaintext.length; i += 1) {
           if (re.test(plaintext.charAt(i))) {
-            ciphertext += String.fromCharCode((key.alpha * (plaintext.charCodeAt(i) - 97) + key.beta) % 26 + 97);
+            ciphertext += String.fromCharCode(
+              ((key.alpha * (plaintext.charCodeAt(i) - 97) + key.beta) % 26)
+                + 97,
+            );
           } else {
             ciphertext += plaintext.charAt(i);
           }
@@ -110,21 +115,25 @@ export default {
     },
     findInverse(a) {
       for (let i = 1; i < 26; i += 1) {
-        if (((a * i) % 26) === 1) {
+        if ((a * i) % 26 === 1) {
           return i;
         }
       }
       return NaN;
     },
     decrypt(cipherText, key) {
-      if (this.$refs.affineKeyForm.validate() && cipherText) {
+      if (this.$refs.affineKeyForm.validate()) {
         const inverse = this.findInverse(key.alpha);
-        const ciphertext = cipherText.toLowerCase();
+        const ciphertext = (cipherText || '').toLowerCase();
         let plaintext = '';
         const re = /[a-z]/;
         for (let i = 0; i < ciphertext.length; i += 1) {
           if (re.test(ciphertext.charAt(i))) {
-            plaintext += String.fromCharCode(inverse * (ciphertext.charCodeAt(i) - 97 + 26 - key.beta) % 26 + 97);
+            plaintext += String.fromCharCode(
+              ((inverse * (ciphertext.charCodeAt(i) - 97 + 26 - key.beta))
+                % 26)
+                + 97,
+            );
           } else {
             plaintext += ciphertext.charAt(i);
           }
@@ -134,7 +143,8 @@ export default {
       return '';
     },
     possibleKeys(key) {
-      if (!key) { // first pass is ''
+      if (!key) {
+        // first pass is ''
         return { alpha: 1, beta: 0 };
       }
       let { alpha } = key;

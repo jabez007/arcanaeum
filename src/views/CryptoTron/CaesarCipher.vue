@@ -1,9 +1,11 @@
 <template>
-  <Cipher :encryptAlgorithm="encrypt"
-          :decryptAlgorithm="decrypt"
-          :cipherKey="{ shift }"
-          :keysGenerator="possibleKeys"
-          @update-key="onUpdateKey">
+  <Cipher
+    :encryptAlgorithm="encrypt"
+    :decryptAlgorithm="decrypt"
+    :cipherKey="{ shift }"
+    :keysGenerator="possibleKeys"
+    @update-key="onUpdateKey"
+  >
     <v-card slot="description">
       <v-card-title>
         <h5 class="headline">The Caesar Cipher</h5>
@@ -17,19 +19,25 @@
         </p>
         <p>
           More complex encryption schemes such as the Vigenère cipher employ the Caesar cipher as one element of the encryption process.
-          The widely known <a @click="shift=13">ROT13</a> 'encryption' is simply a Caesar cipher with an offset of 13.
+          The widely known
+          <a @click="shift=13">ROT13</a> 'encryption' is simply a Caesar cipher with an offset of 13.
           The Caesar cipher offers essentially no communication security as it can be easily broken even by hand.
         </p>
       </v-card-text>
     </v-card>
-    <v-text-field slot="key"
-                  label="Shift"
-                  type="number"
-                  v-model.number="shift"
-                  :rules="[() => !!shift || 'A key is required', () => !!shift && Number.isInteger(Number(shift)) || 'The key must be an integer']"
-                  clearable
-                  required>
-    </v-text-field>
+    <v-form ref="caesarKeyForm" slot="key" v-model="keyIsValid">
+      <v-text-field
+        label="Shift"
+        type="number"
+        v-model.number="shift"
+        :rules="[
+          () => !!shift || shift === 0 || 'A shift is required',
+          () => Number.isInteger(Number(shift)) || 'The shift must be an integer'
+        ]"
+        clearable
+        required
+      ></v-text-field>
+    </v-form>
   </Cipher>
 </template>
 
@@ -43,16 +51,19 @@ export default {
   },
   data: () => ({
     shift: 0,
+    keyIsValid: false,
   }),
   methods: {
     encrypt(plainText, key) {
-      if (plainText) {
-        const plaintext = plainText.toLowerCase();
+      if (this.$refs.caesarKeyForm.validate()) {
+        const plaintext = (plainText || '').toLowerCase();
         let ciphertext = '';
         const re = /[a-z]/;
         for (let i = 0; i < plaintext.length; i += 1) {
           if (re.test(plaintext.charAt(i))) {
-            ciphertext += String.fromCharCode((plaintext.charCodeAt(i) - 97 + key.shift) % 26 + 97);
+            ciphertext += String.fromCharCode(
+              ((plaintext.charCodeAt(i) - 97 + key.shift) % 26) + 97,
+            );
           } else {
             ciphertext += plaintext.charAt(i);
           }
@@ -62,13 +73,15 @@ export default {
       return '';
     },
     decrypt(cipherText, key) {
-      if (cipherText) {
-        const ciphertext = cipherText.toLowerCase();
+      if (this.$refs.caesarKeyForm.validate()) {
+        const ciphertext = (cipherText || '').toLowerCase();
         let plaintext = '';
         const re = /[a-z]/;
         for (let i = 0; i < ciphertext.length; i += 1) {
           if (re.test(ciphertext.charAt(i))) {
-            plaintext += String.fromCharCode((ciphertext.charCodeAt(i) - 97 + 26 - key.shift) % 26 + 97);
+            plaintext += String.fromCharCode(
+              ((ciphertext.charCodeAt(i) - 97 + 26 - key.shift) % 26) + 97,
+            );
           } else {
             plaintext += ciphertext.charAt(i);
           }
@@ -78,7 +91,8 @@ export default {
       return '';
     },
     possibleKeys(key) {
-      if (!key) { // first pass is ''
+      if (!key) {
+        // first pass is ''
         return { shift: 1 };
       }
       if (key.shift >= 26) {

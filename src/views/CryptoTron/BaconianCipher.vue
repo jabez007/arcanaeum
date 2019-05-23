@@ -120,7 +120,7 @@ export default {
   }),
   methods: {
     encrypt(plaintext, key) {
-      const plainText = plaintext.toUpperCase();
+      const plainText = (plaintext || '').toUpperCase();
       let cipherText = '';
       for (let i = 0; i < plainText.length; i += 1) {
         const char = plainText[i];
@@ -133,24 +133,27 @@ export default {
       return cipherText.replace(/[^ab]/g, '');
     },
     enstegano(encoding, message) {
-      const re = /[a-zA-Z]/;
-      let steganograph = '';
-      let i = 0;
-      for (let j = 0; j < message.length; j += 1) {
-        const char = message[j];
-        if (re.test(char)) {
-          if (encoding[i] === 'a') {
-            steganograph += char.toLowerCase();
-            i += 1;
-          } else if (encoding[i] === 'b') {
-            steganograph += char.toUpperCase();
-            i += 1;
+      if (message) {
+        const re = /[a-zA-Z]/;
+        let steganograph = '';
+        let i = 0;
+        for (let j = 0; j < message.length; j += 1) {
+          const char = message[j];
+          if (re.test(char)) {
+            if (encoding[i] === 'a') {
+              steganograph += char.toLowerCase();
+              i += 1;
+            } else if (encoding[i] === 'b') {
+              steganograph += char.toUpperCase();
+              i += 1;
+            }
+          } else {
+            steganograph += char;
           }
-        } else {
-          steganograph += char;
         }
+        return steganograph;
       }
-      return steganograph;
+      return '';
     },
     decrypt(ciphertext, key) {
       const getUniqueCharacters = (input) => {
