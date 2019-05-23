@@ -49,7 +49,7 @@
       <v-text-field
         label="Primer"
         v-model.trim="primer"
-        :rules="[rules.required, rules.word]"
+        :rules="rules"
         clearable
         required
       ></v-text-field>
@@ -61,6 +61,8 @@
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import TabulaRecta from '@/components/CryptoTron/TabulaRecta.vue';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Rules from '_/rules';
 
 export default {
   components: {
@@ -69,13 +71,13 @@ export default {
   },
   data: () => ({
     primer: '',
-    rules: {
-      required: value => !!value || 'A value is required',
-      word: value => !(value || '').toLowerCase().replace(/[a-zA-Z]/g, '')
-        || 'The primer must be a word',
-    },
     keyIsValid: false,
   }),
+  computed: {
+    rules() {
+      return [Rules.required, Rules.word];
+    },
+  },
   methods: {
     encrypt(plainText, cipherKey) {
       if (this.$refs.autokeyKeyForm.validate()) {

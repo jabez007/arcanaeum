@@ -30,10 +30,7 @@
         label="Shift"
         type="number"
         v-model.number="shift"
-        :rules="[
-          () => !!shift || shift === 0 || 'A shift is required',
-          () => Number.isInteger(Number(shift)) || 'The shift must be an integer'
-        ]"
+        :rules="rules"
         clearable
         required
       ></v-text-field>
@@ -44,6 +41,8 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Rules from '_/rules';
 
 export default {
   components: {
@@ -53,6 +52,11 @@ export default {
     shift: 0,
     keyIsValid: false,
   }),
+  computed: {
+    rules() {
+      return [Rules.required, Rules.integer];
+    },
+  },
   methods: {
     encrypt(plainText, key) {
       if (this.$refs.caesarKeyForm.validate()) {

@@ -49,7 +49,7 @@
             label="Alpha"
             type="number"
             v-model.number="alpha"
-            :rules="[rules.required, rules.number, () => gcd(alpha, 26) === 1 || 'The value must be relatively prime to 26']"
+            :rules="[...rules, () => gcd(alpha, 26) === 1 || 'The value must be relatively prime to 26']"
             clearable
             required
           ></v-text-field>
@@ -60,7 +60,7 @@
             label="Beta"
             type="number"
             v-model.number="beta"
-            :rules="[rules.required, rules.number]"
+            :rules="rules"
             clearable
             required
           ></v-text-field>
@@ -73,6 +73,8 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Rules from '_/rules';
 
 export default {
   components: {
@@ -81,12 +83,13 @@ export default {
   data: () => ({
     alpha: 1,
     beta: 0,
-    rules: {
-      required: value => !!value || value === 0 || 'A value is required',
-      number: value => Number.isInteger(Number(value)) || 'The value must be an integer',
-    },
     keyIsValid: true,
   }),
+  computed: {
+    rules() {
+      return [Rules.required, Rules.integer];
+    },
+  },
   methods: {
     gcd(a, b) {
       if (!b) {

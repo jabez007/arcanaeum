@@ -78,13 +78,18 @@ import VueMarkdown from 'vue-markdown';
 // require CodeMirror component
 import { codemirror } from 'vue-codemirror';
 // require CodeMirror styles
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'codemirror/lib/codemirror.css';
+// eslint-disable-next-line import/no-extraneous-dependencies
 // require other CodeMirror resources
 // language
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'codemirror/mode/python/python';
 // theme css
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'codemirror/theme/cobalt.css';
 // require active-line.js
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'codemirror/addon/selection/active-line';
 
 function decodeEntities(encodedString) {

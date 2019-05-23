@@ -68,7 +68,7 @@
         label="Number of Rails"
         v-model.number="rails"
         type="number"
-        :rules="[rules.required, rules.number, rules.positive]"
+        :rules="rules"
         clearable
         required
       ></v-text-field>
@@ -79,6 +79,8 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Rules from '_/rules';
 
 function cycleLength(rails) {
   return Math.max(0, 2 * rails - 2); // 0 is our min cycle length
@@ -90,16 +92,13 @@ export default {
   },
   data: () => ({
     rails: 1,
-    rules: {
-      required: value => !!value || 'A key is required',
-      number: value => (!!value && Number.isInteger(Number(value)))
-        || 'The key must be an integer',
-      positive: value => (!!value && value > 0) || 'The key must be positive',
-    },
     keyIsValid: true,
     exampleMsg: '',
   }),
   computed: {
+    rules() {
+      return [Rules.required, Rules.integer, Rules.positive];
+    },
     cipherGrid() {
       if (this.rails >= 3 && this.rails <= 5) {
         const msg = this.exampleMsg.toLowerCase().replace(/[^a-z]/g, '');

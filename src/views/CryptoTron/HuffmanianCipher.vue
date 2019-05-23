@@ -41,7 +41,7 @@
             <v-textarea
               label="False Message"
               v-model.trim="message"
-              :rules="[rules.required]"
+              :rules="rules"
               clearable
               rows="1"
               auto-grow
@@ -81,6 +81,8 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Rules from '_/rules';
 
 export default {
   components: {
@@ -116,11 +118,13 @@ export default {
       Z: '1011101000',
     },
     message: '',
-    rules: {
-      required: value => !!value || 'this item is required',
-    },
     keyIsValid: false,
   }),
+  computed: {
+    rules() {
+      return [Rules.required];
+    },
+  },
   methods: {
     encrypt(plaintext, key) {
       const plainText = (plaintext || '').toUpperCase();

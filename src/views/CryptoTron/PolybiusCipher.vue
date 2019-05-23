@@ -63,7 +63,7 @@
                     md9>
               <v-text-field label="Keyword"
                             v-model.trim="keyword"
-                            :rules="[rules.required, rules.word]"
+                            :rules="keywordRules"
                             required
                             clearable>
               </v-text-field>
@@ -73,7 +73,7 @@
                     md2>
               <v-text-field label="Ciphertext Characters"
                             v-model.trim="cipherChars"
-                            :rules="[rules.required, rules.min]"
+                            :rules="cipherCharRules"
                             required
                             clearable>
               </v-text-field>
@@ -87,6 +87,8 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Rules from '_/rules';
 
 export default {
   components: {
@@ -95,14 +97,15 @@ export default {
   data: () => ({
     keyword: '',
     cipherChars: 'ABCDE',
-    rules: {
-      required: value => !!value || value === '' || 'this item is required',
-      word: value => !((value || '').toLowerCase().replace(/[a-z]/g, '')) || 'The keyword must be a word',
-      min: value => (value || '').length === 5 || 'You must have exactly 5 ciphertext characters',
-    },
     keyIsValid: false,
   }),
   computed: {
+    keywordRules() {
+      return [Rules.required, Rules.word];
+    },
+    cipherCharRules() {
+      return [Rules.required, Rules.exactLength(5)];
+    },
     square() {
       let key = this.getUniqueCharacters(this.keyword).replace(/[jJ]/g, '');
       const cipherSquare = new Array(5).fill(null).map(() => (new Array(5).fill(null)));
