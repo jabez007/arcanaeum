@@ -18,10 +18,15 @@ function positive(value) {
   return (!!value && value > 0) || 'The value must be positive';
 }
 
+function minLength(length) {
+  return value => (value || '').length >= length || `The value must have a length of at least ${length}`;
+}
+
 export default {
   required,
   integer,
   word,
   exactLength,
   positive,
+  minLength,
 };

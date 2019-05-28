@@ -48,7 +48,7 @@
         <v-text-field
           label="Key Word"
           v-model.trim="keyword"
-          :rules="[rules.required, rules. min, rules.word]"
+          :rules="rules"
           required
           clearable
         ></v-text-field>
@@ -66,6 +66,8 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Rules from '_/rules';
 
 export default {
   components: {
@@ -73,13 +75,13 @@ export default {
   },
   data: () => ({
     keyword: '',
-    rules: {
-      required: value => !!value || 'this item is required',
-      word: value => !((value || '').toLowerCase().trim().replace(/[a-z]/g, '')) || 'The key word must be a word',
-      min: value => (value || '').length > 1 || 'The key word should be longer than one character',
-    },
     keyIsValid: false,
   }),
+  computed: {
+    rules() {
+      return [Rules.required, Rules.word, Rules.minLength(2)];
+    },
+  },
   methods: {
     encrypt(plainText, cipherKey) {},
     decrypt(cipherText, cipherKey) {},
