@@ -84,6 +84,10 @@ import Cipher from '@/components/CryptoTron/Cipher.vue';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Rules from '_/rules';
 
+function findEncoding(block) {
+  return e => (e || {}).encoding === (block || '');
+}
+
 export default {
   components: {
     Cipher,
@@ -178,7 +182,7 @@ export default {
           const char = cipherText[i];
           if (char === '0' || char === '1') {
             block += char;
-            const enc = encoding.find(e => e.encoding === block);
+            const enc = encoding.find(findEncoding(block));
             if (enc) {
               plainText += enc.char;
               block = '';

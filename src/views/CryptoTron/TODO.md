@@ -15,7 +15,7 @@
 
 * Transposition
   * ~~Rail-fence Cipher~~
-  * Columnar Transposition Cipher
+  * ~~Columnar Transposition Cipher~~
 
 * Steganography
   * ~~Baconian Cipher~~

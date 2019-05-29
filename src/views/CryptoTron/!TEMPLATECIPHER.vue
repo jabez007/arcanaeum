@@ -17,6 +17,7 @@
 </template>
 
 <script>
+/* eslint-disable */  // <- remove this when creating a new cipher from template
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 

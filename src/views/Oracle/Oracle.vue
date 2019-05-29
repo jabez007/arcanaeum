@@ -68,6 +68,7 @@
 <script>
 import * as tf from '@tensorflow/tfjs';
 // import { Twitter } from 'twitter-node-client';
+const char2vec = require('@/assets/Oracle/char2vec.json');
 
 const SEEDLENGTH = 17;
 
@@ -109,7 +110,6 @@ export default {
   },
   async created() {
     this.model = await tf.loadLayersModel('https://raw.githubusercontent.com/jabez007/arcanaeum/master/weights/model.json');
-    const char2vec = require('@/assets/Oracle/char2vec.json');
     this.charVectors = Object.keys(char2vec).map(key => ({ char: key, vec: char2vec[key] }));
   },
   methods: {
