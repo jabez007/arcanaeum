@@ -102,7 +102,27 @@ export default {
       }
       return '';
     },
-    decrypt(cipherText, cipherKey) {},
+    decrypt(cipherText, cipherKey) {
+      if (this.$refs.columnarKeyForm.validate()) {
+        const ciphertext = (cipherText || '');
+        const keywordArray = cipherKey.keyword.split('');
+        const sortedKeyword = [...keywordArray];
+        sortedKeyword.sort(); // sorts the elements of array IN PLACE
+        const plaintext = new Array(ciphertext.length);
+        let k = 0;
+        for (let i = 0; i < sortedKeyword.length; i += 1) {
+          const index = keywordArray.indexOf(sortedKeyword[i]);
+          // remove used letters as we go in case of duplicates
+          keywordArray.splice(index, 1, '');
+          for (let j = index; j < ciphertext.length; j += cipherKey.keyword.length) {
+            plaintext[j] = ciphertext[k];
+            k += 1;
+          }
+        }
+        return plaintext.join('');
+      }
+      return '';
+    },
     possibleKeys(cipherKey, cipherText, bestCipherKey) {},
     onUpdateKey(newKey) {
       this.keyword = newKey.keyword;
