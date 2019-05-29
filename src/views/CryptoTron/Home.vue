@@ -77,12 +77,6 @@
                         <v-list-tile-title class="text-xs-center">Rail-Fence</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click=""
-                             ripple>
-                    <v-list-tile-content>
-                        <v-list-tile-title class="text-xs-center">Route</v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
                 <v-list-tile to="/cryptotron/columnar-transposition"
                              ripple>
                     <v-list-tile-content>
