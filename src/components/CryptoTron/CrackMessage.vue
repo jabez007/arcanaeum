@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import lzString from 'lz-string/libs/lz-string';
+
 export default {
   name: 'CrackMessage',
   props: {
@@ -70,11 +72,44 @@ export default {
     maxSteps: 1000,
     crackingMessage: false,
     clientHeight: 0,
-    ngrams: null,
-    L: 0,
-    N: 0,
-    floor: 0.0,
   }),
+  computed: {
+    ngrams() {
+      const storedNgrams = localStorage.getItem(this.ngramsFile);
+      if (storedNgrams) {
+        return JSON.parse(lzString.decompress(storedNgrams));
+      }
+      // eslint-disable-next-line
+      const ngramsObj = require(`../../assets/CryptoTron/${this.ngramsFile}.json`);
+      localStorage.setItem(this.ngramsFile, lzString.compress(JSON.stringify(ngramsObj)));
+
+      localStorage.setItem(`${this.ngramsFile}L`, Object.keys(ngramsObj)[0].length);
+
+      const sum = Object.values(ngramsObj).reduce((a, b) => a + b, 0);
+      localStorage.setItem(`${this.ngramsFile}N`, sum);
+      localStorage.setItem(`${this.ngramsFile}floor`, Math.log10(0.01 / sum));
+
+      return ngramsObj;
+    },
+    L() {
+      if (this.ngrams) {
+        return parseInt(localStorage.getItem(`${this.ngramsFile}L`), 10);
+      }
+      return 0;
+    },
+    N() {
+      if (this.ngrams) {
+        return parseInt(localStorage.getItem(`${this.ngramsFile}N`), 10);
+      }
+      return 0;
+    },
+    floor() {
+      if (this.ngrams) {
+        return parseFloat(localStorage.getItem(`${this.ngramsFile}floor`));
+      }
+      return 0.0;
+    },
+  },
   methods: {
     getLogProb(ngram) {
       return Math.log10(this.ngrams[ngram] / this.N);
@@ -96,18 +131,6 @@ export default {
       this.crackingMessage = true;
       const self = this;
       setTimeout(() => {
-        if (!self.ngrams) {
-          this.ngrams = require(`../../assets/CryptoTron/${self.ngramsFile}.json`);
-          let sum = 0;
-          for (const name in self.ngrams) {
-            if (Number.isInteger(self.ngrams[name])) {
-              self.L = name.length;
-              sum += self.ngrams[name];
-            }
-          }
-          self.N = sum;
-          self.floor = Math.log10(0.01 / sum);
-        }
         const ciphertext = self.cipherText;
         let bestScore = Number.MIN_SAFE_INTEGER;
         let bestKey = null;
