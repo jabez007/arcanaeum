@@ -87,6 +87,7 @@ export default {
     camera() {
       // console.log('camera ready');
       // cheat scene in here
+      // eslint-disable-next-line no-underscore-dangle
       this.scene = this.scene || this.camera._scene;
     },
   },

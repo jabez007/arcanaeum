@@ -87,6 +87,11 @@
 </template>
 
 <script>
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Random from '_/random';
+
+const backgroundImageSrc = require('@/assets/Conungeon/FifteenPuzzle/circle of life.png');
+
 export default {
   name: 'FifteenPuzzle',
   data: () => ({
@@ -113,13 +118,14 @@ export default {
     backgroundImage.onload = () => { // assign the onload event before assining the src.
       self.backgroundImage = backgroundImage;
     };
-    backgroundImage.src = require('@/assets/Conungeon/FifteenPuzzle/circle of life.png');
+    backgroundImage.src = backgroundImageSrc;
     for (let j = 0; j < 4; j += 1) {
       for (let i = 0; i < 4; i += 1) {
         const image = new Image();
         image.onload = () => { // assign the onload event before assining the src.
           self.puzzlePieces.splice([4 * j + i], 1, image);
         };
+        // eslint-disable-next-line
         image.src = require(`@/assets/Conungeon/FifteenPuzzle/slice_${j}_${i}.png`);
       }
     }
@@ -148,7 +154,7 @@ export default {
       return 'empty';
     },
     getRandom(min, max) {
-      return Math.random() * (max - min) + min;
+      return Random.number(min, max);
     },
     getKonvaRectImage(i, j) {
       const key = 4 * (j - 1) + (i - 1);

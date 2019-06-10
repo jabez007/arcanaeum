@@ -203,6 +203,9 @@
 </template>
 
 <script>
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Random from '_/random';
+
 export default {
   name: 'SevenBridges',
   data: () => ({
@@ -235,7 +238,7 @@ export default {
   },
   methods: {
     getRandom(min, max) {
-      return Math.random() * (max - min) + min;
+      return Random.number(min, max);
     },
     handleClick(e) {
       if (!this.currentStone) {

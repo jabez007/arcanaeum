@@ -58,7 +58,7 @@
                    :ref="`layer${k}`"
                    @click="onClick">
             <template v-for="(row, j) in layer">
-              <v-group v-for="(node, i) in row"
+              <v-group v-for="(node, i) in row" 
                        v-if="node > 0"
                        :key="`node${i}${j}${k}`"
                        :config="getKonvaGroupConfig(i, j)">

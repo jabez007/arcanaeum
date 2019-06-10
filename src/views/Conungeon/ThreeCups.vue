@@ -91,6 +91,9 @@
 </template>
 
 <script>
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Random from '_/random';
+
 const CUPS = [
   {
     name: 'ace',
@@ -131,18 +134,12 @@ const CUPS = [
 
 const WIDTHOVERHEIGHT = 1200 / 1976;
 
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; // The maximum is exclusive and the minimum is inclusive
-}
-
 export default {
   name: 'ThreeCups',
   data: () => ({
     konvaBaseDim: 0,
     cups: [],
-    flipped: getRandomInt(0, 3),
+    flipped: Random.int(0, 3),
     selected: [],
   }),
   computed: {
@@ -156,13 +153,14 @@ export default {
   created() {
     const self = this;
     for (let i = 0; i < 3; i += 1) {
-      const cup = CUPS.splice(getRandomInt(0, CUPS.length), 1)[0];
+      const cup = CUPS.splice(Random.int(0, CUPS.length), 1)[0];
       const image = new Image();
       image.onload = () => {
         // assign the onload event before assining the src.
         cup.image = image;
         self.cups.push(cup);
       };
+      // eslint-disable-next-line
       image.src = require(`@/assets/Conungeon/ThreeCups/${cup.name}.jpg`);
     }
   },
@@ -182,7 +180,7 @@ export default {
   },
   methods: {
     getRandom(min, max) {
-      return Math.random() * (max - min) + min;
+      return Random.number(min, max);
     },
     handleClick(e) {
       const card = e.target;

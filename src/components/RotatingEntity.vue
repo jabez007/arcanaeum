@@ -26,24 +26,21 @@
 </template>
 
 <script>
-function getRandomInt(min, max) {
-  min = Math.ceil(Math.min(min, max));
-  max = Math.floor(Math.max(min, max));
-  // dont give a  0
-  const rand = Math.floor(Math.random() * (max - min)) + min; // The maximum is exclusive and the minimum is inclusive
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Random from '_/random';
+
+function getRandomNonZeroInt(min, max) {
+  const rand = Random.int(min, max);
   if (rand === 0) {
-    return getRandomInt(min, max);
+    return getRandomNonZeroInt(min, max);
   }
   return rand;
 }
 
-function getRandom(min, max) {
-  min = Math.min(min, max);
-  max = Math.max(min, max);
-  // dont give a 0
-  const rand = Math.random() * (max - min) + min; // The maximum is exclusive and the minimum is inclusive
+function getRandomNonZero(min, max) {
+  const rand = Random.number(min, max);
   if (rand === 0) {
-    return getRandom(min, max);
+    return getRandomNonZero(min, max);
   }
   return rand;
 }
@@ -57,31 +54,31 @@ export default {
     },
     duration: {
       type: Number,
-      default: () => getRandomInt(5, 25),
+      default: () => getRandomNonZeroInt(5, 25),
     },
     xStart: {
       type: Number,
-      default: () => getRandom(0, 2),
+      default: () => getRandomNonZero(0, 2),
     },
     xDirection: {
       type: Number,
-      default: () => getRandomInt(-1, 2),
+      default: () => getRandomNonZeroInt(-1, 2),
     },
     yStart: {
       type: Number,
-      default: () => getRandom(0, 2),
+      default: () => getRandomNonZero(0, 2),
     },
     yDirection: {
       type: Number,
-      default: () => getRandomInt(-1, 2),
+      default: () => getRandomNonZeroInt(-1, 2),
     },
     zStart: {
       type: Number,
-      default: () => getRandom(0, 2),
+      default: () => getRandomNonZero(0, 2),
     },
     zDirection: {
       type: Number,
-      default: () => getRandomInt(-1, 2),
+      default: () => getRandomNonZeroInt(-1, 2),
     },
   },
   computed: {
@@ -101,6 +98,7 @@ export default {
       return Math.PI * 1.75 * this.xDirection;
     },
     _xEnd() {
+      // eslint-disable-next-line no-underscore-dangle
       return this._xStart + (Math.PI * 2 * this.xDirection);
     },
     _yStart() {
@@ -119,6 +117,7 @@ export default {
       return Math.PI * 1.75 * this.yDirection;
     },
     _yEnd() {
+      // eslint-disable-next-line no-underscore-dangle
       return this._yStart + (Math.PI * 2 * this.yDirection);
     },
     _zStart() {
@@ -137,12 +136,13 @@ export default {
       return Math.PI * 1.75 * this.zDirection;
     },
     _zEnd() {
+      // eslint-disable-next-line no-underscore-dangle
       return this._zStart + (Math.PI * 2 * this.zDirection);
     },
   },
   methods: {
     getRandom(min, max) {
-      return getRandom(min, max);
+      return getRandomNonZero(min, max);
     },
   },
 };
