@@ -1,0 +1,21 @@
+{
+  "name": "Archon's Arcanaeum",
+  "short_name": "Arcanaeum",
+  "description": "The unofficial repository for the Archons of the Spire (part of Last Hope LARP)",
+  "icons": [
+    {
+      "src": "./img/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./img/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#512da8",
+  "theme_color": "#03a9f4"
+}

@@ -5,6 +5,7 @@ import VueClipboard from 'vue-clipboard2';
 import VueKonva from 'vue-konva';
 import App from './App.vue';
 import router from './router/index';
+import './registerServiceWorker';
 
 Vue.use(Babylon);
 Vue.use(VueClipboard);

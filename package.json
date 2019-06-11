@@ -13,6 +13,7 @@
     "babel-runtime": "^6.26.0",
     "konva": "^3.2.3",
     "lz-string": "^1.4.4",
+    "register-service-worker": "^1.6.2",
     "skulpt": "^0.11.1",
     "vue": "^2.6.6",
     "vue-babylonjs": "^1.0.0-beta.6",
@@ -27,6 +28,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
     "@vue/cli-plugin-eslint": "^3.5.0",
+    "@vue/cli-plugin-pwa": "^3.8.0",
     "@vue/cli-service": "^3.7.0",
     "@vue/eslint-config-airbnb": "^4.0.0",
     "babel-eslint": "^10.0.1",
