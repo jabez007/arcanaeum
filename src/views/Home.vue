@@ -1,6 +1,7 @@
 <template>
   <div id="aether">
-    <Scene id="canvas"
+    <Scene v-if="!isMobile()"
+           id="canvas"
            :height="windowHeight"
            ref="scene"
            fog="exp"
@@ -24,6 +25,16 @@
         </RotatingEntity>
       </RotatingEntity>
     </Scene>
+    <div v-if="isMobile()"
+         id="mobileMenu">
+      <div>
+        <button v-for="(box, key) in boxes.filter(b => b.name)"
+                :key="key"
+                @click="$router.push(box.path)">
+                {{ box.name }}
+        </button>
+      </div>
+    </div>
     <div ref="tooltip"
          id="tooltip">
     </div>
@@ -93,10 +104,13 @@ export default {
   },
   mounted() {
     const self = this;
-    window.removeEventListener('click', this.navigateToBox);
-    window.addEventListener('click', this.navigateToBox);
-    window.removeEventListener('mousemove', this.showTooltip);
-    window.addEventListener('mousemove', this.showTooltip);
+    if (!this.isMobile()) {
+      window.removeEventListener('click', this.navigateToBox);
+      window.addEventListener('click', this.navigateToBox);
+      //
+      window.removeEventListener('mousemove', this.showTooltip);
+      window.addEventListener('mousemove', this.showTooltip);
+    }
     //
     this.windowHeight = window.innerHeight;
     window.addEventListener('resize', () => {
@@ -108,6 +122,9 @@ export default {
     window.removeEventListener('mousemove', this.showTooltip);
   },
   methods: {
+    isMobile() {
+      return window.innerWidth < 600;
+    },
     pickMesh() {
       const pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY);
       if (pickResult.hit) {
@@ -156,5 +173,37 @@ export default {
   text-align: center;
   padding: 5px;
   margin: 0 auto;
+}
+
+#mobileMenu {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: #512da8;
+  opacity: 0.9;
+}
+
+#mobileMenu div {
+  width: 50%;
+  height: 100%;
+  margin: 0 auto;
+  border-radius: 25px;
+  background: #03a9f4;
+  opacity: 0.9;
+}
+
+#mobileMenu div button {
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 50%;
+  padding: 5px;
+  border: 1px solid #673ab7;
+  border-radius: 25px;
+  background: #D1C4E9;
+  opacity: 0.9;
+  text-align: center;
+  color: #212121;
+  font-size: large;
+  font-family: Aclonica, Merienda, 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
 }
 </style>
