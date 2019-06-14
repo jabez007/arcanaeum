@@ -160,6 +160,12 @@ export default {
 </script>
 
 <style scoped>
+#aether {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+}
+
 #tooltip {
   position: absolute;
   top: 50%;
@@ -178,7 +184,6 @@ export default {
 #mobileMenu {
   width: 100%;
   height: 100%;
-  position: fixed;
   background: #512da8;
   opacity: 0.9;
 }
