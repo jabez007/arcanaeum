@@ -28,11 +28,14 @@
     <div v-if="isMobile()"
          id="mobileMenu">
       <div>
-        <button v-for="(box, key) in boxes.filter(b => b.name)"
-                :key="key"
-                @click="$router.push(box.path)">
-                {{ box.name }}
-        </button>
+        <div v-for="(box, key) in boxes.filter(b => b.name)"
+             :key="key">
+          <div>
+            <button @click="$router.push(box.path)">
+              {{ box.name }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <div ref="tooltip"
@@ -188,24 +191,34 @@ export default {
   opacity: 0.9;
 }
 
-#mobileMenu div {
+#mobileMenu > div {
   width: 50%;
   height: 100%;
   margin: 0 auto;
   border-radius: 25px;
   background: #03a9f4;
   opacity: 0.9;
+  box-shadow: 5px 5px 5px rgba(0,0,0, 0.5);
+  display: table;
 }
 
-#mobileMenu div button {
+#mobileMenu > div > div {
+  display: table-row;
+}
+
+#mobileMenu > div > div > div {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#mobileMenu button {
   width: 100%;
-  margin: 0 auto;
-  margin-top: 50%;
   padding: 5px;
   border: 1px solid #673ab7;
   border-radius: 25px;
   background: #D1C4E9;
   opacity: 0.9;
+  box-shadow: 5px 5px 5px rgba(0,0,0, 0.5);
   text-align: center;
   color: #212121;
   font-size: large;
