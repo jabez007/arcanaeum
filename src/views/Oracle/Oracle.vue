@@ -102,25 +102,24 @@ export default {
     this.charVectors = Object.keys(char2vec).map(key => ({ char: key, vec: char2vec[key] }));
   },
   methods: {
-    async generateText(seedText) {
+    generateText(seedText) {
       const self = this;
       const seed = (seedText || '')
         .toLowerCase()
         .replace(/[^0-9a-z_ ]/g, '');
       if (seed.length >= this.seedLength && seed.length < this.maxLength) {
-        this.running = true;
-        const input = seed
-          .substring(seed.length - this.seedLength)
-          .split('')
-          .map(char => self.charVectors.find(cv => cv.char === char).vec);
-        const probsArray = await this.model.predict(tf.tensor3d([input]));
-        const pred = sample(probsArray, this.temperature);
-        const predChar = this.charVectors.find(cv => cv.vec[pred]).char;
-        return await this.generateText(seed + predChar);
+        setTimeout(async () => {
+          const input = seed
+            .substring(seed.length - self.seedLength)
+            .split('')
+            .map(char => self.charVectors.find(cv => cv.char === char).vec);
+          const probsArray = await self.model.predict(tf.tensor3d([input]));
+          const pred = sample(probsArray, self.temperature);
+          const predChar = self.charVectors.find(cv => cv.vec[pred]).char;
+          self.generateText(seed + predChar);
+        }, 100);
       }
-      this.running = false;
       this.generatedText = seed;
-      return seed;
     },
   },
 };
