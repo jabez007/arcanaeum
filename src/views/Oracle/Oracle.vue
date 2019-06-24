@@ -71,14 +71,14 @@ const char2vec = require('@/assets/Oracle/char2vec.json');
 
 const SEEDLENGTH = 29;
 
-async function sample(probs, temperature) {
+function sample(probs, temperature) {
   // https://github.com/tensorflow/tfjs-examples/blob/f979101509211fc8e1485ba527a9cc7bef3237d3/lstm-text-generation/model.js
-  return tf.tidy(async () => {
+  return tf.tidy(() => {
     const logits = tf.div(tf.log(probs), Math.max(temperature, 1e-6));
     const isNormalized = false;
     // `logits` is for a multinomial distribution, scaled by the temperature.
     // We randomly draw a sample from the distribution.
-    return (await tf.multinomial(logits, 1, null, isNormalized).data())[0];
+    return tf.multinomial(logits, 1, null, isNormalized).dataSync()[0];
   });
 }
 
@@ -110,7 +110,7 @@ export default {
         this.running = true;
         const input = seed.substring(seed.length - this.seedLength).split('').map(char => self.charVectors.find(cv => cv.char === char).vec);
         const probsArray = await this.model.predict(tf.tensor3d([input]));
-        const pred = await sample(probsArray, this.temperature);
+        const pred = sample(probsArray, this.temperature);
         const predChar = this.charVectors.find(cv => cv.vec[pred]).char;
         return this.generateText(seed + predChar);
       }
