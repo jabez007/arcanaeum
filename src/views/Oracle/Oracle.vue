@@ -56,7 +56,6 @@
                     :loading="running"
                     prepend-inner-icon="refresh"
                     @click:prepend-inner="generateText(seed)"
-                    append-icon="share"
                     readonly>
         </v-textarea>
       </v-card-text>
@@ -105,14 +104,19 @@ export default {
   methods: {
     async generateText(seedText) {
       const self = this;
-      const seed = (seedText || '').toLowerCase().replace(/[^0-9a-z_ ]/g, '');
+      const seed = (seedText || '')
+        .toLowerCase()
+        .replace(/[^0-9a-z_ ]/g, '');
       if (seed.length >= this.seedLength && seed.length < this.maxLength) {
         this.running = true;
-        const input = seed.substring(seed.length - this.seedLength).split('').map(char => self.charVectors.find(cv => cv.char === char).vec);
+        const input = seed
+          .substring(seed.length - this.seedLength)
+          .split('')
+          .map(char => self.charVectors.find(cv => cv.char === char).vec);
         const probsArray = await this.model.predict(tf.tensor3d([input]));
         const pred = sample(probsArray, this.temperature);
         const predChar = this.charVectors.find(cv => cv.vec[pred]).char;
-        return this.generateText(seed + predChar);
+        return await this.generateText(seed + predChar);
       }
       this.running = false;
       this.generatedText = seed;
