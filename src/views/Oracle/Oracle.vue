@@ -57,7 +57,6 @@
                     prepend-inner-icon="refresh"
                     @click:prepend-inner="generateText(seed)"
                     append-icon="share"
-                    @click:append="shareWisdom"
                     readonly>
         </v-textarea>
       </v-card-text>
@@ -67,10 +66,10 @@
 
 <script>
 import * as tf from '@tensorflow/tfjs';
-// import { Twitter } from 'twitter-node-client';
+
 const char2vec = require('@/assets/Oracle/char2vec.json');
 
-const SEEDLENGTH = 17;
+const SEEDLENGTH = 29;
 
 async function sample(probs, temperature) {
   // https://github.com/tensorflow/tfjs-examples/blob/f979101509211fc8e1485ba527a9cc7bef3237d3/lstm-text-generation/model.js
@@ -82,15 +81,6 @@ async function sample(probs, temperature) {
     return (await tf.multinomial(logits, 1, null, isNormalized).data())[0];
   });
 }
-
-// const twitter = new Twitter(require('@/assets/Oracle/twitter_config.json'));
-
-/* const onError = (err, response, body) => {
-  console.log('ERROR [%s]', err);
-};
-const onSuccess = (data) => {
-  console.log('Data [%s]', data);
-}; */
 
 export default {
   name: 'OracleAbout',
@@ -127,16 +117,6 @@ export default {
       this.running = false;
       this.generatedText = seed;
       return seed;
-    },
-    shareWisdom() {
-      // const self = this;
-      if (!this.running) {
-        if (this.generatedText.length >= this.maxLength) {
-          /* twitter.postTweet({
-            status: self.generatedText.substring(self.generatedText.length - this.maxLength),
-          }, onError, onSuccess); */
-        }
-      }
     },
   },
 };
