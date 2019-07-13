@@ -8,7 +8,7 @@ Vue.use(Vuetify, {
     /*
      * will generate a css variable for each theme color, which can then use in a component's style.
      *
-     * ex: 
+     * ex:
      *    .something {
      *      color: var(--v-primary-base)
      *      background-color: var(--v-accent-lighten2)

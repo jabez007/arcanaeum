@@ -1,7 +1,7 @@
 <template>
   <div id="arcanaeum">
     <div id="background">
-      <img src="./assets/banner.jpg" class="stretch" alt="" />
+      <!--img src="./assets/background.jpg" class="stretch" alt="" /-->
     </div>
     <transition name="scale-transition"
                 mode="out-in">
@@ -32,6 +32,9 @@ export default {
   position: fixed;
   left: 0px;
   top: 0px;
+  background-image: url("./assets/background.svg");
+  background-repeat: none;
+  background-size: cover;
   z-index: -1; /* Ensure div tag stays behind content; -999 might work, too. */
 }
 
