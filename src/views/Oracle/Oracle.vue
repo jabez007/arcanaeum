@@ -51,7 +51,7 @@
         </v-text-field>
       </v-card-title>
       <v-card-text>
-        <v-textarea label="Generated text"
+        <v-textarea :label="`Generated text (${(generatedText || '').length} / ${maxLength})`"
                     v-model="generatedText"
                     :loading="running"
                     prepend-inner-icon="refresh"
@@ -98,7 +98,7 @@ export default {
     },
   },
   async created() {
-    this.model = await tf.loadLayersModel('https://raw.githubusercontent.com/jabez007/arcanaeum/master/weights/model.json');
+    this.model = await tf.loadLayersModel('/weights/model.json');
     this.charVectors = Object.keys(char2vec).map(key => ({ char: key, vec: char2vec[key] }));
   },
   methods: {
