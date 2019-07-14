@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import lzString from 'lz-string/libs/lz-string';
 
 export default {
@@ -67,6 +68,7 @@ export default {
     },
   },
   data: () => ({
+    ngrams: null,
     cipherText: '',
     plainText: '',
     maxSteps: 1000,
@@ -74,23 +76,6 @@ export default {
     clientHeight: 0,
   }),
   computed: {
-    ngrams() {
-      const storedNgrams = localStorage.getItem(this.ngramsFile);
-      if (storedNgrams) {
-        return JSON.parse(lzString.decompress(storedNgrams));
-      }
-      // eslint-disable-next-line
-      const ngramsObj = require(`../../assets/CryptoTron/${this.ngramsFile}.json`);
-      localStorage.setItem(this.ngramsFile, lzString.compress(JSON.stringify(ngramsObj)));
-
-      localStorage.setItem(`${this.ngramsFile}L`, Object.keys(ngramsObj)[0].length);
-
-      const sum = Object.values(ngramsObj).reduce((a, b) => a + b, 0);
-      localStorage.setItem(`${this.ngramsFile}N`, sum);
-      localStorage.setItem(`${this.ngramsFile}floor`, Math.log10(0.01 / sum));
-
-      return ngramsObj;
-    },
     L() {
       if (this.ngrams) {
         return parseInt(localStorage.getItem(`${this.ngramsFile}L`), 10);
@@ -109,6 +94,32 @@ export default {
       }
       return 0.0;
     },
+  },
+  created() {
+    const storedNgrams = localStorage.getItem(this.ngramsFile);
+    if (storedNgrams) {
+      this.ngrams = JSON.parse(lzString.decompress(storedNgrams));
+    } else {
+      const self = this;
+      axios.get(`/ngrams/${this.ngramsFile}.json`)
+        .then((response) => {
+          const ngramsObj = response.data;
+
+          localStorage.setItem(self.ngramsFile, lzString.compress(JSON.stringify(ngramsObj)));
+
+          localStorage.setItem(`${self.ngramsFile}L`, Object.keys(ngramsObj)[0].length);
+
+          const sum = Object.values(ngramsObj).reduce((a, b) => a + b, 0);
+          localStorage.setItem(`${self.ngramsFile}N`, sum);
+          localStorage.setItem(`${self.ngramsFile}floor`, Math.log10(0.01 / sum));
+
+          self.ngrams = ngramsObj;
+          alert('ready');
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    }
   },
   methods: {
     getLogProb(ngram) {
