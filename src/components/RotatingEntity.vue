@@ -26,6 +26,11 @@
 </template>
 
 <script>
+import { 
+  Entity, 
+  Animation,
+  Key,
+} from 'vue-babylonjs';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Random from '_/random';
 
@@ -47,6 +52,11 @@ function getRandomNonZero(min, max) {
 
 export default {
   name: 'RotatingEntity',
+  components: {
+    Entity,
+    Animation,
+    Key,
+  },
   props: {
     position: {
       type: Array,

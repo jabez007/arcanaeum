@@ -45,6 +45,16 @@
 </template>
 
 <script>
+import { 
+  Entity, 
+  Scene,
+  Camera,
+  HemisphericLight,
+  PointLight,
+  Box,
+  Material,
+} from 'vue-babylonjs';
+
 const BOXES = [
   {
     path: '/cryptotron/about',
@@ -80,7 +90,14 @@ const BOXES = [
 
 export default {
   name: 'home',
+  mixins: [Entity],
   components: {
+    Scene,
+    Camera,
+    HemisphericLight,
+    PointLight,
+    Box,
+    Material,
     RotatingEntity: () => import('@/components/RotatingEntity'),
   },
   data: () => ({
