@@ -163,6 +163,18 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: 'Aclonica';
+  font-display: swap;
+  src: local('Aclonica'), url(https://fonts.gstatic.com/s/aclonica/v9/K2FyfZJVlfNNSEBXGY7UAo8.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: 'Merienda';
+  font-display: swap;
+  src: local('Merienda'), url(https://fonts.gstatic.com/s/merienda/v7/gNMHW3x8Qoy5_mf8uWMFMIo.woff2) format('woff2');
+}
+
 #aether {
   width: 100%;
   height: 100%;

@@ -3,8 +3,8 @@ import './plugins/vuetify';
 import Babylon from 'vue-babylonjs';
 import VueClipboard from 'vue-clipboard2';
 import VueKonva from 'vue-konva';
-import App from './App.vue';
 import router from './router/index';
+import App from './App.vue';
 import './registerServiceWorker';
 
 Vue.use(Babylon);
