@@ -1,7 +1,7 @@
 <template>
   <div id="arcanaeum">
     <div id="background">
-      <!--img src="/images/background.jpg" class="stretch" alt="" /-->
+      <!--img src="/img/background.jpg" class="stretch" alt="" /-->
     </div>
     <transition name="scale-transition"
                 mode="out-in">
@@ -32,7 +32,7 @@ export default {
   position: fixed;
   left: 0px;
   top: 0px;
-  background-image: url("/images/background.jpg");
+  background-image: url("/img/background.jpg");
   background-position: center;
   background-repeat: none;
   background-size: cover;

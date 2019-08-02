@@ -4,12 +4,12 @@
   "description": "The unofficial repository for the Archons of the Spire (part of Last Hope LARP)",
   "icons": [
     {
-      "src": "./imgages/icons/android-chrome-192x192.png",
+      "src": "./img/icons/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "./imgages/icons/android-chrome-512x512.png",
+      "src": "./img/icons/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
