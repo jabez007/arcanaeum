@@ -45,8 +45,8 @@
 </template>
 
 <script>
-import { 
-  Entity, 
+import {
+  Entity,
   Scene,
   Camera,
   HemisphericLight,

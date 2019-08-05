@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import { 
-  Entity, 
+import {
+  Entity,
   Animation,
   Key,
 } from 'vue-babylonjs';
