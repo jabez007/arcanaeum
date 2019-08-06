@@ -3,20 +3,189 @@
         <v-card-title>
             <h6 class="title">The Syndar Journal</h6>
         </v-card-title>
-        <v-card-text style="height: 100%;">
+        <v-card-text ref="cardText">
             <p class="subheading">
                 A journal discovered sometime in 263,
                 believed to belong to the one know as "The Red-Eyed Syndar",
                 detailing the initial observations of and eventual interaction with a tribe of Mordok
             </p>
-            <v-card-text>
-                <div class="flipbook-viewport">
+            <div class="flipbook-viewport">
                     <div class="container">
                         <div class="flipbook">
                     <div class="hard"> Turn.js </div>
 	                <div class="hard"></div>
-	                <div> Page 1 </div>
-	                <div> Page 2 </div>
+	                <div> 
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p> 
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                        <p>
+                            Page 1
+                        </p>
+                    </div>
+	                <div> 
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                        <p>
+                            Page 2
+                        </p>
+                    </div>
 	                <div> Page 3 </div>
 	                <div> Page 4 </div>
 	                <div class="hard"></div>
@@ -24,7 +193,6 @@
                 </div>
                     </div>
                 </div>
-            </v-card-text>
         </v-card-text>
     </v-card>
 </template>
@@ -40,12 +208,20 @@ const $ = jQuery;
 export default {
   name: 'SyndarJournals',
   mounted() {
+    const pageHeight = Math.min(
+        this.$refs.cardText.clientHeight,
+        (window.clientHeight || window.innerHeight) * 0.75,
+    );
+    const bookWidth = Math.min(
+        2 * (pageHeight * (8.5 / 11)),
+        this.$refs.cardText.clientWidth * 0.70,
+    );
+    console.log(bookWidth, pageHeight);
     $('.flipbook').turn({
-      width: 600,
-      height: 300,
-      elevation: 50,
-      autoCenter: true,
+        width: bookWidth,
+        height: pageHeight,
     });
+    
   },
 };
 </script>
@@ -53,27 +229,29 @@ export default {
 <style scoped>
 .flipbook-viewport{
 	overflow: hidden;
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 .flipbook-viewport .container{
-	position: absolute;
+	position: relative;
 	top: 0%;
 	left: 0%;
 	margin: auto;
+    -webkit-transform: translate3d(0, 0, 0);
 }
 
 .flipbook-viewport .flipbook{
-	width: 600px;
-	height: 300px;
+    width: 100%;
+    height: 100%;
 	left: 0px;
 	top: 0px;
 }
 
 .flipbook-viewport .page{
-	width: 200px;
-	height: 300px;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
     color: black;
 	background-color:white;
 	background-repeat:no-repeat;
@@ -81,6 +259,7 @@ export default {
 }
 
 .flipbook .hard {
+    overflow: hidden;
     background: #ccc !important;
     color: #333;
     -webkit-box-shadow: inset 0 0 5px #666;
