@@ -9,10 +9,10 @@
         believed to belong to the one know as "The Red-Eyed Syndar",
         detailing the initial observations of and eventual interaction with a tribe of Mordok
       </p>
-      <div class="flipbook-viewport">
+      <div ref="journal" class="flipbook-viewport" :style="zoomStyle()">
         <div class="container">
           <div class="flipbook">
-            <div class="hard">Turn.js</div>
+            <div class="hard"></div>
             <div class="hard"></div>
             <div v-for="entry in journal" :key="entry.title">
               <div>
@@ -26,6 +26,10 @@
             <div class="hard"></div>
           </div>
         </div>
+        <v-btn icon small color="primary" class="zoom-button" @click="zoom = !zoom">
+          <v-icon v-if="zoom === false">zoom_in</v-icon>
+          <v-icon v-if="zoom === true">zoom_out</v-icon>
+        </v-btn>
       </div>
     </v-card-text>
   </v-card>
@@ -42,9 +46,31 @@ const $ = jQuery;
 
 export default {
   name: 'SyndarJournals',
+  data: () => ({
+    zoom: false,
+  }),
   computed: {
     journal() {
       return JOURNAL;
+    },
+  },
+  watch: {
+    zoom(newVal) {
+      if (newVal) {
+        window.scrollTo(
+          0,
+          (this.$refs.journal.offsetTop + 88) - (window.innerHeight - this.$refs.journal.clientHeight) / 2,
+        );
+        // disable scroll when zoomed in
+        const x = window.scrollX;
+        const y = window.scrollY;
+        window.onscroll = () => {
+          window.scrollTo(x, y);
+        };
+      } else {
+        // enable scrolling when not zoomed in
+        window.onscroll = () => {};
+      }
     },
   },
   mounted() {
@@ -61,6 +87,27 @@ export default {
       width: bookWidth,
       height: pageHeight,
     });
+  },
+  beforeDestroy() {
+    // make sure scrolling is enabled before leaving
+    window.onscroll = () => {};
+  },
+  methods: {
+    zoomStyle() {
+      const clientHeight = (window.clientHeight || window.innerHeight);
+      if (this.$refs.journal) {
+        const scale = clientHeight / this.$refs.journal.clientHeight;
+        // console.log(scale);
+        return this.zoom
+          ? {
+            'z-index': 99,
+            transform: `scale(${scale}, ${scale}) translate(7%, 0)`,
+            '-webkit-transform': `scale(${scale}, ${scale}) translate(7%, 0)`,
+          }
+          : {};
+      }
+      return {};
+    },
   },
 };
 </script>
@@ -86,6 +133,15 @@ export default {
   overflow: hidden;
   width: 100%;
   height: 100%;
+  position: relative;
+  transition: 1s;
+  -webkit-transition: 1s;
+}
+
+.zoom-button {
+  position: absolute;
+  left: 38%;
+  bottom: 5%;
 }
 
 .flipbook-viewport .container {
@@ -93,6 +149,7 @@ export default {
   top: 0%;
   left: 0%;
   margin: auto;
+  transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);
 }
 
@@ -110,9 +167,11 @@ export default {
   font-family: Aclonica, Merienda, "Lucida Sans Unicode", "Lucida Grande",
     sans-serif;
   color: rgb(0, 64, 64);
-  background-color: white;
+  background-attachment: fixed;
+  background-image: url("../../assets/Conservatoire/parchment.jpg");
+  background-position: center;
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: cover;
 }
 
 .flipbook-viewport .page div {
@@ -121,7 +180,13 @@ export default {
 
 .flipbook .hard {
   overflow: hidden;
-  background: #ccc !important;
+  background-attachment: fixed;
+  background-blend-mode: darken;
+  background-color: rgba(0, 0, 0, 0.5);
+  background-image: url("../../assets/Conservatoire/leather.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   color: #333;
   -webkit-box-shadow: inset 0 0 5px #666;
   -moz-box-shadow: inset 0 0 5px #666;
