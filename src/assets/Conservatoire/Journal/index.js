@@ -1,8 +1,5 @@
-import entry1 from './entry1';
-
-export default [
-  {
-    title: 'Entry 1',
-    contents: entry1,
-  },
-];
+export default [...new Array(19).keys()]
+  .map(e => ({
+    title: `Entry ${e + 1}`,
+    contents: require(`entry${e + 1}`);
+  }));
