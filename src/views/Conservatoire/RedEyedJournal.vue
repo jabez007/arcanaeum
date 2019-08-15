@@ -57,9 +57,10 @@ export default {
   watch: {
     zoom(newVal) {
       if (newVal) {
+        const toolbarOffset = this.$vuetify.breakpoint.smAndDown ? 64 : 88;
         window.scrollTo(
           0,
-          (this.$refs.journal.offsetTop + 88) - (window.innerHeight - this.$refs.journal.clientHeight) / 2,
+          (this.$refs.journal.offsetTop + toolbarOffset) - (window.innerHeight - this.$refs.journal.clientHeight) / 2,
         );
         // disable scroll when zoomed in
         const x = window.scrollX;
@@ -101,8 +102,8 @@ export default {
         return this.zoom
           ? {
             'z-index': 99,
-            transform: `scale(${scale}, ${scale}) translate(7%, 0)`,
-            '-webkit-transform': `scale(${scale}, ${scale}) translate(7%, 0)`,
+            transform: `scale(${scale}, ${scale}) translate(2vw, 0)`,
+            '-webkit-transform': `scale(${scale}, ${scale}) translate(2vw, 0)`,
           }
           : {};
       }
@@ -140,7 +141,7 @@ export default {
 
 .zoom-button {
   position: absolute;
-  left: 38%;
+  left: 28vw;
   bottom: 5%;
 }
 
