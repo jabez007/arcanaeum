@@ -12,12 +12,16 @@ export default {
       component: () => import('@/views/Conservatoire/RedEyedJournal.vue'),
     },
     {
-      path: 'allonsy',
+      path: 'allons-y',
       component: () => import('@/views/Conservatoire/ProjectAllons-y.vue'),
     },
     {
       path: 'construct',
       component: () => import('@/views/Conservatoire/ManaConstruct.vue'),
+    },
+    {
+      path: 'staff-fighting',
+      component: () => import('@/views/Conservatoire/StaffFighting.vue'),
     },
   ],
 };
