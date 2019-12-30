@@ -78,144 +78,39 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Rules from '_/rules';
-
-function findEncoding(block) {
-  return e => (e || {}).encoding === (block || '');
-}
+import {
+  encoding, encrypt, decrypt, enstegano,
+} from '_/CryptoTron/ciphers/baconian';
 
 export default {
   components: {
     Cipher,
   },
   data: () => ({
-    encoding: {
-      A: 'aaaaa',
-      B: 'aaaab',
-      C: 'aaaba',
-      D: 'aaabb',
-      E: 'aabaa',
-      F: 'aabab',
-      G: 'aabba',
-      H: 'aabbb',
-      I: 'abaaa',
-      J: 'abaab',
-      K: 'ababa',
-      L: 'ababb',
-      M: 'abbaa',
-      N: 'abbab',
-      O: 'abbba',
-      P: 'abbbb',
-      Q: 'baaaa',
-      R: 'baaab',
-      S: 'baaba',
-      T: 'baabb',
-      U: 'babaa',
-      V: 'babab',
-      W: 'babba',
-      X: 'babbb',
-      Y: 'bbaaa',
-      Z: 'bbaab',
-    },
     message: '',
     keyIsValid: false,
   }),
   computed: {
+    encoding() {
+      return encoding;
+    },
     rules() {
       return [Rules.required];
     },
   },
   methods: {
-    encrypt(plaintext, key) {
-      const plainText = (plaintext || '').toUpperCase();
-      let cipherText = '';
-      for (let i = 0; i < plainText.length; i += 1) {
-        const char = plainText[i];
-        if (key.encoding[char]) {
-          cipherText += key.encoding[char];
-        } else {
-          cipherText += char;
-        }
-      }
-      return cipherText.replace(/[^ab]/g, '');
+    encrypt(plainText) {
+      return encrypt(plainText);
     },
-    enstegano(encoding, message) {
+    enstegano(encodedString, message) {
       if (message) {
-        const re = /[a-zA-Z]/;
-        let steganograph = '';
-        let i = 0;
-        for (let j = 0; j < message.length; j += 1) {
-          const char = message[j];
-          if (re.test(char)) {
-            if (encoding[i] === 'a') {
-              steganograph += char.toLowerCase();
-              i += 1;
-            } else if (encoding[i] === 'b') {
-              steganograph += char.toUpperCase();
-              i += 1;
-            }
-          } else {
-            steganograph += char;
-          }
-        }
-        return steganograph;
+        return enstegano(encodedString, message);
       }
       return '';
     },
-    decrypt(ciphertext, key) {
-      const getUniqueCharacters = (input) => {
-        const str = input || '';
-        let unique = '';
-        for (let i = 0; i < str.length; i += 1) {
-          if (i === str.lastIndexOf(str[i])) {
-            unique += str[i];
-          }
-        }
-        return unique;
-      };
-      const unique = getUniqueCharacters(
-        (ciphertext || '').toLowerCase().replace(/[^a-z0-9]/g, ''),
-      );
-      if (unique.length === 2) {
-        // we have just the encoding
-        const cipherText = ciphertext.toLowerCase();
-        const encoding = Object.keys(key.encoding).map(char => ({
-          char,
-          encoding: key.encoding[char],
-        }));
-        let block = '';
-        let plainText = '';
-        for (let i = 0; i < cipherText.length; i += 1) {
-          const char = cipherText[i];
-          if (char === 'a' || char === 'b') {
-            block += char;
-            if (block.length === 5) {
-              plainText += encoding.find(findEncoding(block)).char;
-              block = '';
-            }
-          } else {
-            plainText += char;
-          }
-        }
-        return plainText;
-      }
-      if (unique.length > 0) {
-        // or we have the steganograph
-        const lowerCase = /[a-z]/;
-        const upperCase = /[A-Z]/;
-        let encoding = '';
-        for (let i = 0; i < ciphertext.length; i += 1) {
-          const char = ciphertext[i];
-          if (lowerCase.test(char)) {
-            encoding += 'a';
-          } else if (upperCase.test(char)) {
-            encoding += 'b';
-          }
-        }
-        return this.decrypt(encoding, key);
-      }
-      return '';
+    decrypt(cipherText) {
+      return decrypt(cipherText);
     },
   },
 };
