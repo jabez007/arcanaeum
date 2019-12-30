@@ -61,8 +61,8 @@
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import TabulaRecta from '@/components/CryptoTron/TabulaRecta.vue';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Rules from '_/rules';
+import { encrypt, decrypt } from '_/CryptoTron/ciphers/autokey';
 
 export default {
   components: {
@@ -81,41 +81,13 @@ export default {
   methods: {
     encrypt(plainText, cipherKey) {
       if (this.$refs.autokeyKeyForm.validate()) {
-        const plaintext = (plainText || '')
-          .toLowerCase()
-          .replace(/[^a-z]/g, '');
-        const key = (cipherKey.primer.toLowerCase() + plaintext).replace(
-          /[^a-z]/g,
-          '',
-        );
-        let ciphertext = '';
-        for (let i = 0; i < plaintext.length; i += 1) {
-          ciphertext += String.fromCharCode(
-            ((plaintext.charCodeAt(i) - 97 + (key.charCodeAt(i) - 97)) % 26)
-              + 97,
-          );
-        }
-        return ciphertext;
+        return encrypt(plainText, cipherKey.primer);
       }
       return '';
     },
     decrypt(cipherText, cipherKey) {
       if (this.$refs.autokeyKeyForm.validate()) {
-        const ciphertext = (cipherText || '')
-          .toLowerCase()
-          .replace(/[^a-z]/g, '');
-        let key = cipherKey.primer.toLowerCase().replace(/[^a-z]/g, '');
-        let plaintext = '';
-        for (let i = 0; i < ciphertext.length; i += 1) {
-          const plainchar = String.fromCharCode(
-            ((ciphertext.charCodeAt(i) - 97 + 26 - (key.charCodeAt(i) - 97))
-              % 26)
-              + 97,
-          );
-          plaintext += plainchar;
-          key += plainchar;
-        }
-        return plaintext;
+        return decrypt(cipherText, cipherKey.primer);
       }
       return '';
     },
