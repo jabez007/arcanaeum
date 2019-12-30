@@ -73,8 +73,8 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Rules from '_/rules';
+import { encrypt, decrypt } from '_/CryptoTron/ciphers/affine';
 
 export default {
   components: {
@@ -99,49 +99,13 @@ export default {
     },
     encrypt(plainText, key) {
       if (this.$refs.affineKeyForm.validate()) {
-        const plaintext = (plainText || '').toLowerCase();
-        let ciphertext = '';
-        const re = /[a-z]/;
-        for (let i = 0; i < plaintext.length; i += 1) {
-          if (re.test(plaintext.charAt(i))) {
-            ciphertext += String.fromCharCode(
-              ((key.alpha * (plaintext.charCodeAt(i) - 97) + key.beta) % 26)
-                + 97,
-            );
-          } else {
-            ciphertext += plaintext.charAt(i);
-          }
-        }
-        return ciphertext;
+        return encrypt(plainText, key.alpha, key.beta);
       }
       return '';
     },
-    findInverse(a) {
-      for (let i = 1; i < 26; i += 1) {
-        if ((a * i) % 26 === 1) {
-          return i;
-        }
-      }
-      return NaN;
-    },
     decrypt(cipherText, key) {
       if (this.$refs.affineKeyForm.validate()) {
-        const inverse = this.findInverse(key.alpha);
-        const ciphertext = (cipherText || '').toLowerCase();
-        let plaintext = '';
-        const re = /[a-z]/;
-        for (let i = 0; i < ciphertext.length; i += 1) {
-          if (re.test(ciphertext.charAt(i))) {
-            plaintext += String.fromCharCode(
-              ((inverse * (ciphertext.charCodeAt(i) - 97 + 26 - key.beta))
-                % 26)
-                + 97,
-            );
-          } else {
-            plaintext += ciphertext.charAt(i);
-          }
-        }
-        return plaintext;
+        return decrypt(cipherText, key.alpha, key.beta);
       }
       return '';
     },
