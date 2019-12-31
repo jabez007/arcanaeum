@@ -38,29 +38,37 @@
           The message is then read off in rows.
         </p>
         <p>
-          For example, if we have
-          <a @click="rails=3">3 rails</a>
-          and a message of
+          For <a @click="rails=3; exampleMsg='WE ARE DISCOVERED. FLEE AT ONCE'">example</a>,
+          if we have 3 rails and a message of
           <q>WE ARE DISCOVERED. FLEE AT ONCE</q>
           then the cipher text reads off as
           <q>WECRLTEERDSOEEFEAOCAIVDEN</q>
         </p>
-        <v-scale-transition>
-          <v-card v-if="rails >= 3 && rails <= 5">
-            <v-card-text>
+        <v-expand-transition>
+          <v-card v-if="rails >= 3 && rails <= 5 && exampleMsg">
+            <v-card-title>
               <v-text-field v-model="exampleMsg"></v-text-field>
+              <v-icon @click="exampleMsg=''">close</v-icon>
+            </v-card-title>
+            <v-card-text>
               <table>
                 <tr v-for="i in cipherGrid.length" :key="i">
-                  <td v-for="j in cipherGrid[i-1].length" :key="j">{{ cipherGrid[i-1][j-1] }}</td>
+                  <td
+                    v-for="j in cipherGrid[i-1].length" :key="j"
+                    :class="`amber--text ${cipherGrid[i-1][j-1] === '-' ? 'text--lighten-3' : 'text--darken-3'}`"
+                  >{{ cipherGrid[i-1][j-1] }}</td>
                 </tr>
               </table>
-              <br/>
-              <p class="body-2">
-                {{ cipherGrid.flat().map(c => c.replace(/[^a-z]/, '')).join('') }}
-              </p>
             </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <span class="body-2 amber--text">
+                {{ cipherGrid.flat().map(c => c.replace(/[^a-z]/, '')).join('') }}
+              </span>
+              <v-spacer></v-spacer>
+            </v-card-actions>
           </v-card>
-        </v-scale-transition>
+        </v-expand-transition>
       </v-card-text>
     </v-card>
     <v-form slot="key" ref="railFenceKeyForm" v-model="keyIsValid">
@@ -79,12 +87,8 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Rules from '_/rules';
-
-function cycleLength(rails) {
-  return Math.max(0, 2 * rails - 2); // 0 is our min cycle length
-}
+import { encrypt, decrypt } from '_/CryptoTron/ciphers/railFence';
 
 export default {
   components: {
@@ -100,7 +104,7 @@ export default {
       return [Rules.required, Rules.integer, Rules.positive];
     },
     cipherGrid() {
-      if (this.rails >= 3 && this.rails <= 5) {
+      if (this.rails >= 3 && this.rails <= 5 && this.exampleMsg) {
         const msg = this.exampleMsg.toLowerCase().replace(/[^a-z]/g, '');
         const grid = new Array(this.rails)
           .fill('-')
@@ -144,74 +148,13 @@ export default {
   methods: {
     encrypt(plainText, cipherKey) {
       if (this.$refs.railFenceKeyForm.validate()) {
-        const plaintext = (plainText || '').toLowerCase().replace(/[^a-z]/g, '');
-        if (cipherKey.rails === 1) {
-          return plaintext;
-        }
-        let ciphertext = '';
-        for (let i = 0; i < cipherKey.rails; i += 1) {
-          // write down/up the columns
-          const downCycle = cycleLength(cipherKey.rails - i);
-          const upCycle = cycleLength(i + 1);
-          // read along the rows
-          let j = i;
-          if (j < plaintext.length) {
-            ciphertext += plaintext[j];
-          }
-          while (j < plaintext.length) {
-            if (downCycle) {
-              j += downCycle;
-              if (j < plaintext.length) {
-                ciphertext += plaintext[j];
-              }
-            }
-            if (upCycle) {
-              j += upCycle;
-              if (j < plaintext.length) {
-                ciphertext += plaintext[j];
-              }
-            }
-          }
-        }
-        return ciphertext;
+        return encrypt(plainText, cipherKey.rails);
       }
       return '';
     },
     decrypt(cipherText, cipherKey) {
       if (this.$refs.railFenceKeyForm.validate()) {
-        const ciphertext = (cipherText || '').toLowerCase().replace(/[^a-z]/g, '');
-        if (cipherKey.rails === 1) {
-          return ciphertext;
-        }
-        const plaintext = new Array(ciphertext.length);
-        let k = 0;
-        for (let i = 0; i < cipherKey.rails; i += 1) {
-          // read down/up the columns
-          const downCycle = cycleLength(cipherKey.rails - i);
-          const upCycle = cycleLength(i + 1);
-          // write along the rows
-          let j = i;
-          plaintext[j] = ciphertext[k];
-          k += 1;
-          while (j < ciphertext.length) {
-            if (downCycle) {
-              j += downCycle;
-              if (j < ciphertext.length) {
-                plaintext[j] = ciphertext[k];
-                k += 1;
-              }
-            }
-            if (upCycle) {
-              j += upCycle;
-              if (j < ciphertext.length) {
-                plaintext[j] = ciphertext[k];
-                k += 1;
-              }
-            }
-          }
-        }
-        const ptext = plaintext.join('');
-        return ptext;
+        return decrypt(cipherText, cipherKey.rails);
       }
       return '';
     },
@@ -249,7 +192,6 @@ tr:nth-child(even) {
   background: var(--v-secondary-darken1);
 }
 td {
-  color: orange;
   text-align: center;
 }
 </style>
