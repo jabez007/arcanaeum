@@ -2,7 +2,7 @@
   <Cipher
     :encryptAlgorithm="encrypt"
     :decryptAlgorithm="decrypt"
-    :cipherKey="{alpha, beta}"
+    :cipherKey="key"
     :keysGenerator="possibleKeys"
     @update-key="onUpdateKey"
   >
@@ -42,69 +42,36 @@
         </p>
       </v-card-text>
     </v-card>
-    <v-form slot="key" ref="affineKeyForm" v-model="keyIsValid">
-      <v-layout row>
-        <v-flex xs5>
-          <v-text-field
-            label="Alpha"
-            type="number"
-            v-model.number="alpha"
-            :rules="[...rules, () => gcd(alpha, 26) === 1 || 'The value must be relatively prime to 26']"
-            clearable
-            required
-          ></v-text-field>
-        </v-flex>
-        <v-spacer></v-spacer>
-        <v-flex xs5>
-          <v-text-field
-            label="Beta"
-            type="number"
-            v-model.number="beta"
-            :rules="rules"
-            clearable
-            required
-          ></v-text-field>
-        </v-flex>
-      </v-layout>
-    </v-form>
+    <affine-key slot="key" v-model="key"></affine-key>
   </Cipher>
 </template>
 
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-import Rules from '_/rules';
-import { encrypt, decrypt } from '_/CryptoTron/ciphers/affine';
+import AffineKey from '@/components/CryptoTron/CipherKeys/AffineKey.vue';
+import { gcd, encrypt, decrypt } from '_/CryptoTron/ciphers/affine';
 
 export default {
   components: {
     Cipher,
+    AffineKey,
   },
   data: () => ({
-    alpha: 1,
-    beta: 0,
-    keyIsValid: true,
+    key: {
+      alpha: 1,
+      beta: 0,
+    },
   }),
-  computed: {
-    rules() {
-      return [Rules.required, Rules.integer];
-    },
-  },
   methods: {
-    gcd(a, b) {
-      if (!b) {
-        return a;
-      }
-      return this.gcd(b, a % b);
-    },
     encrypt(plainText, key) {
-      if (this.$refs.affineKeyForm.validate()) {
+      if (key) {
         return encrypt(plainText, key.alpha, key.beta);
       }
       return '';
     },
     decrypt(cipherText, key) {
-      if (this.$refs.affineKeyForm.validate()) {
+      if (key) {
         return decrypt(cipherText, key.alpha, key.beta);
       }
       return '';
@@ -123,7 +90,7 @@ export default {
         // restart beta and roll alpha up
         beta = 0;
         alpha = (alpha + 1) % 26;
-        while (this.gcd(alpha, 26) !== 1) {
+        while (gcd(alpha, 26) !== 1) {
           alpha += 1;
         }
       } else {
@@ -133,8 +100,7 @@ export default {
       return { alpha, beta };
     },
     onUpdateKey(newKey) {
-      this.alpha = newKey.alpha;
-      this.beta = newKey.beta;
+      this.key = newKey;
     },
   },
 };
