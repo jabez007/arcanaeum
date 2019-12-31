@@ -81,134 +81,39 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Rules from '_/rules';
-
-function findEncoding(block) {
-  return e => (e || {}).encoding === (block || '');
-}
+import {
+  encoding, encode, decrypt, enstegano,
+} from '_/CryptoTron/ciphers/huffmanian';
 
 export default {
   components: {
     Cipher,
   },
   data: () => ({
-    encoding: {
-      A: '0000',
-      B: '010011',
-      C: '10100',
-      D: '01000',
-      E: '100',
-      F: '11010',
-      G: '11011',
-      H: '1100',
-      I: '0011',
-      J: '10111011',
-      K: '1011100',
-      L: '00010',
-      M: '10110',
-      N: '0101',
-      O: '0010',
-      P: '000110',
-      Q: '1011101001',
-      R: '0111',
-      S: '0110',
-      T: '111',
-      U: '10101',
-      V: '101111',
-      W: '000111',
-      X: '101110101',
-      Y: '010010',
-      Z: '1011101000',
-    },
     message: '',
     keyIsValid: false,
   }),
   computed: {
+    encoding() {
+      return encoding;
+    },
     rules() {
       return [Rules.required];
     },
   },
   methods: {
-    encrypt(plaintext, key) {
-      const plainText = (plaintext || '').toUpperCase();
-      let cipherText = '';
-      for (let i = 0; i < plainText.length; i += 1) {
-        const char = plainText[i];
-        if (key.encoding[char]) {
-          cipherText += key.encoding[char];
-        } else {
-          cipherText += char;
-        }
-      }
-      return cipherText.replace(/[^01]/g, '');
+    encrypt(plainText) {
+      return encode(plainText);
     },
-    enstegano(encoding, message) {
-      const re = /[a-zA-Z]/;
-      let steganograph = '';
-      let i = 0;
-      for (let j = 0; j < message; j += 1) {
-        const char = message[j];
-        if (re.test(char)) {
-          if (encoding[i] === '0') {
-            steganograph += char.toLowerCase();
-            i += 1;
-          } else if (encoding[i] === '1') {
-            steganograph += char.toUpperCase();
-            i += 1;
-          }
-        } else {
-          steganograph += char;
-        }
-      }
-      return steganograph;
-    },
-    decrypt(ciphertext, key) {
-      const reHuffman = /[^01]/;
-      if (
-        !reHuffman.test(
-          (ciphertext || '').toLowerCase().replace(/[^a-z0-9]/g, ''),
-        )
-      ) {
-        // we have just the encoding
-        const encoding = Object.keys(key.encoding).map(char => ({
-          char,
-          encoding: key.encoding[char],
-        }));
-        let block = '';
-        let plainText = '';
-        const cipherText = (ciphertext || '').replace(/[^01]/g, '');
-        for (let i = 0; i < cipherText.length; i += 1) {
-          const char = cipherText[i];
-          if (char === '0' || char === '1') {
-            block += char;
-            const enc = encoding.find(findEncoding(block));
-            if (enc) {
-              plainText += enc.char;
-              block = '';
-            }
-          } else {
-            plainText += char;
-          }
-        }
-        return plainText;
-      }
-      if ((ciphertext || '').length > 0) {
-        // or we have the steganograph
-        const lowerCase = /[a-z]/;
-        const upperCase = /[A-Z]/;
-        let encoding = '';
-        for (let i = 0; i < ciphertext.length; i += 1) {
-          const char = ciphertext[i];
-          if (lowerCase.test(char)) {
-            encoding += '0';
-          } else if (upperCase.test(char)) {
-            encoding += '1';
-          }
-        }
-        return this.decrypt(encoding, key);
+    enstegano(encodedString, message) {
+      if (message) {
+        return enstegano(encodedString, message);
       }
       return '';
+    },
+    decrypt(cipherText) {
+      return decrypt(cipherText);
     },
   },
 };

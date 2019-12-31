@@ -1,5 +1,7 @@
 // eslint-disable-next-line import/prefer-default-export
 export const encoding = {
+  lowerChar: 'a',
+  upperChar: 'b',
   A: 'aaaaa',
   B: 'aaaab',
   C: 'aaaba',

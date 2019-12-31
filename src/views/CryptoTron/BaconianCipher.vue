@@ -80,7 +80,7 @@
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import Rules from '_/rules';
 import {
-  encoding, encrypt, decrypt, enstegano,
+  encoding, encode, decrypt, enstegano,
 } from '_/CryptoTron/ciphers/baconian';
 
 export default {
@@ -101,7 +101,7 @@ export default {
   },
   methods: {
     encrypt(plainText) {
-      return encrypt(plainText);
+      return encode(plainText);
     },
     enstegano(encodedString, message) {
       if (message) {
