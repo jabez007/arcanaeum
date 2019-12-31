@@ -41,8 +41,8 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Rules from '_/rules';
+import { encrypt, decrypt } from '_/CryptoTron/ciphers/caesar';
 
 export default {
   components: {
@@ -60,37 +60,13 @@ export default {
   methods: {
     encrypt(plainText, key) {
       if (this.$refs.caesarKeyForm.validate()) {
-        const plaintext = (plainText || '').toLowerCase();
-        let ciphertext = '';
-        const re = /[a-z]/;
-        for (let i = 0; i < plaintext.length; i += 1) {
-          if (re.test(plaintext.charAt(i))) {
-            ciphertext += String.fromCharCode(
-              ((plaintext.charCodeAt(i) - 97 + key.shift) % 26) + 97,
-            );
-          } else {
-            ciphertext += plaintext.charAt(i);
-          }
-        }
-        return ciphertext;
+        return encrypt(plainText, key.shift);
       }
       return '';
     },
     decrypt(cipherText, key) {
       if (this.$refs.caesarKeyForm.validate()) {
-        const ciphertext = (cipherText || '').toLowerCase();
-        let plaintext = '';
-        const re = /[a-z]/;
-        for (let i = 0; i < ciphertext.length; i += 1) {
-          if (re.test(ciphertext.charAt(i))) {
-            plaintext += String.fromCharCode(
-              ((ciphertext.charCodeAt(i) - 97 + 26 - key.shift) % 26) + 97,
-            );
-          } else {
-            plaintext += ciphertext.charAt(i);
-          }
-        }
-        return plaintext;
+        return decrypt(cipherText, key.shift);
       }
       return '';
     },
