@@ -1,3 +1,5 @@
+import { getUniqueCharacters } from './index';
+
 export function encode(plainText, encoding) {
   const plaintext = (plainText || '').toUpperCase();
   let ciphertext = '';
@@ -31,17 +33,6 @@ export function enstegano(message, encodedString, encoding) {
     }
   }
   return steganograph;
-}
-
-function getUniqueCharacters(input) {
-  const str = input || '';
-  let unique = '';
-  for (let i = 0; i < str.length; i += 1) {
-    if (i === str.lastIndexOf(str[i])) {
-      unique += str[i];
-    }
-  }
-  return unique;
 }
 
 function findEncoding(block) {

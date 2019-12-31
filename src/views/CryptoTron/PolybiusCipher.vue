@@ -11,7 +11,7 @@
       <v-card-text>
         <p>
           The Polybius Square is essentially identical to the simple substitution cipher, except that each plaintext character is enciphered as 2 ciphertext characters.
-          It can ususally be detected if there are only 5 or 6 different characters in the ciphertext.
+          It can usually be detected if there are only 5 or 6 different characters in the ciphertext.
           This algorithm offers very little communication security, and can be easily broken even by hand,
           especially as the messages become longer (more than several hundred ciphertext characters).
         </p>
@@ -28,19 +28,19 @@
               <thead>
                 <tr>
                   <td></td>
-                  <td v-for="i in 5"
-                      :key="i"
+                  <td v-for="c in 5"
+                      :key="c"
                       style="color:red;">
-                    {{ (cipherChars || '').charAt(i - 1) }}
+                    {{ (cipherChars || '').charAt(c - 1) }}
                   </td>
                 </tr>
               </thead>
-              <tr v-for="j in 5"
-                  :key="j">
-                <td style="color:red;">{{ (cipherChars || '').charAt(j - 1) }}</td>
-                <td v-for="i in 5"
-                    :key="i">
-                  {{ square[i-1][j-1] }}
+              <tr v-for="r in 5"
+                  :key="r">
+                <td style="color:red;">{{ (cipherChars || '').charAt(r - 1) }}</td>
+                <td v-for="c in 5"
+                    :key="c">
+                  {{ square[r-1][c-1] }}
                 </td>
               </tr>
             </table>
@@ -87,8 +87,9 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Rules from '_/rules';
+import { alphaLower, getUniqueCharacters } from '_/CryptoTron/ciphers';
+import { encrypt, decrypt } from '_/CryptoTron/ciphers/polybius';
 
 export default {
   components: {
@@ -107,22 +108,13 @@ export default {
       return [Rules.required, Rules.exactLength(5)];
     },
     square() {
-      let key = this.getUniqueCharacters(this.keyword).replace(/[jJ]/g, '');
+      const key = getUniqueCharacters(`${this.keyword}${alphaLower}`).replace(/[jJ]/g, '');
       const cipherSquare = new Array(5).fill(null).map(() => (new Array(5).fill(null)));
       for (let i = 0; i < key.length; i += 1) {
         const char = key.charAt(i);
         const column = i % 5;
         const row = Math.floor(i / 5);
-        cipherSquare[column][row] = char;
-      }
-      for (let i = 0; i < 26; i += 1) {
-        const char = String.fromCharCode(i + 97);
-        if (char !== 'j' && key.indexOf(char) === -1) {
-          key += char;
-          const column = (key.length - 1) % 5;
-          const row = Math.floor((key.length - 1) / 5);
-          cipherSquare[column][row] = char;
-        }
+        cipherSquare[row][column] = char;
       }
       return cipherSquare;
     },
@@ -131,58 +123,15 @@ export default {
     },
   },
   methods: {
-    getUniqueCharacters(input) {
-      const str = input || '';
-      let unique = '';
-      for (let i = 0; i < str.length; i += 1) {
-        if (!unique.includes(str[i])) {
-          unique += str[i];
-        }
-      }
-      return unique;
-    },
     encrypt(plainText, cipherKey) {
       if (this.$refs.polybiusKeyForm.validate()) {
-        const plaintext = (plainText || '').toLowerCase();
-        let key = '';
-        for (let j = 0; j < 5; j += 1) {
-          for (let i = 0; i < 5; i += 1) {
-            key += cipherKey.square[i][j];
-          }
-        }
-        let ciphertext = '';
-        const re = /[a-z]/;
-        for (let i = 0; i < plaintext.length; i += 1) {
-          const char = plaintext[i];
-          if (re.test(char)) {
-            const pos = key.indexOf(char);
-            const column = pos % 5;
-            const row = Math.floor(pos / 5);
-            ciphertext += cipherKey.chars.charAt(row) + cipherKey.chars.charAt(column);
-          } else {
-            ciphertext += char;
-          }
-        }
-        return ciphertext;
+        return encrypt(plainText, cipherKey.square, cipherKey.chars);
       }
       return '';
     },
-    decrypt(ciphertext, cipherKey) {
-      if (this.$refs.polybiusKeyForm.validate() && ciphertext) {
-        let plaintext = '';
-        let i = 0;
-        while (i < ciphertext.length) {
-          if (cipherKey.chars.indexOf(String(ciphertext.charAt(i))) !== -1) {
-            const row = cipherKey.chars.indexOf(String(ciphertext.charAt(i)));
-            i += 1;
-            const column = cipherKey.chars.indexOf(String(ciphertext.charAt(i)));
-            plaintext += cipherKey.square[column][row];
-          } else {
-            plaintext += ciphertext.charAt(i);
-          }
-          i += 1;
-        }
-        return plaintext;
+    decrypt(cipherText, cipherKey) {
+      if (this.$refs.polybiusKeyForm.validate() && cipherText) {
+        return decrypt(cipherText, cipherKey.square, cipherKey.chars);
       }
       return '';
     },
@@ -192,9 +141,9 @@ export default {
         return { square: self.square, chars: self.chars };
       }
       const flatKey = [];
-      for (let j = 0; j < 5; j += 1) {
-        for (let i = 0; i < 5; i += 1) {
-          flatKey.push(bestCipherKey.square[i][j]);
+      for (let r = 0; r < 5; r += 1) {
+        for (let c = 0; c < 5; c += 1) {
+          flatKey.push(bestCipherKey.square[r][c]);
         }
       }
       // swap two letters in the current key.
@@ -210,16 +159,16 @@ export default {
           key += char;
           const column = (key.length - 1) % 5;
           const row = Math.floor((key.length - 1) / 5);
-          cipherSquare[column][row] = char;
+          cipherSquare[row][column] = char;
         }
       }
       return { square: cipherSquare, chars: String(bestCipherKey.chars) };
     },
     onUpdateKey(newKey) {
       let key = '';
-      for (let j = 0; j < 5; j += 1) {
-        for (let i = 0; i < 5; i += 1) {
-          key += newKey.square[i][j];
+      for (let r = 0; r < 5; r += 1) {
+        for (let c = 0; c < 5; c += 1) {
+          key += newKey.square[r][c];
         }
       }
       this.keyword = key;
