@@ -28,13 +28,28 @@
           <p>
             Suppose we use the keyword <a @click="keyword = 'zebras'">ZEBRAS</a> and the message <q>WE ARE DISCOVERED. FLEE AT ONCE.</q>
           </p>
-          <p>
-              In a regular columnar transposition,
-          </p>
-          <p>
-              In an irregular columnar transposition,
-          </p>
-          <p>
+          <v-expand-transition>
+            <div v-if="keyword === 'zebras'">
+              <p>
+                In a regular columnar transposition, the message is padded with 'X' (our 'null' in this example) to
+                {{ 'WE ARE DISCOVERED. FLEE AT ONCE.'.replace(/[^A-Z]/g, '').padEnd(30, 'X') }}
+                <br />
+                Then our cipher text will be
+                <span class="amber--text">
+                  {{ encrypt('WE ARE DISCOVERED. FLEE AT ONCE.'.replace(/[^A-Z]/g, '').padEnd(30, 'X'), { keyword: 'zebras' }) }}
+                </span>
+              </p>
+              <p>
+                In an irregular columnar transposition, the message is left as is so the cipher text will be
+                <span class="amber--text">
+                  {{ encrypt('WE ARE DISCOVERED. FLEE AT ONCE.', { keyword: 'zebras' }) }}
+                </span>
+                <br />
+                This makes decryption slightly more difficult
+              </p>
+            </div>
+          </v-expand-transition>
+          <p class="caption">
               Although stronger than the Rail-Fence cipher, it is still considered weak on its own,
               but it can be combined with other ciphers, such as a substitution cipher;
               the combination of which can be more difficult to break than either cipher on it's own.
@@ -66,8 +81,8 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Rules from '_/rules';
+import { encrypt, decrypt } from '_/CryptoTron/ciphers/columnarTransposition';
 
 export default {
   components: {
@@ -85,41 +100,13 @@ export default {
   methods: {
     encrypt(plainText, cipherKey) {
       if (this.$refs.columnarKeyForm.validate()) {
-        const plaintext = (plainText || '').toLowerCase().replace(/[^a-z]/g, '');
-        const keywordArray = cipherKey.keyword.split('');
-        const sortedKeyword = [...keywordArray];
-        sortedKeyword.sort(); // sorts the elements of array IN PLACE
-        let ciphertext = '';
-        for (let i = 0; i < sortedKeyword.length; i += 1) {
-          const index = keywordArray.indexOf(sortedKeyword[i]);
-          // remove used letters as we go in case of duplicates
-          keywordArray.splice(index, 1, '');
-          for (let j = index; j < plaintext.length; j += cipherKey.keyword.length) {
-            ciphertext += plaintext.charAt(j);
-          }
-        }
-        return ciphertext;
+        return encrypt(plainText, cipherKey.keyword);
       }
       return '';
     },
     decrypt(cipherText, cipherKey) {
       if (this.$refs.columnarKeyForm.validate()) {
-        const ciphertext = (cipherText || '');
-        const keywordArray = cipherKey.keyword.split('');
-        const sortedKeyword = [...keywordArray];
-        sortedKeyword.sort(); // sorts the elements of array IN PLACE
-        const plaintext = new Array(ciphertext.length);
-        let k = 0;
-        for (let i = 0; i < sortedKeyword.length; i += 1) {
-          const index = keywordArray.indexOf(sortedKeyword[i]);
-          // remove used letters as we go in case of duplicates
-          keywordArray.splice(index, 1, '');
-          for (let j = index; j < ciphertext.length; j += cipherKey.keyword.length) {
-            plaintext[j] = ciphertext[k];
-            k += 1;
-          }
-        }
-        return plaintext.join('');
+        return decrypt(cipherText, cipherKey.keyword);
       }
       return '';
     },
