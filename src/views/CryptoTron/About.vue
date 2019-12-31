@@ -18,6 +18,14 @@
             <br />
             This should allow for the easy addition of ciphers to CryptoTron with only needing to write the methods for encryption and decryption of a cipher.
         </p>
+        <p class="text-xs-left caption">
+          Other Resources
+          <ul>
+            <li>
+              <a href="https://www.cryptogram.org/resource-area/cipher-types/" target="_blank">American Cryptogram Association</a>
+            </li>
+          </ul>
+        </p>
     </v-card-text>
   </v-card>
 </template>
