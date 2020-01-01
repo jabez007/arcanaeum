@@ -33,7 +33,7 @@ export default {
       required: true,
     },
     cipherKey: {
-      type: Object,
+      type: [Object, Boolean], // either a valid key object or false
       required: true,
     },
   },
@@ -42,7 +42,10 @@ export default {
   }),
   computed: {
     cipherText() {
-      return this.encryptAlgorithm(this.plainText, this.cipherKey);
+      if (this.cipherKey) {
+        return this.encryptAlgorithm(this.plainText, this.cipherKey);
+      }
+      return '';
     },
   },
   methods: {

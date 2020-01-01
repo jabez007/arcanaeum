@@ -35,13 +35,13 @@ import { gcd } from '_/CryptoTron/ciphers/affine';
 export default {
   props: {
     value: {
-      type: Object,
+      type: [Object, Boolean],
       required: false,
     },
   },
   data: () => ({
-    alpha: undefined,
-    beta: undefined,
+    alpha: 1,
+    beta: 0,
   }),
   computed: {
     rules() {
@@ -56,12 +56,10 @@ export default {
         };
       },
       set(value) {
-        if (value.alpha !== this.alpha) {
-          console.log('set alpha', value);
+        if (value.alpha !== undefined && value.alpha !== this.alpha) {
           this.alpha = value.alpha;
         }
-        if (value.beta !== this.beta) {
-          console.log('set beta', value);
+        if (value.beta !== undefined && value.beta !== this.beta) {
           this.beta = value.beta;
         }
       },
@@ -69,13 +67,11 @@ export default {
   },
   watch: {
     value(newVal) {
-      console.log('watch', newVal, this.key);
       this.key = newVal;
     },
   },
   created() {
     if (this.value) {
-      console.log('created', this.value);
       this.key = this.value;
     }
   },
@@ -84,9 +80,10 @@ export default {
       return gcd(a, b);
     },
     onInput() {
-      console.log('onInput');
       if (this.$refs.form.validate()) {
         this.$emit('input', this.key);
+      } else {
+        this.$emit('input', false);
       }
     },
   },

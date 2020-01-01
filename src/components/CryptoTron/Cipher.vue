@@ -90,7 +90,7 @@ export default {
       required: true,
     },
     cipherKey: {
-      type: Object,
+      type: [Object, Boolean],
       required: true,
     },
     keysGenerator: {

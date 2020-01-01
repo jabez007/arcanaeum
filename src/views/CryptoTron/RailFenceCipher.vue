@@ -2,7 +2,7 @@
   <Cipher
     :encryptAlgorithm="encrypt"
     :decryptAlgorithm="decrypt"
-    :cipherKey="{ rails }"
+    :cipherKey="key"
     :keysGenerator="possibleKeys"
     @update-key="onUpdateKey"
   >
@@ -38,14 +38,14 @@
           The message is then read off in rows.
         </p>
         <p>
-          For <a @click="rails=3; exampleMsg='WE ARE DISCOVERED. FLEE AT ONCE'">example</a>,
+          For <a @click="key={ rails: 3 }; exampleMsg='WE ARE DISCOVERED. FLEE AT ONCE'">example</a>,
           if we have 3 rails and a message of
           <q>WE ARE DISCOVERED. FLEE AT ONCE</q>
           then the cipher text reads off as
           <q>WECRLTEERDSOEEFEAOCAIVDEN</q>
         </p>
         <v-expand-transition>
-          <v-card v-if="rails >= 3 && rails <= 5 && exampleMsg">
+          <v-card v-if="key.rails >= 3 && key.rails <= 5 && exampleMsg">
             <v-card-title>
               <v-text-field v-model="exampleMsg"></v-text-field>
               <v-icon @click="exampleMsg=''">close</v-icon>
@@ -71,48 +71,39 @@
         </v-expand-transition>
       </v-card-text>
     </v-card>
-    <v-form slot="key" ref="railFenceKeyForm" v-model="keyIsValid">
-      <v-text-field
-        label="Number of Rails"
-        v-model.number="rails"
-        type="number"
-        :rules="rules"
-        clearable
-        required
-      ></v-text-field>
-    </v-form>
+    <rail-fence-key slot="key" v-model="key"></rail-fence-key>
   </Cipher>
 </template>
 
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-import Rules from '_/rules';
+import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import { encrypt, decrypt } from '_/CryptoTron/ciphers/railFence';
 
 export default {
   components: {
     Cipher,
+    RailFenceKey,
   },
   data: () => ({
-    rails: 1,
-    keyIsValid: true,
+    key: {
+      rails: 1,
+    },
     exampleMsg: '',
   }),
   computed: {
-    rules() {
-      return [Rules.required, Rules.integer, Rules.positive];
-    },
     cipherGrid() {
-      if (this.rails >= 3 && this.rails <= 5 && this.exampleMsg) {
+      const { rails } = this.key;
+      if (rails >= 3 && rails <= 5 && this.exampleMsg) {
         const msg = this.exampleMsg.toLowerCase().replace(/[^a-z]/g, '');
-        const grid = new Array(this.rails)
+        const grid = new Array(rails)
           .fill('-')
           .map(() => new Array(msg.length).fill('-'));
         let column = 0; // each character has it's own column
         let row = 0;
         while (column < grid[row].length) {
-          while (row < this.rails - 1) {
+          while (row < rails - 1) {
             if (msg.charAt(column)) {
               grid[row].splice(column, 1, msg.charAt(column));
             } else {
@@ -147,16 +138,10 @@ export default {
   },
   methods: {
     encrypt(plainText, cipherKey) {
-      if (this.$refs.railFenceKeyForm.validate()) {
-        return encrypt(plainText, cipherKey.rails);
-      }
-      return '';
+      return encrypt(plainText, cipherKey.rails);
     },
     decrypt(cipherText, cipherKey) {
-      if (this.$refs.railFenceKeyForm.validate()) {
-        return decrypt(cipherText, cipherKey.rails);
-      }
-      return '';
+      return decrypt(cipherText, cipherKey.rails);
     },
     possibleKeys(key, ciphertext) {
       if (!key) {
@@ -169,7 +154,7 @@ export default {
       return { rails: key.rails + 1 };
     },
     onUpdateKey(newKey) {
-      this.rails = newKey.rails;
+      this.key = newKey;
     },
   },
 };
