@@ -9,7 +9,7 @@
             ></v-select>
         </v-card-title>
         <v-card-text>
-            <simple-flowchart :scene.sync="scene" @linkAdded="onLinkAdded"></simple-flowchart>
+            <simple-flowchart :scene.sync="scene" @linkAdded="onLinkAdded" @linkBreak="onLinkBreak"></simple-flowchart>
         </v-card-text>
     </v-card>
 </template>
@@ -39,6 +39,15 @@ export default {
         'Rail-Fence',
       ];
     },
+    firstCipher() {
+      /*
+       * find the node such that there is link a 'from' but no link 'to'
+       */
+      const self = this;
+      return this.scene.nodes
+        .filter(n => self.scene.links.filter(l => l.from === n.id).length > 0)
+        .filter(n => self.scene.links.filter(l => l.to === n.id).length === 0);
+    },
   },
   methods: {
     addNode() {
@@ -65,12 +74,34 @@ export default {
       removeExisting('to');
 
       /*
+       * To avoid a disconnected graph
+       * i.e. multiple starting points
+       * make sure there is only one
+       */
+      if (this.firstCipher.length > 1) {
+        const newIndex = this.scene.links.findIndex(l => l.id === newLink.id);
+        this.scene.links.splice(newIndex, 1);
+      }
+
+      /*
        * and to avoid infinite loops,
        * there should always be fewer links than nodes
        */
-      if (this.scene.links.length >= this.scene.nodes.length) {
+      const connectedNodes = this.scene.nodes
+        .filter(n => this.scene.links.find(l => l.from === n.id || l.to === n.id));
+      if (this.scene.links.length >= connectedNodes.length) {
         const newIndex = this.scene.links.findIndex(l => l.id === newLink.id);
         this.scene.links.splice(newIndex, 1);
+      }
+    },
+    onLinkBreak(oldLink) {
+      /*
+       * To avoid a disconnected graph
+       * i.e. multiple starting points
+       * make sure there is only one
+       */
+      if (this.firstCipher.length > 1) {
+        this.scene.links.push(oldLink);
       }
     },
   },
