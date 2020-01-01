@@ -1,17 +1,30 @@
 <template>
+  <div style="width: 100%;">
     <v-card style="width: 100%;">
-        <v-card-title>
-            <v-icon @click="addNode">add</v-icon>
-            <v-select
-              label="Cipher to Add"
-              :items="ciphers"
-              v-model="newCipher"
-            ></v-select>
-        </v-card-title>
-        <v-card-text>
-            <simple-flowchart :scene.sync="scene" @linkAdded="onLinkAdded" @linkBreak="onLinkBreak"></simple-flowchart>
-        </v-card-text>
+      <v-card-title>
+        <v-icon @click="addNode">add</v-icon>
+        <v-select label="Cipher to Add" :items="ciphers" v-model="newCipher"></v-select>
+      </v-card-title>
+      <v-card-text @mouseup="onMouseUp">
+        <simple-flowchart
+          :scene.sync="scene"
+          @linkAdded="onLinkAdded"
+          @linkBreak="onLinkBreak"
+          @nodeClick="onNodeClick"
+          @nodeDelete="onNodeDelete"
+        ></simple-flowchart>
+      </v-card-text>
     </v-card>
+    <v-dialog v-model="openDialog" width="500" persistent>
+      <v-card>
+        <v-card-title>
+          {{ openNode.type }}
+          <v-spacer></v-spacer>
+          <v-icon @click="onDialogClose()">close</v-icon>
+        </v-card-title>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -31,13 +44,12 @@ export default {
       nodes: [],
       links: [],
     },
+    openDialog: false,
+    openNode: {},
   }),
   computed: {
     ciphers() {
-      return [
-        'Affine',
-        'Rail-Fence',
-      ];
+      return ['Affine', 'Rail-Fence'];
     },
     firstCipher() {
       /*
@@ -57,16 +69,20 @@ export default {
         id: maxID + 1,
         x: -400,
         y: 50,
-        type: self.newCipher,
+        type: `${self.newCipher}${maxID + 1}`,
         label: `test${maxID + 1}`,
       });
     },
     onLinkAdded(newLink) {
       const self = this;
       function removeExisting(type) {
-        const existing = self.scene.links.filter(l => l[type] === newLink[type]);
+        const existing = self.scene.links.filter(
+          l => l[type] === newLink[type],
+        );
         if (existing.length > 1) {
-          const existingIndex = self.scene.links.findIndex(l => l[type] === newLink[type]);
+          const existingIndex = self.scene.links.findIndex(
+            l => l[type] === newLink[type],
+          );
           self.scene.links.splice(existingIndex, 1);
         }
       }
@@ -87,8 +103,7 @@ export default {
        * and to avoid infinite loops,
        * there should always be fewer links than nodes
        */
-      const connectedNodes = this.scene.nodes
-        .filter(n => this.scene.links.find(l => l.from === n.id || l.to === n.id));
+      const connectedNodes = this.scene.nodes.filter(n => this.scene.links.find(l => l.from === n.id || l.to === n.id));
       if (this.scene.links.length >= connectedNodes.length) {
         const newIndex = this.scene.links.findIndex(l => l.id === newLink.id);
         this.scene.links.splice(newIndex, 1);
@@ -104,12 +119,32 @@ export default {
         this.scene.links.push(oldLink);
       }
     },
+    onNodeClick(nodeId) {
+      const nodeIndex = this.scene.nodes.findIndex(n => n.id === nodeId);
+      this.openNode = this.scene.nodes[nodeIndex];
+    },
+    onMouseUp() {
+      this.openDialog = this.openNode.id !== undefined;
+    },
+    onDialogClose() {
+      this.openDialog = false;
+      const nodeIndex = this.scene.nodes.findIndex(
+        n => n.id === this.openNode.id,
+      );
+      this.scene.nodes.splice(nodeIndex, 1, this.openNode);
+      this.openNode = {};
+    },
+    onNodeDelete(nodeId) {
+      if (this.openNode.id === nodeId) {
+        this.openNode = {};
+      }
+    },
   },
 };
 </script>
 
 <style>
 .node-label {
-    color: black !important;
+  color: black !important;
 }
 </style>
