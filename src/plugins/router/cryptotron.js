@@ -20,6 +20,10 @@ export default {
       component: () => import('@/views/CryptoTron/BaconianCipher.vue'),
     },
     {
+      path: 'builder',
+      component: () => import('@/views/CryptoTron/BYOA.vue'),
+    },
+    {
       path: 'caesar',
       component: () => import('@/views/CryptoTron/CaesarCipher.vue'),
     },
