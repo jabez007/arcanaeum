@@ -25,6 +25,9 @@
         <v-card-text>
             <component :is="openNode.component" v-model="openNode.key"></component>
         </v-card-text>
+        <v-card-actions v-if="openNode.encrypt && openNode.key">
+            {{ openNode.encrypt('hello world') }}
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
@@ -33,6 +36,7 @@
 <script>
 import SimpleFlowchart from 'vue-simple-flowchart';
 import AffineKey from '@/components/CryptoTron/CipherKeys/AffineKey.vue';
+import * as Affine from '_/CryptoTron/ciphers/affine';
 import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
 
@@ -57,6 +61,8 @@ export default {
       return {
         Affine: {
           component: AffineKey,
+          encrypt: Affine.encrypt,
+          decrypt: Affine.decrypt,
         },
         'Rail-Fence': {
           component: RailFenceKey,
@@ -90,6 +96,12 @@ export default {
             : '';
         },
         component: self.ciphers[self.newCipher].component,
+        get encrypt() {
+          return self.ciphers[self.newCipher].encrypt(this.key);
+        },
+        get decrypt() {
+          return self.ciphers[self.newCipher].decrypt(this.key);
+        },
       });
     },
     onLinkAdded(newLink) {

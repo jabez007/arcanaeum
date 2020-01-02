@@ -65,10 +65,10 @@ export default {
   }),
   methods: {
     encrypt(plainText, key) {
-      return encrypt(plainText, key.alpha, key.beta);
+      return encrypt(key)(plainText);
     },
     decrypt(cipherText, key) {
-      return decrypt(cipherText, key.alpha, key.beta);
+      return decrypt(key)(cipherText);
     },
     possibleKeys(key) {
       if (!key) {

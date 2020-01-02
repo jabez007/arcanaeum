@@ -7,19 +7,21 @@ export function findInverse(a) {
   return NaN;
 }
 
-export function decrypt(cipherText, alpha, beta) {
-  const inverse = findInverse(alpha);
-  const ciphertext = (cipherText || '').toLowerCase();
-  let plaintext = '';
-  const re = /[a-z]/;
-  for (let i = 0; i < ciphertext.length; i += 1) {
-    if (re.test(ciphertext.charAt(i))) {
-      plaintext += String.fromCharCode(
-        ((inverse * (ciphertext.charCodeAt(i) - 97 + 26 - beta)) % 26) + 97,
-      );
-    } else {
-      plaintext += ciphertext.charAt(i);
+export function decrypt(key) {
+  return (cipherText) => {
+    const inverse = findInverse(key.alpha);
+    const ciphertext = (cipherText || '').toLowerCase();
+    let plaintext = '';
+    const re = /[a-z]/;
+    for (let i = 0; i < ciphertext.length; i += 1) {
+      if (re.test(ciphertext.charAt(i))) {
+        plaintext += String.fromCharCode(
+          ((inverse * (ciphertext.charCodeAt(i) - 97 + 26 - key.beta)) % 26) + 97,
+        );
+      } else {
+        plaintext += ciphertext.charAt(i);
+      }
     }
-  }
-  return plaintext;
+    return plaintext;
+  };
 }
