@@ -1,7 +1,7 @@
 <template>
   <Cipher :encryptAlgorithm="encrypt"
           :decryptAlgorithm="decrypt"
-          :cipherKey="{ square, chars }"
+          :cipherKey="key"
           :keysGenerator="possibleKeys"
           @update-key="onUpdateKey">
     <v-card slot="description">
@@ -21,124 +21,45 @@
           The positions of the letters in the square are govern by a <a @click="keyword='zebra'">key word</a>.
           That <q>key word</q> is written out first (with repeated characters removed), then the rest of the letters from the alphabet are written in order.
         </p>
-        <v-layout row>
-          <v-spacer></v-spacer>
-          <v-flex xs3>
-            <table style="table-layout:fixed; width: 100px;">
-              <thead>
-                <tr>
-                  <td></td>
-                  <td v-for="c in 5"
-                      :key="c"
-                      style="color:red;">
-                    {{ (cipherChars || '').charAt(c - 1) }}
-                  </td>
-                </tr>
-              </thead>
-              <tr v-for="r in 5"
-                  :key="r">
-                <td style="color:red;">{{ (cipherChars || '').charAt(r - 1) }}</td>
-                <td v-for="c in 5"
-                    :key="c">
-                  {{ square[r-1][c-1] }}
-                </td>
-              </tr>
-            </table>
-          </v-flex>
-          <v-spacer></v-spacer>
-        </v-layout>
         <p>
           Encryption then is just a matter of finding the letter from your plaintext in that square.
           The ciphertext is the (row, column) coordinate for the plaintext in the square.
         </p>
       </v-card-text>
     </v-card>
-    <v-flex slot="key"
-            xs9>
-      <v-form ref="polybiusKeyForm"
-              v-model="keyIsValid">
-          <v-layout row
-                    wrap>
-            <v-flex xs12
-                    md9>
-              <v-text-field label="Keyword"
-                            v-model.trim="keyword"
-                            :rules="keywordRules"
-                            required
-                            clearable>
-              </v-text-field>
-            </v-flex>
-            <v-spacer></v-spacer>
-            <v-flex xs12
-                    md2>
-              <v-text-field label="Ciphertext Characters"
-                            v-model.trim="cipherChars"
-                            :rules="cipherCharRules"
-                            required
-                            clearable>
-              </v-text-field>
-            </v-flex>
-          </v-layout>
-      </v-form>
-    </v-flex>
+    <polybius-key slot="key" v-model="key"></polybius-key>
   </Cipher>
 </template>
 
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-import Rules from '_/rules';
-import { alphaLower, getUniqueCharacters } from '_/CryptoTron/ciphers';
-import { encrypt, decrypt } from '_/CryptoTron/ciphers/polybius';
+import PolybiusKey from '@/components/CryptoTron/CipherKeys/PolybiusKey.vue';
+import { square, encrypt, decrypt } from '_/CryptoTron/ciphers/polybius';
 
 export default {
   components: {
     Cipher,
+    PolybiusKey,
   },
   data: () => ({
-    keyword: '',
-    cipherChars: 'ABCDE',
-    keyIsValid: false,
+    key: {
+      keyword: '',
+      square: square(''),
+      cipherChars: 'ABCDE',
+    },
   }),
-  computed: {
-    keywordRules() {
-      return [Rules.required, Rules.word];
-    },
-    cipherCharRules() {
-      return [Rules.required, Rules.exactLength(5)];
-    },
-    square() {
-      const key = getUniqueCharacters(`${this.keyword}${alphaLower}`).replace(/[jJ]/g, '');
-      const cipherSquare = new Array(5).fill(null).map(() => (new Array(5).fill(null)));
-      for (let i = 0; i < key.length; i += 1) {
-        const char = key.charAt(i);
-        const column = i % 5;
-        const row = Math.floor(i / 5);
-        cipherSquare[row][column] = char;
-      }
-      return cipherSquare;
-    },
-    chars() {
-      return (this.cipherChars || '').substring(0, 5);
-    },
-  },
   methods: {
     encrypt(plainText, cipherKey) {
-      if (this.$refs.polybiusKeyForm.validate()) {
-        return encrypt(plainText, cipherKey.square, cipherKey.chars);
-      }
-      return '';
+      return encrypt(plainText, cipherKey.square, cipherKey.cipherChars);
     },
     decrypt(cipherText, cipherKey) {
-      if (this.$refs.polybiusKeyForm.validate() && cipherText) {
-        return decrypt(cipherText, cipherKey.square, cipherKey.chars);
-      }
-      return '';
+      return decrypt(cipherText, cipherKey.square, cipherKey.cipherChars);
     },
     possibleKeys(cipherKey, cipherText, bestCipherKey) {
       if (!bestCipherKey) { // first pass is ''
         const self = this;
-        return { square: self.square, chars: self.chars };
+        return { square: self.key.square || square(''), cipherChars: self.key.cipherChars || 'ABCDE' };
       }
       const flatKey = [];
       for (let r = 0; r < 5; r += 1) {
@@ -162,16 +83,10 @@ export default {
           cipherSquare[row][column] = char;
         }
       }
-      return { square: cipherSquare, chars: String(bestCipherKey.chars) };
+      return { square: cipherSquare, cipherChars: String(bestCipherKey.cipherChars) };
     },
     onUpdateKey(newKey) {
-      let key = '';
-      for (let r = 0; r < 5; r += 1) {
-        for (let c = 0; c < 5; c += 1) {
-          key += newKey.square[r][c];
-        }
-      }
-      this.keyword = key;
+      this.key = newKey;
     },
   },
 };
