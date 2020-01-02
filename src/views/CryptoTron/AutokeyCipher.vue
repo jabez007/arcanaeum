@@ -1,5 +1,5 @@
 <template>
-  <Cipher :encryptAlgorithm="encrypt" :decryptAlgorithm="decrypt" :cipherKey=" { primer }">
+  <Cipher :encryptAlgorithm="encrypt" :decryptAlgorithm="decrypt" :cipherKey="key">
     <v-card slot="description">
       <v-card-title>
         <h5 class="headline">The Autokey Cipher</h5>
@@ -45,15 +45,8 @@
         </p>
       </v-card-text>
     </v-card>
-    <v-form slot="key" ref="autokeyKeyForm" v-model="keyIsValid">
-      <v-text-field
-        label="Primer"
-        v-model.trim="primer"
-        :rules="rules"
-        clearable
-        required
-      ></v-text-field>
-    </v-form>
+    <autokey-key slot="key" v-model="key">
+    </autokey-key>
   </Cipher>
 </template>
 
@@ -61,35 +54,26 @@
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import TabulaRecta from '@/components/CryptoTron/TabulaRecta.vue';
-import Rules from '_/rules';
+import AutokeyKey from '@/components/CryptoTron/CipherKeys/AutokeyKey.vue';
 import { encrypt, decrypt } from '_/CryptoTron/ciphers/autokey';
 
 export default {
   components: {
     Cipher,
     TabulaRecta,
+    AutokeyKey,
   },
   data: () => ({
-    primer: '',
-    keyIsValid: false,
-  }),
-  computed: {
-    rules() {
-      return [Rules.required, Rules.word];
+    key: {
+      primer: '',
     },
-  },
+  }),
   methods: {
     encrypt(plainText, cipherKey) {
-      if (this.$refs.autokeyKeyForm.validate()) {
-        return encrypt(plainText, cipherKey.primer);
-      }
-      return '';
+      return encrypt(cipherKey)(plainText);
     },
     decrypt(cipherText, cipherKey) {
-      if (this.$refs.autokeyKeyForm.validate()) {
-        return decrypt(cipherText, cipherKey.primer);
-      }
-      return '';
+      return decrypt(cipherKey)(cipherText);
     },
   },
 };

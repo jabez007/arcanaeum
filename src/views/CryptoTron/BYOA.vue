@@ -49,6 +49,8 @@ import SimpleFlowchart from 'vue-simple-flowchart';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import AffineKey from '@/components/CryptoTron/CipherKeys/AffineKey.vue';
 import * as Affine from '_/CryptoTron/ciphers/affine';
+import AutokeyKey from '@/components/CryptoTron/CipherKeys/AutokeyKey.vue';
+import * as Autokey from '_/CryptoTron/ciphers/autokey';
 import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import * as RailFence from '_/CryptoTron/ciphers/railFence';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
@@ -77,6 +79,11 @@ export default {
           component: AffineKey,
           encrypt: Affine.encrypt,
           decrypt: Affine.decrypt,
+        },
+        Autokey: {
+          component: AutokeyKey,
+          encrypt: Autokey.encrypt,
+          decrypt: Autokey.decrypt,
         },
         'Rail-Fence': {
           component: RailFenceKey,
