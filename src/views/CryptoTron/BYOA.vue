@@ -27,7 +27,7 @@
           @nodeDelete="onNodeDelete"
         ></simple-flowchart>
       </v-card-text>
-      <v-dialog v-model="openDialog" width="500" persistent>
+      <v-dialog v-model="openDialog" width="800" persistent>
         <v-card>
           <v-card-title>
             {{ openNode.type }}
@@ -57,6 +57,8 @@ import CaesarKey from '@/components/CryptoTron/CipherKeys/CaesarKey.vue';
 import * as Caesar from '_/CryptoTron/ciphers/caesar';
 import ColumnarTranspositionKey from '@/components/CryptoTron/CipherKeys/ColumnarTranspositionKey.vue';
 import * as ColumnarTransposition from '_/CryptoTron/ciphers/columnarTransposition';
+import HuffmanianKey from '@/components/CryptoTron/CipherKeys/HuffmanianKey.vue';
+import * as Huffmanian from '_/CryptoTron/ciphers/huffmanian';
 import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import * as RailFence from '_/CryptoTron/ciphers/railFence';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
@@ -105,6 +107,11 @@ export default {
           component: ColumnarTranspositionKey,
           encrypt: ColumnarTransposition.encrypt,
           decrypt: ColumnarTransposition.decrypt,
+        },
+        Huffmanian: {
+          component: HuffmanianKey,
+          encrypt: Huffmanian.encrypt,
+          decrypt: Huffmanian.decrypt,
         },
         'Rail-Fence': {
           component: RailFenceKey,

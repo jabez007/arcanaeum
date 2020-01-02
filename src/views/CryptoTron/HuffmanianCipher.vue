@@ -2,7 +2,7 @@
   <Cipher
     :encryptAlgorithm="encrypt"
     :decryptAlgorithm="decrypt"
-    :cipherKey="{ encoding, message }"
+    :cipherKey="key"
   >
     <v-card slot="description">
       <v-card-title>
@@ -26,31 +26,7 @@
         </p>
       </v-card-text>
     </v-card>
-    <v-flex slot="key" xs10>
-      <v-form ref="huffmanianKeyForm" v-model="keyIsValid">
-        <v-layout row wrap align-center>
-          <v-flex lg7 class="hidden-md-and-down">
-            <v-layout row wrap>
-              <v-flex xs3 v-for="(char, key) in Object.keys(encoding)" :key="key">
-                <v-text-field :label="char" v-model="encoding[char]" disabled readonly></v-text-field>
-              </v-flex>
-            </v-layout>
-          </v-flex>
-          <v-spacer></v-spacer>
-          <v-flex xs12 lg5>
-            <v-textarea
-              label="False Message"
-              v-model.trim="message"
-              :rules="rules"
-              clearable
-              rows="1"
-              auto-grow
-              required
-            ></v-textarea>
-          </v-flex>
-        </v-layout>
-      </v-form>
-    </v-flex>
+    <huffmanian-key slot="key" v-model="key"></huffmanian-key>
     <v-layout slot="encrypt-cipherText" slot-scope="scope" row wrap>
       <v-flex xs12 md6>
         <v-textarea
@@ -65,10 +41,10 @@
       </v-flex>
       <v-flex xs12 md6>
         <v-textarea
-          :label="`Steganograph (${message.replace(/[^a-zA-Z]/g, '').length} / ${scope.cipherText.length})`"
-          :value="enstegano(scope.cipherText, message)"
+          :label="`Steganograph (${messageLength} / ${scope.cipherText.length})`"
+          :value="enstegano(scope.cipherText, key)"
           prepend-inner-icon="file_copy"
-          @click:prepend-inner="scope.copyToClipboard(enstegano(scope.cipherText, message))"
+          @click:prepend-inner="scope.copyToClipboard(enstegano(scope.cipherText, key))"
           outline
           auto-grow
           readonly
@@ -81,39 +57,33 @@
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-import Rules from '_/rules';
-import {
-  encoding, encode, decrypt, enstegano,
-} from '_/CryptoTron/ciphers/huffmanian';
+import HuffmanianKey from '@/components/CryptoTron/CipherKeys/HuffmanianKey.vue';
+import { encode, decrypt, enstegano } from '_/CryptoTron/ciphers/huffmanian';
 
 export default {
   components: {
     Cipher,
+    HuffmanianKey,
   },
   data: () => ({
-    message: '',
-    keyIsValid: false,
+    key: {
+      falseMessage: '',
+    },
   }),
   computed: {
-    encoding() {
-      return encoding;
-    },
-    rules() {
-      return [Rules.required];
+    messageLength() {
+      return (this.key.falseMessage || '').replace(/[^a-zA-Z]/g, '').length;
     },
   },
   methods: {
     encrypt(plainText) {
       return encode(plainText);
     },
-    enstegano(encodedString, message) {
-      if (message) {
-        return enstegano(encodedString, message);
-      }
-      return '';
+    enstegano(encodedString, key) {
+      return enstegano(key)(encodedString);
     },
     decrypt(cipherText) {
-      return decrypt(cipherText);
+      return decrypt()(cipherText);
     },
   },
 };
