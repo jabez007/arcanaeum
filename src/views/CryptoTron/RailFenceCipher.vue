@@ -138,10 +138,10 @@ export default {
   },
   methods: {
     encrypt(plainText, cipherKey) {
-      return encrypt(plainText, cipherKey.rails);
+      return encrypt(cipherKey)(plainText);
     },
     decrypt(cipherText, cipherKey) {
-      return decrypt(cipherText, cipherKey.rails);
+      return decrypt(cipherKey)(cipherText);
     },
     possibleKeys(key, ciphertext) {
       if (!key) {

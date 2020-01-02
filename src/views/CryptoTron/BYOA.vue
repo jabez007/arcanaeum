@@ -14,6 +14,9 @@
           @nodeDelete="onNodeDelete"
         ></simple-flowchart>
       </v-card-text>
+      <v-card-actions v-if="keys">
+        {{ `Cipher Text: ${encrypt('hello world')}` }}
+      </v-card-actions>
     </v-card>
     <v-dialog v-model="openDialog" width="500" persistent>
       <v-card>
@@ -25,9 +28,6 @@
         <v-card-text>
             <component :is="openNode.component" v-model="openNode.key"></component>
         </v-card-text>
-        <v-card-actions v-if="openNode.encrypt && openNode.key">
-            {{ openNode.encrypt('hello world') }}
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
@@ -38,6 +38,7 @@ import SimpleFlowchart from 'vue-simple-flowchart';
 import AffineKey from '@/components/CryptoTron/CipherKeys/AffineKey.vue';
 import * as Affine from '_/CryptoTron/ciphers/affine';
 import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
+import * as RailFence from '_/CryptoTron/ciphers/railFence';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
 
 export default {
@@ -66,6 +67,8 @@ export default {
         },
         'Rail-Fence': {
           component: RailFenceKey,
+          encrypt: RailFence.encrypt,
+          decrypt: RailFence.decrypt,
         },
       };
     },
@@ -78,8 +81,31 @@ export default {
         .filter(n => self.scene.links.filter(l => l.from === n.id).length > 0)
         .filter(n => self.scene.links.filter(l => l.to === n.id).length === 0);
     },
+    keys() {
+      return this.firstCipher.length !== 1 ? false : this.scene.nodes.every(n => n.key);
+    },
   },
   methods: {
+    encrypt(plainText) {
+      let cipherText = this.firstCipher[0].encrypt(plainText);
+
+      let nodeId = this.firstCipher[0].id;
+      const links = [...this.scene.links];
+      while (links.length > 0) {
+        // find the link from the current node
+        const linkIndex = links.findIndex(l => l.from === nodeId); // eslint-disable-line no-loop-func
+        // pull that link out of the list
+        const link = links.splice(linkIndex, 1)[0];
+        // find the node that link connects to
+        const node = this.scene.nodes.find(n => n.id === link.to);
+        // encrypt message
+        cipherText = node.encrypt(cipherText);
+        // set nodeId for next run through
+        nodeId = node.id;
+      }
+
+      return cipherText;
+    },
     addNode() {
       const maxID = Math.max(0, ...this.scene.nodes.map(link => link.id));
       const self = this;
@@ -97,10 +123,10 @@ export default {
         },
         component: self.ciphers[self.newCipher].component,
         get encrypt() {
-          return self.ciphers[self.newCipher].encrypt(this.key);
+          return self.ciphers[this.type].encrypt(this.key);
         },
         get decrypt() {
-          return self.ciphers[self.newCipher].decrypt(this.key);
+          return self.ciphers[this.type].decrypt(this.key);
         },
       });
     },
