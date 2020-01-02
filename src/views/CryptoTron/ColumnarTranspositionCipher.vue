@@ -2,7 +2,7 @@
   <Cipher
     :encryptAlgorithm="encrypt"
     :decryptAlgorithm="decrypt"
-    :cipherKey="{ keyword }"
+    :cipherKey="key"
   >
     <v-card slot="description">
         <v-card-title>
@@ -26,10 +26,10 @@
           </p>
           <h6 class="title">Example</h6>
           <p>
-            Suppose we use the keyword <a @click="keyword = 'zebras'">ZEBRAS</a> and the message <q>WE ARE DISCOVERED. FLEE AT ONCE.</q>
+            Suppose we use the keyword <a @click="key={ keyword: 'zebras' }">ZEBRAS</a> and the message <q>WE ARE DISCOVERED. FLEE AT ONCE.</q>
           </p>
           <v-expand-transition>
-            <div v-if="keyword === 'zebras'">
+            <div v-if="key.keyword === 'zebras'">
               <p>
                 In a regular columnar transposition, the message is padded with 'X' (our 'null' in this example) to
                 {{ 'WE ARE DISCOVERED. FLEE AT ONCE.'.replace(/[^A-Z]/g, '').padEnd(30, 'X') }}
@@ -57,62 +57,32 @@
           </p>
       </v-card-text>
     </v-card>
-    <v-flex slot="key" xs9>
-      <v-form ref="columnarKeyForm"
-              v-model="keyIsValid">
-        <v-text-field
-          label="Key Word"
-          v-model.trim="keyword"
-          :rules="rules"
-          required
-          clearable
-        ></v-text-field>
-        <v-text-field
-          label="Sorted"
-          :value="(keyword || '').toLowerCase().split('').sort().join('')"
-          disabled
-          readonly
-        ></v-text-field>
-      </v-form>
-    </v-flex>
+    <columnar-transposition-key slot="key" v-model="key"></columnar-transposition-key>
   </Cipher>
 </template>
 
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-import Rules from '_/rules';
+import ColumnarTranspositionKey from '@/components/CryptoTron/CipherKeys/ColumnarTranspositionKey.vue';
 import { encrypt, decrypt } from '_/CryptoTron/ciphers/columnarTransposition';
 
 export default {
   components: {
     Cipher,
+    ColumnarTranspositionKey,
   },
   data: () => ({
-    keyword: '',
-    keyIsValid: false,
-  }),
-  computed: {
-    rules() {
-      return [Rules.required, Rules.word, Rules.minLength(2)];
+    key: {
+      keyword: '',
     },
-  },
+  }),
   methods: {
     encrypt(plainText, cipherKey) {
-      if (this.$refs.columnarKeyForm.validate()) {
-        return encrypt(plainText, cipherKey.keyword);
-      }
-      return '';
+      return encrypt(cipherKey)(plainText);
     },
     decrypt(cipherText, cipherKey) {
-      if (this.$refs.columnarKeyForm.validate()) {
-        return decrypt(cipherText, cipherKey.keyword);
-      }
-      return '';
-    },
-    possibleKeys(cipherKey, cipherText, bestCipherKey) {},
-    onUpdateKey(newKey) {
-      this.keyword = newKey.keyword;
+      return decrypt(cipherKey)(cipherText);
     },
   },
 };

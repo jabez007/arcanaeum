@@ -55,6 +55,8 @@ import BaconianKey from '@/components/CryptoTron/CipherKeys/BaconianKey.vue';
 import * as Baconian from '_/CryptoTron/ciphers/baconian';
 import CaesarKey from '@/components/CryptoTron/CipherKeys/CaesarKey.vue';
 import * as Caesar from '_/CryptoTron/ciphers/caesar';
+import ColumnarTranspositionKey from '@/components/CryptoTron/CipherKeys/ColumnarTranspositionKey.vue';
+import * as ColumnarTransposition from '_/CryptoTron/ciphers/columnarTransposition';
 import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import * as RailFence from '_/CryptoTron/ciphers/railFence';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
@@ -98,6 +100,11 @@ export default {
           component: CaesarKey,
           encrypt: Caesar.encrypt,
           decrypt: Caesar.decrypt,
+        },
+        'Columnar Transposition': {
+          component: ColumnarTranspositionKey,
+          encrypt: ColumnarTransposition.encrypt,
+          decrypt: ColumnarTransposition.decrypt,
         },
         'Rail-Fence': {
           component: RailFenceKey,
