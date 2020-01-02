@@ -3,7 +3,7 @@
     <v-card style="width: 100%;">
       <v-card-title>
         <v-icon @click="addNode">add</v-icon>
-        <v-select label="Cipher to Add" :items="ciphers" v-model="newCipher"></v-select>
+        <v-select label="Cipher to Add" :items="Object.keys(ciphers)" v-model="newCipher"></v-select>
       </v-card-title>
       <v-card-text @mouseup="onMouseUp">
         <simple-flowchart
@@ -22,6 +22,9 @@
           <v-spacer></v-spacer>
           <v-icon @click="onDialogClose()">close</v-icon>
         </v-card-title>
+        <v-card-text>
+            <component :is="openNode.component" v-model="openNode.key"></component>
+        </v-card-text>
       </v-card>
     </v-dialog>
   </div>
@@ -29,6 +32,8 @@
 
 <script>
 import SimpleFlowchart from 'vue-simple-flowchart';
+import AffineKey from '@/components/CryptoTron/CipherKeys/AffineKey.vue';
+import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
 
 export default {
@@ -49,7 +54,14 @@ export default {
   }),
   computed: {
     ciphers() {
-      return ['Affine', 'Rail-Fence'];
+      return {
+        Affine: {
+          component: AffineKey,
+        },
+        'Rail-Fence': {
+          component: RailFenceKey,
+        },
+      };
     },
     firstCipher() {
       /*
@@ -69,8 +81,15 @@ export default {
         id: maxID + 1,
         x: -400,
         y: 50,
-        type: `${self.newCipher}${maxID + 1}`,
-        label: `test${maxID + 1}`,
+        type: `${self.newCipher}`,
+        get label() {
+          return this.key
+            ? Object.keys(this.key)
+              .map(k => `${k}: ${this.key[k]}`)
+              .join('\n')
+            : '';
+        },
+        component: self.ciphers[self.newCipher].component,
       });
     },
     onLinkAdded(newLink) {
@@ -146,5 +165,6 @@ export default {
 <style>
 .node-label {
   color: black !important;
+  white-space: pre-line; /* make HTML properly treat \n line breaks */
 }
 </style>
