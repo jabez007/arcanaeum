@@ -53,6 +53,8 @@ import AutokeyKey from '@/components/CryptoTron/CipherKeys/AutokeyKey.vue';
 import * as Autokey from '_/CryptoTron/ciphers/autokey';
 import BaconianKey from '@/components/CryptoTron/CipherKeys/BaconianKey.vue';
 import * as Baconian from '_/CryptoTron/ciphers/baconian';
+import CaesarKey from '@/components/CryptoTron/CipherKeys/CaesarKey.vue';
+import * as Caesar from '_/CryptoTron/ciphers/caesar';
 import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import * as RailFence from '_/CryptoTron/ciphers/railFence';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
@@ -91,6 +93,11 @@ export default {
           component: BaconianKey,
           encrypt: Baconian.encrypt,
           decrypt: Baconian.decrypt,
+        },
+        Caesar: {
+          component: CaesarKey,
+          encrypt: Caesar.encrypt,
+          decrypt: Caesar.decrypt,
         },
         'Rail-Fence': {
           component: RailFenceKey,

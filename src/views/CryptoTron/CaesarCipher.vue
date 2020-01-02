@@ -2,7 +2,7 @@
   <Cipher
     :encryptAlgorithm="encrypt"
     :decryptAlgorithm="decrypt"
-    :cipherKey="{ shift }"
+    :cipherKey="key"
     :keysGenerator="possibleKeys"
     @update-key="onUpdateKey"
   >
@@ -25,50 +25,32 @@
         </p>
       </v-card-text>
     </v-card>
-    <v-form ref="caesarKeyForm" slot="key" v-model="keyIsValid">
-      <v-text-field
-        label="Shift"
-        type="number"
-        v-model.number="shift"
-        :rules="rules"
-        clearable
-        required
-      ></v-text-field>
-    </v-form>
+    <caesar-key slot="key" v-model="key"></caesar-key>
   </Cipher>
 </template>
 
 <script>
 // @ is an alias to /src
 import Cipher from '@/components/CryptoTron/Cipher.vue';
-import Rules from '_/rules';
+import CaesarKey from '@/components/CryptoTron/CipherKeys/CaesarKey.vue';
 import { encrypt, decrypt } from '_/CryptoTron/ciphers/caesar';
 
 export default {
   components: {
     Cipher,
+    CaesarKey,
   },
   data: () => ({
-    shift: 0,
-    keyIsValid: false,
-  }),
-  computed: {
-    rules() {
-      return [Rules.required, Rules.integer];
+    key: {
+      shift: 0,
     },
-  },
+  }),
   methods: {
     encrypt(plainText, key) {
-      if (this.$refs.caesarKeyForm.validate()) {
-        return encrypt(plainText, key.shift);
-      }
-      return '';
+      return encrypt(key)(plainText);
     },
     decrypt(cipherText, key) {
-      if (this.$refs.caesarKeyForm.validate()) {
-        return decrypt(cipherText, key.shift);
-      }
-      return '';
+      return decrypt(key)(cipherText);
     },
     possibleKeys(key) {
       if (!key) {
