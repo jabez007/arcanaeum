@@ -15,6 +15,7 @@
         ></simple-flowchart>
       </v-card-text>
       <v-card-actions v-if="keys">
+        {{ `Plain Text: ${decrypt(encrypt('hello world'))}` }}
         {{ `Cipher Text: ${encrypt('hello world')}` }}
       </v-card-actions>
     </v-card>
@@ -81,7 +82,17 @@ export default {
         .filter(n => self.scene.links.filter(l => l.from === n.id).length > 0)
         .filter(n => self.scene.links.filter(l => l.to === n.id).length === 0);
     },
+    lastCipher() {
+      /*
+       * find the node such that there is link a 'to' but no link 'from'
+       */
+      const self = this;
+      return this.scene.nodes
+        .filter(n => self.scene.links.filter(l => l.to === n.id).length > 0)
+        .filter(n => self.scene.links.filter(l => l.from === n.id).length === 0);
+    },
     keys() {
+      // By definition if we have exactly 1 firstCipher, we have exactly 1 lastCipher
       return this.firstCipher.length !== 1 ? false : this.scene.nodes.every(n => n.key);
     },
   },
@@ -105,6 +116,26 @@ export default {
       }
 
       return cipherText;
+    },
+    decrypt(cipherText) {
+      let plainText = this.lastCipher[0].decrypt(cipherText);
+
+      let nodeId = this.lastCipher[0].id;
+      const links = [...this.scene.links];
+      while (links.length > 0) {
+        // find the link from the current node
+        const linkIndex = links.findIndex(l => l.to === nodeId); // eslint-disable-line no-loop-func
+        // pull that link out of the list
+        const link = links.splice(linkIndex, 1)[0];
+        // find the node that link connects from
+        const node = this.scene.nodes.find(n => n.id === link.from);
+        // decrypt message
+        plainText = node.decrypt(plainText);
+        // set nodeId for next run through
+        nodeId = node.id;
+      }
+
+      return plainText;
     },
     addNode() {
       const maxID = Math.max(0, ...this.scene.nodes.map(link => link.id));
