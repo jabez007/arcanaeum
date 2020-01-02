@@ -1,10 +1,23 @@
 <template>
-  <div style="width: 100%;">
-    <v-card style="width: 100%;">
+  <Cipher
+    style="width: 100%;"
+    :encryptAlgorithm="encrypt"
+    :decryptAlgorithm="decrypt"
+    :cipherKey="keys"
+  >
+    <v-card slot="description" style="width: 100%;">
       <v-card-title>
-        <v-icon @click="addNode">add</v-icon>
-        <v-select label="Cipher to Add" :items="Object.keys(ciphers)" v-model="newCipher"></v-select>
+        <h5 class="headline">Combine Multiple Ciphers</h5>
       </v-card-title>
+      <v-card-actions>
+        <v-select
+          label="Cipher to Add"
+          :items="Object.keys(ciphers)"
+          v-model="newCipher"
+          prepend-inner-icon="add"
+          @click:prepend-inner="addNode"
+        ></v-select>
+      </v-card-actions>
       <v-card-text @mouseup="onMouseUp">
         <simple-flowchart
           :scene.sync="scene"
@@ -14,28 +27,26 @@
           @nodeDelete="onNodeDelete"
         ></simple-flowchart>
       </v-card-text>
-      <v-card-actions v-if="keys">
-        {{ `Plain Text: ${decrypt(encrypt('hello world'))}` }}
-        {{ `Cipher Text: ${encrypt('hello world')}` }}
-      </v-card-actions>
-    </v-card>
-    <v-dialog v-model="openDialog" width="500" persistent>
-      <v-card>
-        <v-card-title>
-          {{ openNode.type }}
-          <v-spacer></v-spacer>
-          <v-icon @click="onDialogClose()">close</v-icon>
-        </v-card-title>
-        <v-card-text>
+      <v-dialog v-model="openDialog" width="500" persistent>
+        <v-card>
+          <v-card-title>
+            {{ openNode.type }}
+            <v-spacer></v-spacer>
+            <v-icon @click="onDialogClose()">close</v-icon>
+          </v-card-title>
+          <v-card-text>
             <component :is="openNode.component" v-model="openNode.key"></component>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-  </div>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </v-card>
+  </Cipher>
 </template>
 
 <script>
 import SimpleFlowchart from 'vue-simple-flowchart';
+// @ is an alias to /src
+import Cipher from '@/components/CryptoTron/Cipher.vue';
 import AffineKey from '@/components/CryptoTron/CipherKeys/AffineKey.vue';
 import * as Affine from '_/CryptoTron/ciphers/affine';
 import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
@@ -44,6 +55,7 @@ import 'vue-simple-flowchart/dist/vue-flowchart.css';
 
 export default {
   components: {
+    Cipher,
     SimpleFlowchart,
   },
   data: () => ({
@@ -89,11 +101,15 @@ export default {
       const self = this;
       return this.scene.nodes
         .filter(n => self.scene.links.filter(l => l.to === n.id).length > 0)
-        .filter(n => self.scene.links.filter(l => l.from === n.id).length === 0);
+        .filter(
+          n => self.scene.links.filter(l => l.from === n.id).length === 0,
+        );
     },
     keys() {
       // By definition if we have exactly 1 firstCipher, we have exactly 1 lastCipher
-      return this.firstCipher.length !== 1 ? false : this.scene.nodes.every(n => n.key);
+      return this.firstCipher.length !== 1
+        ? false
+        : this.scene.nodes.every(n => n.key);
     },
   },
   methods: {
@@ -138,28 +154,30 @@ export default {
       return plainText;
     },
     addNode() {
-      const maxID = Math.max(0, ...this.scene.nodes.map(link => link.id));
-      const self = this;
-      this.scene.nodes.push({
-        id: maxID + 1,
-        x: -400,
-        y: 50,
-        type: `${self.newCipher}`,
-        get label() {
-          return this.key
-            ? Object.keys(this.key)
-              .map(k => `${k}: ${this.key[k]}`)
-              .join('\n')
-            : '';
-        },
-        component: self.ciphers[self.newCipher].component,
-        get encrypt() {
-          return self.ciphers[this.type].encrypt(this.key);
-        },
-        get decrypt() {
-          return self.ciphers[this.type].decrypt(this.key);
-        },
-      });
+      if (this.newCipher) {
+        const maxID = Math.max(0, ...this.scene.nodes.map(link => link.id));
+        const self = this;
+        this.scene.nodes.push({
+          id: maxID + 1,
+          x: -400,
+          y: 50,
+          type: `${self.newCipher}`,
+          get label() {
+            return this.key
+              ? Object.keys(this.key)
+                .map(k => `${k}: ${this.key[k]}`)
+                .join('\n')
+              : '';
+          },
+          component: self.ciphers[self.newCipher].component,
+          get encrypt() {
+            return self.ciphers[this.type].encrypt(this.key);
+          },
+          get decrypt() {
+            return self.ciphers[this.type].decrypt(this.key);
+          },
+        });
+      }
     },
     onLinkAdded(newLink) {
       const self = this;

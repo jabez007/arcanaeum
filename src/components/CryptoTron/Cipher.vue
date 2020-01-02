@@ -2,7 +2,7 @@
   <v-card>
     <slot v-if="$vuetify.breakpoint.mdAndUp" name="description"></slot>
     <v-card>
-      <v-card-title class="text-xs-right">
+      <v-card-title class="text-xs-right" v-if="$slots.key">
         <v-icon large>vpn_key</v-icon>
         <v-spacer></v-spacer>
         <slot name="key"></slot>
