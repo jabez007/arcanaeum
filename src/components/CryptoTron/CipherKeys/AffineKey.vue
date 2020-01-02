@@ -31,14 +31,10 @@
 <script>
 import Rules from '_/rules';
 import { gcd } from '_/CryptoTron/ciphers/affine';
+import mixin from './cipherKeysMixin';
 
 export default {
-  props: {
-    value: {
-      type: [Object, Boolean],
-      required: false,
-    },
-  },
+  mixins: [mixin],
   data: () => ({
     alpha: 1,
     beta: 0,
@@ -65,26 +61,9 @@ export default {
       },
     },
   },
-  watch: {
-    value(newVal) {
-      this.key = newVal;
-    },
-  },
-  created() {
-    if (this.value) {
-      this.key = this.value;
-    }
-  },
   methods: {
     gcd(a, b) {
       return gcd(a, b);
-    },
-    onInput() {
-      if (this.$refs.form.validate()) {
-        this.$emit('input', this.key);
-      } else {
-        this.$emit('input', false);
-      }
     },
   },
 };
