@@ -15,11 +15,12 @@ export function encode(plainText, encoding) {
 }
 
 export function enstegano(message, encodedString, encoding) {
+  const falseMessage = message || '';
   const re = /[a-zA-Z]/;
   let steganograph = '';
   let i = 0;
-  for (let j = 0; j < message.length; j += 1) {
-    const char = message[j];
+  for (let j = 0; j < falseMessage.length; j += 1) {
+    const char = falseMessage[j];
     if (re.test(char)) {
       if (encodedString[i] === encoding.lowerChar) {
         steganograph += char.toLowerCase();

@@ -5,6 +5,10 @@ export function encode(plainText) {
   return steganography.encode(plainText, encoding).replace(/[^ab]/g, '');
 }
 
-export function enstegano(encodedString, message) {
-  return steganography.enstegano(message, encodedString, encoding);
+export function enstegano(key) {
+  return encodedString => steganography.enstegano(key.falseMessage, encodedString, encoding);
+}
+
+export function encrypt(key) {
+  return plainText => enstegano(key)(encode(plainText));
 }

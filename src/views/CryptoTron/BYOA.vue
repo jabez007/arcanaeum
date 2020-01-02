@@ -51,6 +51,8 @@ import AffineKey from '@/components/CryptoTron/CipherKeys/AffineKey.vue';
 import * as Affine from '_/CryptoTron/ciphers/affine';
 import AutokeyKey from '@/components/CryptoTron/CipherKeys/AutokeyKey.vue';
 import * as Autokey from '_/CryptoTron/ciphers/autokey';
+import BaconianKey from '@/components/CryptoTron/CipherKeys/BaconianKey.vue';
+import * as Baconian from '_/CryptoTron/ciphers/baconian';
 import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import * as RailFence from '_/CryptoTron/ciphers/railFence';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
@@ -84,6 +86,11 @@ export default {
           component: AutokeyKey,
           encrypt: Autokey.encrypt,
           decrypt: Autokey.decrypt,
+        },
+        Baconian: {
+          component: BaconianKey,
+          encrypt: Baconian.encrypt,
+          decrypt: Baconian.decrypt,
         },
         'Rail-Fence': {
           component: RailFenceKey,
@@ -257,8 +264,13 @@ export default {
 </script>
 
 <style>
+.node-main {
+  max-height: 80px;
+  overflow: hidden;
+}
+
 .node-label {
-  color: black !important;
+  color: black;
   white-space: pre-line; /* make HTML properly treat \n line breaks */
 }
 </style>
