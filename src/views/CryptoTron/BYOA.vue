@@ -10,6 +10,48 @@
         <h5 class="headline">Combine Multiple Ciphers</h5>
       </v-card-title>
       <v-card-actions>
+        <v-dialog v-model="openLoad" width="320">
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+              <v-icon>open_in_browser</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>Open One of Your Algorithms</v-card-title>
+            <v-card-text>
+              <v-select label="Open Algorithm" :items="algorithmNames()" v-model="loadSelectValue"></v-select>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn @click="onLoad">Open</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="openSave" width="320">
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+              <v-icon>save</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>Save Your Algorithm</v-card-title>
+            <v-card-text>
+              <v-select
+                label="Save As"
+                :items="['', ...algorithmNames()]"
+                v-model="saveSelectValue"
+              >
+                <template v-slot:selection="{ item, index }">
+                  <v-text-field :value="item" @input="saveTextValue=$event" solo flat hide-details></v-text-field>
+                </template>
+              </v-select>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn @click="onSave">Save</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
         <v-select
           label="Cipher to Add"
           :items="Object.keys(ciphers)"
@@ -18,6 +60,12 @@
           @click:prepend-inner="addNode"
           dense
         ></v-select>
+        <v-spacer></v-spacer>
+        <h6 v-if="algorithmName" class="title">{{ algorithmName }}</h6>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="onClear">
+          <v-icon>clear</v-icon>
+        </v-btn>
       </v-card-actions>
       <v-card-text @mouseup="onMouseUp">
         <simple-flowchart
@@ -74,6 +122,7 @@ export default {
     SimpleFlowchart,
   },
   data: () => ({
+    algorithmName: '',
     newCipher: '',
     scene: {
       centerX: 1024,
@@ -84,6 +133,11 @@ export default {
     },
     openDialog: false,
     openNode: {},
+    openSave: false,
+    saveSelectValue: '',
+    saveTextValue: '',
+    openLoad: false,
+    loadSelectValue: '',
   }),
   computed: {
     ciphers() {
@@ -160,6 +214,11 @@ export default {
       return this.firstCipher.length !== 1
         ? false
         : this.scene.nodes.every(n => n.key);
+    },
+  },
+  watch: {
+    saveSelectValue() {
+      this.saveTextValue = '';
     },
   },
   methods: {
@@ -294,6 +353,69 @@ export default {
     onNodeDelete(nodeId) {
       if (this.openNode.id === nodeId) {
         this.openNode = {};
+      }
+    },
+    onClear() {
+      this.scene.links.splice(0, this.scene.links.length);
+      this.scene.nodes.splice(0, this.scene.nodes.length);
+      this.algorithmName = '';
+      this.saveTextValue = '';
+      this.saveSelectValue = '';
+    },
+    algorithmNames() {
+      return Object.keys(localStorage)
+        .filter(k => k.startsWith('BYOA/'))
+        .map(k => k.replace('BYOA/', ''));
+    },
+    onSave() {
+      const saveAsName = this.saveTextValue.trim() || this.saveSelectValue;
+      if (saveAsName) {
+        this.algorithmName = saveAsName;
+        const self = this;
+        localStorage.setItem(
+          `BYOA/${saveAsName}`,
+          JSON.stringify({
+            nodes: [...self.scene.nodes],
+            links: [...self.scene.links],
+          }),
+        );
+        this.openSave = false;
+      }
+    },
+    onLoad() {
+      const loadName = `BYOA/${this.loadSelectValue}`;
+      if (Object.keys(localStorage).includes(loadName)) {
+        this.onClear();
+        this.algorithmName = this.loadSelectValue;
+        this.saveSelectValue = this.loadSelectValue;
+        const loadObj = JSON.parse(localStorage.getItem(loadName));
+        const self = this;
+        loadObj.nodes.forEach((n) => {
+          self.scene.nodes.push({
+            id: n.id,
+            x: n.x,
+            y: n.y,
+            type: n.type,
+            component: self.ciphers[n.type].component,
+            key: n.key,
+            get label() {
+              return this.key
+                ? Object.keys(this.key)
+                  .filter(k => typeof this.key[k] !== 'object')
+                  .map(k => `${k}: ${this.key[k]}`)
+                  .join('\n')
+                : '';
+            },
+            get encrypt() {
+              return self.ciphers[this.type].encrypt(this.key);
+            },
+            get decrypt() {
+              return self.ciphers[this.type].decrypt(this.key);
+            },
+          });
+        });
+        this.scene.links.splice(0, this.scene.links.length, ...loadObj.links);
+        this.openLoad = false;
       }
     },
   },
