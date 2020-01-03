@@ -16,6 +16,7 @@
           v-model="newCipher"
           prepend-inner-icon="add"
           @click:prepend-inner="addNode"
+          dense
         ></v-select>
       </v-card-actions>
       <v-card-text @mouseup="onMouseUp">
@@ -59,6 +60,8 @@ import ColumnarTranspositionKey from '@/components/CryptoTron/CipherKeys/Columna
 import * as ColumnarTransposition from '_/CryptoTron/ciphers/columnarTransposition';
 import HuffmanianKey from '@/components/CryptoTron/CipherKeys/HuffmanianKey.vue';
 import * as Huffmanian from '_/CryptoTron/ciphers/huffmanian';
+import PolybiusKey from '@/components/CryptoTron/CipherKeys/PolybiusKey.vue';
+import * as Polybius from '_/CryptoTron/ciphers/polybius';
 import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import * as RailFence from '_/CryptoTron/ciphers/railFence';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
@@ -112,6 +115,11 @@ export default {
           component: HuffmanianKey,
           encrypt: Huffmanian.encrypt,
           decrypt: Huffmanian.decrypt,
+        },
+        Polybius: {
+          component: PolybiusKey,
+          encrypt: Polybius.encrypt,
+          decrypt: Polybius.decrypt,
         },
         'Rail-Fence': {
           component: RailFenceKey,
@@ -200,6 +208,7 @@ export default {
           get label() {
             return this.key
               ? Object.keys(this.key)
+                .filter(k => typeof this.key[k] !== 'object')
                 .map(k => `${k}: ${this.key[k]}`)
                 .join('\n')
               : '';

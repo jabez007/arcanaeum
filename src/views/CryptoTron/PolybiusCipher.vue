@@ -18,7 +18,8 @@
         <p>
           The key for the Polybius Square usually consist of a 25 letter <q>key square</q>.
           <q>i</q> and <q>j</q> usually share the same position in the square.
-          The positions of the letters in the square are govern by a <a @click="keyword='zebra'">key word</a>.
+          The positions of the letters in the square are govern by a
+          <a class="example" @click="key={ keyword: 'zebra', square: keySquare('zebra'), cipherChars: key.cipherChars }">key word</a>.
           That <q>key word</q> is written out first (with repeated characters removed), then the rest of the letters from the alphabet are written in order.
         </p>
         <p>
@@ -50,11 +51,14 @@ export default {
     },
   }),
   methods: {
+    keySquare(keyword) {
+      return square(keyword);
+    },
     encrypt(plainText, cipherKey) {
-      return encrypt(plainText, cipherKey.square, cipherKey.cipherChars);
+      return encrypt(cipherKey)(plainText);
     },
     decrypt(cipherText, cipherKey) {
-      return decrypt(cipherText, cipherKey.square, cipherKey.cipherChars);
+      return decrypt(cipherKey)(cipherText);
     },
     possibleKeys(cipherKey, cipherText, bestCipherKey) {
       if (!bestCipherKey) { // first pass is ''

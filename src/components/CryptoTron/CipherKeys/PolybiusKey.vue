@@ -1,7 +1,7 @@
 <template>
   <v-form ref="form">
     <v-layout row wrap>
-      <v-flex xs12 md6>
+      <v-flex xs12 md7>
         <v-layout row>
           <v-text-field
             label="Keyword"
@@ -24,7 +24,8 @@
           ></v-text-field>
         </v-layout>
       </v-flex>
-      <v-flex xs12 md6>
+      <v-spacer></v-spacer>
+      <v-flex xs12 md3>
         <table style="table-layout:fixed; width: 100px;">
           <thead>
             <tr>
@@ -74,6 +75,7 @@ export default {
       get() {
         const self = this;
         return {
+          keyword: self.keyword,
           square: self.square,
           cipherChars: self.chars,
         };

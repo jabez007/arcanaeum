@@ -125,5 +125,12 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+a.example {
+  color: #FF9800;
+}
+
+a.example:hover {
+  text-decoration: underline;
+}
 </style>
