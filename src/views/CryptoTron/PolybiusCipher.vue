@@ -61,29 +61,14 @@ export default {
         const self = this;
         return { square: self.key.square || square(''), cipherChars: self.key.cipherChars || 'ABCDE' };
       }
-      const flatKey = [];
-      for (let r = 0; r < 5; r += 1) {
-        for (let c = 0; c < 5; c += 1) {
-          flatKey.push(bestCipherKey.square[r][c]);
-        }
-      }
+
+      const flatKey = bestCipherKey.square.reduce((acc, row) => acc.concat(row), []);
       // swap two letters in the current key.
       const a = Math.floor((Math.random() * flatKey.length));
       const b = Math.floor((Math.random() * flatKey.length));
       [flatKey[a]] = flatKey.splice(b, 1, flatKey[a]);
-      // reassemble new cipherKey.
-      let key = '';
-      const cipherSquare = new Array(5).fill(null).map(() => (new Array(5).fill(null)));
-      for (let i = 0; i < 25; i += 1) {
-        const char = flatKey[i];
-        if (char !== 'j' && key.indexOf(char) === -1) {
-          key += char;
-          const column = (key.length - 1) % 5;
-          const row = Math.floor((key.length - 1) / 5);
-          cipherSquare[row][column] = char;
-        }
-      }
-      return { square: cipherSquare, cipherChars: String(bestCipherKey.cipherChars) };
+
+      return { square: square(flatKey.join('')), cipherChars: String(bestCipherKey.cipherChars) };
     },
     onUpdateKey(newKey) {
       this.key = newKey;
