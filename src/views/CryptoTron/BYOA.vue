@@ -28,7 +28,7 @@
           @nodeDelete="onNodeDelete"
         ></simple-flowchart>
       </v-card-text>
-      <v-dialog v-model="openDialog" width="800" persistent>
+      <v-dialog v-model="openDialog" width="915" persistent>
         <v-card>
           <v-card-title>
             {{ openNode.type }}
@@ -64,6 +64,8 @@ import PolybiusKey from '@/components/CryptoTron/CipherKeys/PolybiusKey.vue';
 import * as Polybius from '_/CryptoTron/ciphers/polybius';
 import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import * as RailFence from '_/CryptoTron/ciphers/railFence';
+import SubstitutionKey from '@/components/CryptoTron/CipherKeys/SubstitutionKey.vue';
+import * as Substitution from '_/CryptoTron/ciphers/substitution';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
 
 export default {
@@ -125,6 +127,11 @@ export default {
           component: RailFenceKey,
           encrypt: RailFence.encrypt,
           decrypt: RailFence.decrypt,
+        },
+        Substitution: {
+          component: SubstitutionKey,
+          encrypt: Substitution.encrypt,
+          decrypt: Substitution.decrypt,
         },
       };
     },
