@@ -38,7 +38,7 @@
         </p>
         <p>
           The
-          <a @click="alpha=25; beta=25">Atbash</a> cipher is also an Affine cipher with alpaha=25 and beta=25.
+          <a class="example" @click="key={ alpha: 25, beta: 25 }">Atbash</a> cipher is also an Affine cipher with alpaha=25 and beta=25.
         </p>
       </v-card-text>
     </v-card>

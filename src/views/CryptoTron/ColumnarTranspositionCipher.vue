@@ -26,7 +26,7 @@
           </p>
           <h6 class="title">Example</h6>
           <p>
-            Suppose we use the keyword <a @click="key={ keyword: 'zebras' }">ZEBRAS</a> and the message <q>WE ARE DISCOVERED. FLEE AT ONCE.</q>
+            Suppose we use the keyword <a class="example" @click="key={ keyword: 'zebras' }">ZEBRAS</a> and the message <q>WE ARE DISCOVERED. FLEE AT ONCE.</q>
           </p>
           <v-expand-transition>
             <div v-if="key.keyword === 'zebras'">

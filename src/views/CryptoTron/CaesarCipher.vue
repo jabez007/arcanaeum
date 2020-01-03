@@ -20,7 +20,7 @@
         <p>
           More complex encryption schemes such as the Vigenère cipher employ the Caesar cipher as one element of the encryption process.
           The widely known
-          <a @click="shift=13">ROT13</a> 'encryption' is simply a Caesar cipher with an offset of 13.
+          <a class="example" @click="key={ shift: 13 }">ROT13</a> 'encryption' is simply a Caesar cipher with an offset of 13.
           The Caesar cipher offers essentially no communication security as it can be easily broken even by hand.
         </p>
       </v-card-text>
