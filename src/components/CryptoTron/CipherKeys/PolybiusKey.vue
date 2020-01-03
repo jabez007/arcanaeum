@@ -16,6 +16,7 @@
           <v-text-field
             label="Ciphertext Characters"
             v-model.trim="cipherChars"
+            maxlength="5"
             :rules="cipherCharRules"
             @input="onInput"
             required
@@ -43,6 +44,7 @@
 
 <script>
 import Rules from '_/rules';
+import { getUniqueCharacters } from '_/CryptoTron/ciphers';
 import { square } from '_/CryptoTron/ciphers/polybius';
 import mixin from './cipherKeysMixin';
 
@@ -57,7 +59,10 @@ export default {
       return [Rules.required, Rules.word];
     },
     cipherCharRules() {
-      return [Rules.required, Rules.exactLength(5)];
+      return [
+        Rules.required,
+        value => Rules.exactLength(5)(getUniqueCharacters(value)),
+      ];
     },
     square() {
       return square(this.keyword);
