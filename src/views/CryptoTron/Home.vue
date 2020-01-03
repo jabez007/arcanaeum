@@ -20,6 +20,15 @@
                     <v-list-tile-title>Kerckhoffs's Desideratum</v-list-tile-title>
                 </v-list-tile-content>
             </v-list-tile>
+            <v-list-tile to="/cryptotron/builder"
+                         ripple>
+                <v-list-tile-action>
+                    <v-icon>build</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                    <v-list-tile-title>Create Your Own</v-list-tile-title>
+                </v-list-tile-content>
+            </v-list-tile>
             <v-subheader>
                 Ciphers
             </v-subheader>
