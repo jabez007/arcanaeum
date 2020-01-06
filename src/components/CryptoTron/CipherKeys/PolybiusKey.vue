@@ -26,24 +26,14 @@
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex xs12 md3>
-        <table style="table-layout:fixed; width: 100px;">
-          <thead>
-            <tr>
-              <td></td>
-              <td v-for="c in 5" :key="c" style="color:red;">{{ (cipherChars || '').charAt(c - 1) }}</td>
-            </tr>
-          </thead>
-          <tr v-for="r in 5" :key="r">
-            <td style="color:red;">{{ (cipherChars || '').charAt(r - 1) }}</td>
-            <td v-for="c in 5" :key="c">{{ square[r-1][c-1] }}</td>
-          </tr>
-        </table>
+        <polybius-square :square="square" :cipherChars="cipherChars"></polybius-square>
       </v-flex>
     </v-layout>
   </v-form>
 </template>
 
 <script>
+import PolybiusSquare from '@/components/CryptoTron/PolybiusSquare.vue';
 import Rules from '_/rules';
 import { getUniqueCharacters } from '_/CryptoTron/ciphers';
 import { square } from '_/CryptoTron/ciphers/polybius';
@@ -51,6 +41,9 @@ import mixin from './cipherKeysMixin';
 
 export default {
   mixins: [mixin],
+  components: {
+    PolybiusSquare,
+  },
   data: () => ({
     keyword: '',
     cipherChars: 'ABCDE',

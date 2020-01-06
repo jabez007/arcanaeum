@@ -106,6 +106,8 @@ import CaesarKey from '@/components/CryptoTron/CipherKeys/CaesarKey.vue';
 import * as Caesar from '_/CryptoTron/ciphers/caesar';
 import ColumnarTranspositionKey from '@/components/CryptoTron/CipherKeys/ColumnarTranspositionKey.vue';
 import * as ColumnarTransposition from '_/CryptoTron/ciphers/columnarTransposition';
+import FourSquareKey from '@/components/CryptoTron/CipherKeys/FourSquareKey.vue';
+import * as FourSquare from '_/CryptoTron/ciphers/fourSquare';
 import HuffmanianKey from '@/components/CryptoTron/CipherKeys/HuffmanianKey.vue';
 import * as Huffmanian from '_/CryptoTron/ciphers/huffmanian';
 import PolybiusKey from '@/components/CryptoTron/CipherKeys/PolybiusKey.vue';
@@ -166,6 +168,11 @@ export default {
           component: ColumnarTranspositionKey,
           encrypt: ColumnarTransposition.encrypt,
           decrypt: ColumnarTransposition.decrypt,
+        },
+        'Four-Square': {
+          component: FourSquareKey,
+          encrypt: FourSquare.encrypt,
+          decrypt: FourSquare.decrypt,
         },
         Huffmanian: {
           component: HuffmanianKey,
