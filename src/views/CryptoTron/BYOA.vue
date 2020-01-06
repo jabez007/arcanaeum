@@ -258,12 +258,18 @@ export default {
     jsonString() {
       const self = this;
       return JSON.stringify({
-        nodes: [...self.scene.nodes],
+        nodes: self.scene.nodes.map(n => ({
+          id: n.id,
+          x: n.x,
+          y: n.y,
+          type: n.type,
+          key: n.key,
+        })),
         links: [...self.scene.links],
       });
     },
     algorithmLink() {
-      return `${window.location.protocol}//${window.location.hostname}/#/cryptotron/builder/${btoa(this.jsonString)}`;
+      return `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}/#/cryptotron/builder/${btoa(this.jsonString)}`;
     },
   },
   watch: {
@@ -277,9 +283,7 @@ export default {
   },
   created() {
     if (this.sharedJson) {
-      const loadObj = JSON.parse(atob(this.sharedJson));
-      this.addNodesFromJson(loadObj.nodes);
-      this.scene.links.splice(0, this.scene.links.length, ...loadObj.links);
+      this.addSceneFromJson(atob(this.sharedJson));
     }
   },
   methods: {
@@ -439,9 +443,10 @@ export default {
         this.openSave = false;
       }
     },
-    addNodesFromJson(nodes) {
+    addSceneFromJson(jsonString) {
+      const loadObj = JSON.parse(jsonString);
       const self = this;
-      nodes.forEach((n) => {
+      loadObj.nodes.forEach((n) => {
         self.scene.nodes.push({
           id: n.id,
           x: n.x,
@@ -465,6 +470,7 @@ export default {
           },
         });
       });
+      this.scene.links.splice(0, this.scene.links.length, ...loadObj.links);
     },
     onLoad() {
       const loadName = `BYOA/${this.loadSelectValue}`;
@@ -472,9 +478,7 @@ export default {
         this.onClear();
         this.algorithmName = this.loadSelectValue;
         this.saveSelectValue = this.loadSelectValue;
-        const loadObj = JSON.parse(localStorage.getItem(loadName));
-        this.addNodesFromJson(loadObj.nodes);
-        this.scene.links.splice(0, this.scene.links.length, ...loadObj.links);
+        this.addSceneFromJson(localStorage.getItem(loadName));
         this.openLoad = false;
       }
     },
