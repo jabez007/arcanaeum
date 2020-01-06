@@ -19,7 +19,7 @@
           <v-card>
             <v-card-title>Open One of Your Algorithms</v-card-title>
             <v-card-text>
-              <v-select label="Open Algorithm" :items="algorithmNames()" v-model="loadSelectValue"></v-select>
+              <v-select label="Algorithm Name" :items="algorithmNames()" v-model="loadSelectValue"></v-select>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -37,7 +37,7 @@
             <v-card-title>Save Your Algorithm</v-card-title>
             <v-card-text>
               <v-select
-                label="Save As"
+                label="Algorithm Name"
                 :items="['', ...algorithmNames()]"
                 v-model="saveSelectValue"
               >
@@ -60,6 +60,18 @@
           @click:prepend-inner="addNode"
           dense
         ></v-select>
+        <v-dialog v-model="openShare" width="500">
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+              <v-icon>share</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-text>
+              <v-text-field label="Link to Algorithm" append-icon="file_copy" readonly></v-text-field>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
         <v-spacer></v-spacer>
         <h6 v-if="algorithmName" class="title">{{ algorithmName }}</h6>
         <v-spacer></v-spacer>
@@ -140,6 +152,7 @@ export default {
     saveTextValue: '',
     openLoad: false,
     loadSelectValue: '',
+    openShare: false,
   }),
   computed: {
     ciphers() {
@@ -221,6 +234,9 @@ export default {
       return this.firstCipher.length !== 1
         ? false
         : this.scene.nodes.every(n => n.key);
+    },
+    algorithmLink() {
+      return `https://${window.location.hostname}/#/cryptotron/builder`;
     },
   },
   watch: {
