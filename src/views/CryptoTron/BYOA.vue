@@ -68,8 +68,20 @@
           </template>
           <v-card>
             <v-card-text>
-              <v-text-field label="Link to Algorithm" append-icon="file_copy" readonly></v-text-field>
+              <v-text-field
+                label="Link to Algorithm"
+                :value="algorithmLink"
+                append-icon="file_copy"
+                @click:append="copyLinkToClipboard()"
+                readonly></v-text-field>
             </v-card-text>
+            <v-expand-transition>
+              <v-card-actions v-if="shareStatus && shareMessage">
+                <v-alert style="width: 100%;" :value="shareStatus && shareMessage" :type="shareStatus">
+                  {{ shareMessage }}
+                </v-alert>
+              </v-card-actions>
+            </v-expand-transition>
           </v-card>
         </v-dialog>
         <v-spacer></v-spacer>
@@ -131,6 +143,12 @@ import * as Substitution from '_/CryptoTron/ciphers/substitution';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
 
 export default {
+  props: {
+    sharedJson: {
+      type: String,
+      required: false,
+    },
+  },
   components: {
     Cipher,
     SimpleFlowchart,
@@ -153,6 +171,8 @@ export default {
     openLoad: false,
     loadSelectValue: '',
     openShare: false,
+    shareStatus: '',
+    shareMessage: '',
   }),
   computed: {
     ciphers() {
@@ -235,14 +255,32 @@ export default {
         ? false
         : this.scene.nodes.every(n => n.key);
     },
+    jsonString() {
+      const self = this;
+      return JSON.stringify({
+        nodes: [...self.scene.nodes],
+        links: [...self.scene.links],
+      });
+    },
     algorithmLink() {
-      return `https://${window.location.hostname}/#/cryptotron/builder`;
+      return `${window.location.protocol}//${window.location.hostname}/#/cryptotron/builder/${btoa(this.jsonString)}`;
     },
   },
   watch: {
     saveSelectValue() {
       this.saveTextValue = '';
     },
+    openShare() {
+      this.shareStatus = '';
+      this.shareMessage = '';
+    },
+  },
+  created() {
+    if (this.sharedJson) {
+      const loadObj = JSON.parse(atob(this.sharedJson));
+      this.addNodesFromJson(loadObj.nodes);
+      this.scene.links.splice(0, this.scene.links.length, ...loadObj.links);
+    }
   },
   methods: {
     encrypt(plainText) {
@@ -394,16 +432,39 @@ export default {
       const saveAsName = this.saveTextValue.trim() || this.saveSelectValue;
       if (saveAsName) {
         this.algorithmName = saveAsName;
-        const self = this;
         localStorage.setItem(
           `BYOA/${saveAsName}`,
-          JSON.stringify({
-            nodes: [...self.scene.nodes],
-            links: [...self.scene.links],
-          }),
+          this.jsonString,
         );
         this.openSave = false;
       }
+    },
+    addNodesFromJson(nodes) {
+      const self = this;
+      nodes.forEach((n) => {
+        self.scene.nodes.push({
+          id: n.id,
+          x: n.x,
+          y: n.y,
+          type: n.type,
+          component: self.ciphers[n.type].component,
+          key: n.key,
+          get label() {
+            return this.key
+              ? Object.keys(this.key)
+                .filter(k => typeof this.key[k] !== 'object')
+                .map(k => `${k}: ${this.key[k]}`)
+                .join('\n')
+              : '';
+          },
+          get encrypt() {
+            return self.ciphers[this.type].encrypt(this.key);
+          },
+          get decrypt() {
+            return self.ciphers[this.type].decrypt(this.key);
+          },
+        });
+      });
     },
     onLoad() {
       const loadName = `BYOA/${this.loadSelectValue}`;
@@ -412,34 +473,22 @@ export default {
         this.algorithmName = this.loadSelectValue;
         this.saveSelectValue = this.loadSelectValue;
         const loadObj = JSON.parse(localStorage.getItem(loadName));
-        const self = this;
-        loadObj.nodes.forEach((n) => {
-          self.scene.nodes.push({
-            id: n.id,
-            x: n.x,
-            y: n.y,
-            type: n.type,
-            component: self.ciphers[n.type].component,
-            key: n.key,
-            get label() {
-              return this.key
-                ? Object.keys(this.key)
-                  .filter(k => typeof this.key[k] !== 'object')
-                  .map(k => `${k}: ${this.key[k]}`)
-                  .join('\n')
-                : '';
-            },
-            get encrypt() {
-              return self.ciphers[this.type].encrypt(this.key);
-            },
-            get decrypt() {
-              return self.ciphers[this.type].decrypt(this.key);
-            },
-          });
-        });
+        this.addNodesFromJson(loadObj.nodes);
         this.scene.links.splice(0, this.scene.links.length, ...loadObj.links);
         this.openLoad = false;
       }
+    },
+    copyLinkToClipboard() {
+      const self = this;
+      this.$copyText(this.algorithmLink)
+        .then(() => {
+          self.shareStatus = 'success';
+          self.shareMessage = 'copied!';
+        })
+        .catch((err) => {
+          self.shareStatus = 'error';
+          self.shareMessage = err.message;
+        });
     },
   },
 };
