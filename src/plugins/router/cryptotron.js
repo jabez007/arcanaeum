@@ -36,6 +36,10 @@ export default {
       component: () => import('@/views/CryptoTron/Desideratum.vue'),
     },
     {
+      path: 'four-square',
+      component: () => import('@/views/CryptoTron/FourSquareCipher.vue'),
+    },
+    {
       path: 'huffman',
       component: () => import('@/views/CryptoTron/HuffmanianCipher.vue'),
     },

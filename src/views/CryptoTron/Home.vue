@@ -177,7 +177,7 @@
                         <v-list-tile-title>Square</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click=""
+                <v-list-tile to="/cryptotron/four-square"
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">Four-Square</v-list-tile-title>

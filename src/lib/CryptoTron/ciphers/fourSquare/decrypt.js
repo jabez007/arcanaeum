@@ -16,7 +16,7 @@ export function decrypt(key) {
         const row1 = key.upperCipherSquare.findIndex(r => r.includes(cipherpair[firstciphercharIndex]));
         const col2 = key.upperCipherSquare[row1].indexOf(cipherpair[firstciphercharIndex]);
 
-        const secondciphercharIndex = cipherpair.findIndex((c, i) => i > firstciphercharIndex && /[a-z]/.test(c));
+        const secondciphercharIndex = cipherpair.findIndex((c, ix) => ix > firstciphercharIndex && /[a-z]/.test(c));
         const row2 = key.lowerCipherSquare.findIndex(r => r.includes(cipherpair[secondciphercharIndex]));
         const col1 = key.lowerCipherSquare[row2].indexOf(cipherpair[secondciphercharIndex]);
 
