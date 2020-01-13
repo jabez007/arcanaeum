@@ -1,3 +1,5 @@
+import { re } from '../index';
+
 // eslint-disable-next-line import/prefer-default-export
 export function decrypt(key) {
   return (cipherText) => {
@@ -7,16 +9,16 @@ export function decrypt(key) {
       let i = 0;
       while (i < ciphertext.length) {
         const cipherpair = [];
-        while (cipherpair.filter(c => /[a-z]/.test(c)).length < 2) {
+        while (cipherpair.filter(c => re.test(c)).length < 2) {
           cipherpair.push(ciphertext[i]);
           i += 1;
         }
 
-        const firstciphercharIndex = cipherpair.findIndex(c => /[a-z]/.test(c));
+        const firstciphercharIndex = cipherpair.findIndex(c => re.test(c));
         const row1 = key.upperCipherSquare.findIndex(r => r.includes(cipherpair[firstciphercharIndex]));
         const col2 = key.upperCipherSquare[row1].indexOf(cipherpair[firstciphercharIndex]);
 
-        const secondciphercharIndex = cipherpair.findIndex((c, ix) => ix > firstciphercharIndex && /[a-z]/.test(c));
+        const secondciphercharIndex = cipherpair.findIndex((c, ix) => ix > firstciphercharIndex && re.test(c));
         const row2 = key.lowerCipherSquare.findIndex(r => r.includes(cipherpair[secondciphercharIndex]));
         const col1 = key.lowerCipherSquare[row2].indexOf(cipherpair[secondciphercharIndex]);
 
