@@ -126,6 +126,8 @@ import AutokeyKey from '@/components/CryptoTron/CipherKeys/AutokeyKey.vue';
 import * as Autokey from '_/CryptoTron/ciphers/autokey';
 import BaconianKey from '@/components/CryptoTron/CipherKeys/BaconianKey.vue';
 import * as Baconian from '_/CryptoTron/ciphers/baconian';
+import BeaufortKey from '@/components/CryptoTron/CipherKeys/BeaufortKey.vue';
+import * as Beaufort from '_/CryptoTron/ciphers/beaufort';
 import CaesarKey from '@/components/CryptoTron/CipherKeys/CaesarKey.vue';
 import * as Caesar from '_/CryptoTron/ciphers/caesar';
 import ColumnarTranspositionKey from '@/components/CryptoTron/CipherKeys/ColumnarTranspositionKey.vue';
@@ -191,6 +193,11 @@ export default {
           component: BaconianKey,
           encrypt: Baconian.encrypt,
           decrypt: Baconian.decrypt,
+        },
+        Beaufort: {
+          component: BeaufortKey,
+          encrypt: Beaufort.encrypt,
+          decrypt: Beaufort.decrypt,
         },
         Caesar: {
           component: CaesarKey,
