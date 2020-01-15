@@ -13,8 +13,8 @@
         <h6 class="title">Encryption</h6>
         <p>
           The 'key' for the Autokey cipher is a plaintext prepended with a word (the primer).
-          That key is then used with the following table (the 'tabula recta') to encipher the plaintext:
-          <TabulaRecta></TabulaRecta>To encrypt a message, place the key above the plaintext.
+          That key is then used with the <TabulaRecta></TabulaRecta> to encipher the plaintext.
+          To encrypt a message, place the plaintext above the key.
           Now we take a letter from the plaintext, and find it on the first column on the table.
           Then, we move along that row of the table until we come to the column with the corresponding letter from the key.
           The intersection is our ciphertext character.
@@ -35,7 +35,7 @@
         <h6 class="title">Decryption</h6>
         <p>
           To decrypt the message, the recipient would start by writing down the agreed-on primer.
-          Starting with the first letter of the primer, look across that row in the tabula recta until the first letter of the ciphertext is found.
+          Starting with the first letter of the primer, look across that row in the <TabulaRecta></TabulaRecta> until the first letter of the ciphertext is found.
           Append the letter at the top of the found column to the primer to begin reconstructing the key.
           Repeat this for each letter of the ciphertext, then the primer can be removed from the reconstructed key to reveal the plaintext
         </p>
@@ -52,10 +52,10 @@
 
 <script>
 // @ is an alias to /src
+import { encrypt, decrypt } from '_/CryptoTron/ciphers/autokey';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import TabulaRecta from '@/components/CryptoTron/TabulaRecta.vue';
 import AutokeyKey from '@/components/CryptoTron/CipherKeys/AutokeyKey.vue';
-import { encrypt, decrypt } from '_/CryptoTron/ciphers/autokey';
 
 export default {
   components: {

@@ -1,4 +1,23 @@
 <template>
+  <v-dialog v-model="dialog" width="740">
+    <template v-slot:activator="{ on }">
+      <a class="yellow--text text--darken-4" v-on="on">Tabula Recta</a>
+    </template>
+    <v-card>
+      <v-card-text>
+        <table>
+          <thead>
+            <th></th>
+            <th v-for="i in 26" :key="i">{{ String.fromCharCode(64 + i) }}</th>
+          </thead>
+          <tr v-for="j in 26" :key="j">
+            <th style="background: var(--v-secondary-base);">{{ String.fromCharCode(64 + j) }}</th>
+            <td v-for="k in 26" :key="k">{{ String.fromCharCode(65 + (((j - 1) + (k - 1)) % 26)) }}</td>
+          </tr>
+        </table>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
   <!--pre>
         A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
         ---------------------------------------------------
@@ -29,48 +48,36 @@
     Y   Y Z A B C D E F G H I J K L M N O P Q R S T U V W X
     Z   Z A B C D E F G H I J K L M N O P Q R S T U V W X Y
   </pre-->
-  <table>
-      <thead>
-          <th></th>
-          <th v-for="i in 26" :key="i">
-              {{ String.fromCharCode(64 + i) }}
-          </th>
-      </thead>
-      <tr v-for="j in 26" :key="j">
-          <th style="background: var(--v-secondary-base);">
-              {{ String.fromCharCode(64 + j) }}
-          </th>
-          <td v-for="k in 26" :key="k">
-              {{ String.fromCharCode(65 + (((j - 1) + (k - 1)) % 26)) }}
-          </td>
-      </tr>
-  </table>
 </template>
 
 <script>
 export default {
   name: 'TabulaRecta',
+  data: () => ({
+    dialog: false,
+  }),
 };
 </script>
 
 <style scoped>
 table {
-    width: 100%;
-    border-spacing: 1px;
-    border-collapse: separate;
-    font-family: monospace, monospace;
+  width: 100%;
+  border-spacing: 1px;
+  border-collapse: separate;
+  font-family: monospace, monospace;
 }
 th {
-    text-align: center;
+  text-align: center;
+  font-size: larger;
 }
 tr {
-    background: var(--v-primary-base);
+  background: var(--v-primary-base);
 }
 tr:nth-child(odd) {
-    background: var(--v-secondary-lighten1)
+  background: var(--v-secondary-lighten1);
 }
 tr:nth-child(even) {
-    background: var(--v-secondary-darken1)
+  background: var(--v-secondary-darken1);
 }
 td {
   text-align: center;
