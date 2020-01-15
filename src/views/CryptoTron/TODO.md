@@ -32,7 +32,7 @@
   * Running Key Cipher
   * Alberti Cipher 
   * Porta Cipher
-  * Vigenère and Gronsfeld Cipher
+  * ~~Vigenère and Gronsfeld Cipher~~
     * Trithemius
   * Fractionated Morse Cipher
 
