@@ -56,18 +56,6 @@
                 <v-list-tile @click=""
                              ripple>
                     <v-list-tile-content>
-                        <v-list-tile-title class="text-xs-center">Beaufort</v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click=""
-                             ripple>
-                    <v-list-tile-content>
-                        <v-list-tile-title class="text-xs-center">Running Key</v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click=""
-                             ripple>
-                    <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">Hill</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
@@ -150,6 +138,18 @@
                         <v-list-tile-title>Polyalphabetic</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
+                <v-list-tile @click=""
+                             ripple>
+                    <v-list-tile-content>
+                        <v-list-tile-title class="text-xs-center">Beaufort</v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile @click=""
+                             ripple>
+                    <v-list-tile-content>
+                        <v-list-tile-title class="text-xs-center">Vigenère</v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
                 <v-list-tile to="/cryptotron/autokey"
                              ripple>
                     <v-list-tile-content>
@@ -159,7 +159,7 @@
                 <v-list-tile @click=""
                              ripple>
                     <v-list-tile-content>
-                        <v-list-tile-title class="text-xs-center">Vigenère</v-list-tile-title>
+                        <v-list-tile-title class="text-xs-center">Running Key</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile @click=""

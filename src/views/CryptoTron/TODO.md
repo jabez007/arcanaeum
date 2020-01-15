@@ -5,9 +5,6 @@
     * ~~Atbash Cipher~~
   * ~~Simple Substitution Cipher~~
     * ~~QWERTY~~
-  * ~~Autokey Cipher~~
-  * Beaufort Cipher
-  * Running Key Cipher
   * Homophonic Substitution Cipher
     * Great Cipher
   * Hill Cipher
@@ -30,6 +27,9 @@
     * VIC Cipher
 
 * Polyalphabetic
+  * ~~Autokey Cipher~~
+  * ~~Beaufort Cipher~~
+  * Running Key Cipher
   * Alberti Cipher 
   * Porta Cipher
   * Vigenère and Gronsfeld Cipher
@@ -37,7 +37,7 @@
   * Fractionated Morse Cipher
 
 * Square
-  * Four-Square Cipher
+  * ~~Four-Square Cipher~~
   * Two-Square Cipher
   * Playfair Cipher
 

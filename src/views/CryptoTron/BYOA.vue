@@ -142,6 +142,8 @@ import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import * as RailFence from '_/CryptoTron/ciphers/railFence';
 import SubstitutionKey from '@/components/CryptoTron/CipherKeys/SubstitutionKey.vue';
 import * as Substitution from '_/CryptoTron/ciphers/substitution';
+import VigenereKey from '@/components/CryptoTron/CipherKeys/VigenereKey.vue';
+import * as Vigenere from '_/CryptoTron/ciphers/vigenere';
 import 'vue-simple-flowchart/dist/vue-flowchart.css';
 
 export default {
@@ -233,6 +235,11 @@ export default {
           component: SubstitutionKey,
           encrypt: Substitution.encrypt,
           decrypt: Substitution.decrypt,
+        },
+        Vigenere: {
+          component: VigenereKey,
+          encrypt: Vigenere.encrypt,
+          decrypt: Vigenere.decrypt,
         },
       };
     },
