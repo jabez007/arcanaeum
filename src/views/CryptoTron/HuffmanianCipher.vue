@@ -32,8 +32,6 @@
         <v-textarea
           label="Encoding"
           v-model="scope.cipherText"
-          prepend-inner-icon="file_copy"
-          @click:prepend-inner="scope.copyToClipboard(scope.cipherText)"
           outline
           auto-grow
           readonly
@@ -56,9 +54,9 @@
 
 <script>
 // @ is an alias to /src
+import { encode, decrypt, enstegano } from '_/CryptoTron/ciphers/huffmanian';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import HuffmanianKey from '@/components/CryptoTron/CipherKeys/HuffmanianKey.vue';
-import { encode, decrypt, enstegano } from '_/CryptoTron/ciphers/huffmanian';
 
 export default {
   components: {

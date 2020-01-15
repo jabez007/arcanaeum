@@ -29,8 +29,6 @@
         <v-textarea
           label="Encoding"
           v-model="scope.cipherText"
-          prepend-inner-icon="file_copy"
-          @click:prepend-inner="scope.copyToClipboard(scope.cipherText)"
           outline
           auto-grow
           readonly
@@ -53,9 +51,9 @@
 
 <script>
 // @ is an alias to /src
+import { encode, decrypt, enstegano } from '_/CryptoTron/ciphers/baconian';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import BaconianKey from '@/components/CryptoTron/CipherKeys/BaconianKey.vue';
-import { encode, decrypt, enstegano } from '_/CryptoTron/ciphers/baconian';
 
 export default {
   components: {
