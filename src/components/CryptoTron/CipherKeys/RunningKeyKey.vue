@@ -1,13 +1,15 @@
 <template>
     <v-form ref="form">
-      <v-text-field
+      <v-textarea
         label="Key Text"
         v-model.trim="keyText"
         :rules="rules"
         @input="onInput"
+        rows="1"
+        auto-grow
         clearable
         required
-      ></v-text-field>
+      ></v-textarea>
     </v-form>
 </template>
 
@@ -22,9 +24,7 @@ export default {
   }),
   computed: {
     rules() {
-      return [
-        Rules.required,
-        value => !(value || '').replace(/[a-zA-Z\s.,?!'"]/g, '') || 'The value must be a text'];
+      return [Rules.required];
     },
     key: {
       get() {
