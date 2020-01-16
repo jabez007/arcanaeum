@@ -17,7 +17,7 @@ export function decrypt(key) {
     for (let i = 0; i < ciphertext.length; i += 1) {
       if (re.test(ciphertext.charAt(i))) {
         plaintext += String.fromCharCode(
-          modulo(inverse * (ciphertext.charCodeAt(i) - 97) - key.beta, 26) + 97,
+          modulo(inverse * ((ciphertext.charCodeAt(i) - 97) - key.beta), 26) + 97,
         );
       } else {
         plaintext += ciphertext.charAt(i);
