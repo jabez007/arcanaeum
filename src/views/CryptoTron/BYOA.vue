@@ -140,6 +140,8 @@ import PolybiusKey from '@/components/CryptoTron/CipherKeys/PolybiusKey.vue';
 import * as Polybius from '_/CryptoTron/ciphers/polybius';
 import RailFenceKey from '@/components/CryptoTron/CipherKeys/RailFenceKey.vue';
 import * as RailFence from '_/CryptoTron/ciphers/railFence';
+import RunningKeyKey from '@/components/CryptoTron/CipherKeys/RunningKeyKey.vue';
+import * as RunningKey from '_/CryptoTron/ciphers/runningKey';
 import SubstitutionKey from '@/components/CryptoTron/CipherKeys/SubstitutionKey.vue';
 import * as Substitution from '_/CryptoTron/ciphers/substitution';
 import VigenereKey from '@/components/CryptoTron/CipherKeys/VigenereKey.vue';
@@ -230,6 +232,11 @@ export default {
           component: RailFenceKey,
           encrypt: RailFence.encrypt,
           decrypt: RailFence.decrypt,
+        },
+        'Running Key': {
+          component: RunningKeyKey,
+          encrypt: RunningKey.encrypt,
+          decrypt: RunningKey.decrypt,
         },
         Substitution: {
           component: SubstitutionKey,
