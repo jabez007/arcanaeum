@@ -20,6 +20,10 @@ export default {
       component: () => import('@/views/CryptoTron/BaconianCipher.vue'),
     },
     {
+      path: 'beaufort',
+      component: () => import('@/views/CryptoTron/BeaufortCipher.vue'),
+    },
+    {
       path: 'builder/:sharedJson?',
       component: () => import('@/views/CryptoTron/BYOA.vue'),
       props: true,
@@ -53,8 +57,16 @@ export default {
       component: () => import('@/views/CryptoTron/RailFenceCipher.vue'),
     },
     {
+      path: 'runningKey',
+      component: () => import('@/views/CryptoTron/RunningKeyCipher.vue'),
+    },
+    {
       path: 'substitution',
       component: () => import('@/views/CryptoTron/SubstitutionCipher.vue'),
+    },
+    {
+      path: 'vigenere',
+      component: () => import('@/views/CryptoTron/VigenereCipher.vue'),
     },
   ],
 };

@@ -53,12 +53,12 @@
                         <v-list-tile-title class="text-xs-center">Affine</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click=""
+                <!--v-list-tile @click=""
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">Hill</v-list-tile-title>
                     </v-list-tile-content>
-                </v-list-tile>
+                </v-list-tile-->
             </v-list-group>
             <v-list-group prepend-icon="swap_horiz"
                           active-class=""
@@ -111,24 +111,24 @@
                         <v-list-tile-title>Polybius Square</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click=""
+                <!--v-list-tile @click=""
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">ADFG(V)X</v-list-tile-title>
                     </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click=""
+                </v-list-tile-->
+                <!--v-list-tile @click=""
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">Bifid</v-list-tile-title>
                     </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click=""
+                </v-list-tile-->
+                <!--v-list-tile @click=""
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">Trifid</v-list-tile-title>
                     </v-list-tile-content>
-                </v-list-tile>
+                </v-list-tile-->
             </v-list-group>
             <v-list-group prepend-icon="clear_all"
                           active-class=""
@@ -138,13 +138,13 @@
                         <v-list-tile-title>Polyalphabetic</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click=""
+                <v-list-tile to="/cryptotron/beaufort"
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">Beaufort</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click=""
+                <v-list-tile to="/cryptotron/vigenere"
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">Vigenère</v-list-tile-title>
@@ -156,18 +156,18 @@
                         <v-list-tile-title class="text-xs-center">Autokey</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click=""
+                <v-list-tile to="/cryptotron/runningKey"
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">Running Key</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click=""
+                <!--v-list-tile @click=""
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">Enigma</v-list-tile-title>
                     </v-list-tile-content>
-                </v-list-tile>
+                </v-list-tile-->
             </v-list-group>
             <v-list-group prepend-icon="tab_unselected"
                           active-class=""
@@ -183,12 +183,12 @@
                         <v-list-tile-title class="text-xs-center">Four-Square</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click=""
+                <!--v-list-tile @click=""
                              ripple>
                     <v-list-tile-content>
                         <v-list-tile-title class="text-xs-center">Playfair</v-list-tile-title>
                     </v-list-tile-content>
-                </v-list-tile>
+                </v-list-tile-->
             </v-list-group>
         </v-list>
     </AppLayout>

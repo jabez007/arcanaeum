@@ -28,7 +28,7 @@
         <p>
           This can also be described through modular arithmetic.
           First, we convert all the letters of the plaintext and key to numbers ('a'=0, 'b'=1, ..., 'z'=25).
-          Then we add each plaintext value to it's corresponding key value, modulo 26.
+          Then we add each plaintext value to its corresponding key value, modulo 26.
           <code>c = p + k (mod 26)</code>
           Finally, we convert those computed values back to letters.
         </p>
