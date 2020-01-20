@@ -7,14 +7,43 @@
                 mode="out-in">
       <router-view />
     </transition>
+    <v-snackbar
+      v-model="update"
+      color="info"
+      :timeout="0"
+      top
+    >
+      <h3 style="font-family: Roboto">
+        New content is available
+      </h3>
+      <v-btn
+        icon
+        @click="onRefresh"
+      >
+        <v-icon>refresh</v-icon>
+      </v-btn>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
+import EventBus from '_/eventBus';
+
 export default {
   name: 'app',
-  watch: {
-
+  data: () => ({
+    update: false,
+  }),
+  methods: {
+    onRefresh() {
+      window.location.reload(true);
+    },
+  },
+  created() {
+    const self = this;
+    EventBus.$once('swUpdated', () => {
+      self.update = true;
+    });
   },
 };
 </script>
