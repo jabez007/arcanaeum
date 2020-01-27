@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import './plugins/vuetify';
-import './plugins/vue-babylon';
+/* import './plugins/vue-babylon'; // Don't need Babylon installed across the whole app */
 import './plugins/vueClipboard';
 import './plugins/vueKonva';
 import router from './plugins/router';

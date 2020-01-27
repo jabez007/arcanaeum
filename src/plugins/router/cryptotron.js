@@ -49,6 +49,10 @@ export default {
       component: () => import('@/views/CryptoTron/HuffmanianCipher.vue'),
     },
     {
+      path: 'morellet',
+      component: () => import('@/views/CryptoTron/MorelletCipher.vue'),
+    },
+    {
       path: 'polybius',
       component: () => import('@/views/CryptoTron/PolybiusCipher.vue'),
     },

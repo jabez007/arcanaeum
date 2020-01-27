@@ -6,7 +6,7 @@
   >
     <v-card slot="description">
       <v-card-title>
-        <h5 class="headline">The Hoffmanian Cipher</h5>
+        <h5 class="headline">The Huffmanian Cipher</h5>
       </v-card-title>
       <v-card-text>
         <p>
