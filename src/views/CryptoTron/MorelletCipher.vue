@@ -13,7 +13,7 @@
     </v-card>
     <morellet-key slot="key" v-model="key"></morellet-key>
     <v-layout ref="container" slot="encrypt-cipherText" slot-scope="scope" row wrap>
-        <v-btn icon @click="saveSvg(scope.cipherText)"><v-icon>save</v-icon></v-btn>
+        <v-btn style="position: absolute;" icon @click="saveSvg(scope.cipherText)"><v-icon>save</v-icon></v-btn>
       <canvas ref="doodle" :width="width" :height="width" style="border:3px solid #000000;"></canvas>
     </v-layout>
   </Cipher>

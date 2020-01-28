@@ -2,36 +2,36 @@
   <v-form ref="form">
     <v-layout row wrap align-center>
       <v-spacer></v-spacer>
-      <v-flex lg3 class="hidden-md-and-down">
+      <v-flex lg7 class="hidden-md-and-down">
         <v-layout row wrap>
-          <v-flex xs3 v-for="(char, key) in Object.keys(encoding)" :key="key">
+          <v-flex xs1 v-for="(char, key) in Object.keys(encoding)" :key="key">
             <v-text-field :label="char" v-model="encoding[char]" disabled readonly></v-text-field>
           </v-flex>
         </v-layout>
       </v-flex>
       <v-flex xs12 lg5>
         <v-layout row wrap>
-            <v-flex xs6>
+            <v-flex xs4>
                 <h6 class="title">Red [5]</h6>
                 <material-picker v-model="red" @input="onInput"/>
             </v-flex>
-            <v-flex xs6>
+            <v-flex xs4>
                 <h6 class="title">Orange [4]</h6>
                 <material-picker v-model="orange" @input="onInput"/>
             </v-flex>
-            <v-flex xs6>
+            <v-flex xs4>
                 <h6 class="title">Yellow [3]</h6>
                 <material-picker v-model="yellow" @input="onInput"/>
             </v-flex>
-            <v-flex xs6>
+            <v-flex xs4>
                 <h6 class="title">Green [2]</h6>
                 <material-picker v-model="green" @input="onInput"/>
             </v-flex>
-            <v-flex xs6>
+            <v-flex xs4>
                 <h6 class="title">Blue [1]</h6>
                 <material-picker v-model="blue" @input="onInput"/>
             </v-flex>
-            <v-flex xs6>
+            <v-flex xs4>
                 <h6 class="title">Purple [0]</h6>
                 <material-picker v-model="purple" @input="onInput"/>
             </v-flex>
