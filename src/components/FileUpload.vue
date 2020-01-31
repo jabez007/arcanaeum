@@ -80,7 +80,12 @@ export default {
 
 .dropbox p {
   font-size: 1.2em;
-  text-align: center;
   padding: 50px 0;
+  text-align: center;
+}
+
+.dropbox div {
+  display: flex;
+  align-content: center;
 }
 </style>

@@ -1,23 +1,28 @@
 <template>
-  <Cipher
-    :encryptAlgorithm="encrypt"
-    :decryptAlgorithm="decrypt"
-    :cipherKey="cipherKey"
-  >
+  <Cipher :encryptAlgorithm="encrypt" :decryptAlgorithm="decrypt" :cipherKey="cipherKey">
     <v-card slot="description">
       <v-card-title>
         <h5 class="headline">The Morellet Cipher</h5>
       </v-card-title>
-      <v-card-text>
-      </v-card-text>
+      <v-card-text></v-card-text>
     </v-card>
     <morellet-key slot="key" v-model="key"></morellet-key>
     <v-layout ref="container" slot="encrypt-cipherText" slot-scope="scope" row wrap>
-        <v-btn style="position: absolute;" icon @click="saveSvg(scope.cipherText)"><v-icon>save</v-icon></v-btn>
+      <v-btn style="position: absolute;" icon @click="saveSvg(scope.cipherText)">
+        <v-icon>save</v-icon>
+      </v-btn>
       <canvas ref="doodle" :width="width" :height="width" style="border:3px solid #000000;"></canvas>
     </v-layout>
-    <file-upload slot="decrypt-cipherText" accept="image/svg+xml" @load="loadSvg" :disabled="true">
-      <p>hello world</p>
+    <file-upload
+      slot="decrypt-cipherText"
+      accept="image/svg+xml"
+      @load="loadSvg"
+      :disabled="!!cipherSvg"
+    >
+      <v-btn style="position: absolute;" icon @click="cipherSvg = ''">
+        <v-icon>close</v-icon>
+      </v-btn>
+      <div class="cipher-svg" v-html="cipherSvg"></div>
     </file-upload>
   </Cipher>
 </template>
@@ -52,6 +57,7 @@ export default {
     },
     context: null,
     width: 0,
+    cipherSvg: '',
   }),
   computed: {
     cipherKey() {
@@ -105,7 +111,7 @@ export default {
     },
     loadSvg(buffer) {
       const enc = new TextDecoder('utf-8');
-      console.log(enc.decode(buffer));
+      this.cipherSvg = enc.decode(buffer);
     },
   },
 };
