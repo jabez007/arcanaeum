@@ -10,7 +10,7 @@ export function encrypt(key) {
       if (re.test(char)) {
         const row = key.square.findIndex(r => r.includes(char));
         const column = key.square[row].findIndex(c => c === char);
-        ciphertext += key.cipherChars.charAt(row) + key.cipherChars.charAt(column);
+        ciphertext += (key.cipherChars || '').charAt(row) + (key.cipherChars || '').charAt(column);
       } else {
         ciphertext += char;
       }

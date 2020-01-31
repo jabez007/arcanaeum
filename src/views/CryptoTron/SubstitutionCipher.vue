@@ -32,19 +32,19 @@
           When generating keys it is popular to use a key word, e.g.
           <a
             class="example"
-            @click="key={ keyword: 'uncopyrightable' }"
+            @click="key.keyword = 'uncopyrightable' "
           >'uncopyrightable'</a>,
           or a phrase, e.g.
           <a
             class="example"
-            @click="key={ keyword: 'the quick brown fox jumps over the lazy dog' }"
+            @click="key.keyword = 'the quick brown fox jumps over the lazy dog'"
           >'the quick brown fox jumps over the lazy dog'</a>,
           to generate it,
           since it is much easier to remember a key word or phrase compared to a random jumble of 26 characters.
           Or, another popular key for the Simple Substitution cipher is known as the
           <a
             class="example"
-            @click="key={ keyword: 'qwertyuiopasdfghjklzxcvbnm' }"
+            @click="key.keyword = 'qwertyuiopasdfghjklzxcvbnm'"
           >'QWERTY'</a>
           key, based on the standard layout for a US keyboard.
         </p>
@@ -57,10 +57,10 @@
 <script>
 
 // @ is an alias to /src
-import Cipher from '@/components/CryptoTron/Cipher.vue';
-import SubstitutionKey from '@/components/CryptoTron/CipherKeys/SubstitutionKey.vue';
 import { alphaLower } from '_/CryptoTron/ciphers';
 import { encrypt, decrypt } from '_/CryptoTron/ciphers/substitution';
+import Cipher from '@/components/CryptoTron/Cipher.vue';
+import SubstitutionKey from '@/components/CryptoTron/CipherKeys/SubstitutionKey.vue';
 
 export default {
   components: {

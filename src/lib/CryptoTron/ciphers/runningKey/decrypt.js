@@ -4,7 +4,7 @@ import { re, modulo } from '../index';
 export function decrypt(key) {
   return (cipherText) => {
     const ciphertext = (cipherText || '').toLowerCase();
-    const keytext = key.keyText.toLowerCase().replace(
+    const keytext = (key.keyText || '').toLowerCase().replace(
       /[^a-z]/g,
       '',
     );

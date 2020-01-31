@@ -12,9 +12,8 @@
       <v-flex xs12 lg7>
         <v-textarea
           label="False Message"
-          v-model.trim="falseMessage"
+          v-model.trim="key.falseMessage"
           :rules="rules"
-          @input="onInput"
           rows="1"
           auto-grow
           clearable
@@ -32,28 +31,12 @@ import mixin from './cipherKeysMixin';
 
 export default {
   mixins: [mixin],
-  data: () => ({
-    falseMessage: '',
-  }),
   computed: {
     encoding() {
       return encoding;
     },
     rules() {
       return [Rules.required];
-    },
-    key: {
-      get() {
-        const self = this;
-        return {
-          falseMessage: self.falseMessage,
-        };
-      },
-      set(value) {
-        if (value.falseMessage !== undefined && value.falseMessage !== this.falseMessage) {
-          this.falseMessage = value.falseMessage;
-        }
-      },
     },
   },
 };

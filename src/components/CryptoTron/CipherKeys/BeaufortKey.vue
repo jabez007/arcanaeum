@@ -2,9 +2,8 @@
     <v-form ref="form">
       <v-text-field
         label="Keyword"
-        v-model.trim="keyword"
+        v-model.trim="key.keyword"
         :rules="rules"
-        @input="onInput"
         clearable
         required
       ></v-text-field>
@@ -17,25 +16,9 @@ import mixin from './cipherKeysMixin';
 
 export default {
   mixins: [mixin],
-  data: () => ({
-    keyword: '',
-  }),
   computed: {
     rules() {
       return [Rules.required, Rules.word];
-    },
-    key: {
-      get() {
-        const self = this;
-        return {
-          keyword: self.keyword,
-        };
-      },
-      set(value) {
-        if (value.keyword !== undefined && value.keyword !== this.keyword) {
-          this.keyword = value.keyword;
-        }
-      },
     },
   },
 };

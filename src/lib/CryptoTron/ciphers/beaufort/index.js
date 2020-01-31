@@ -5,7 +5,7 @@ import { re, modulo } from '../index';
  */
 function algorithm(key, inText) {
   const intext = (inText || '').toLowerCase();
-  const keyword = key.keyword.toLowerCase().replace(/[^a-z]/g, '');
+  const keyword = (key.keyword || '').toLowerCase().replace(/[^a-z]/g, '');
   let outtext = '';
   let j = 0;
   for (let i = 0; i < intext.length; i += 1) {

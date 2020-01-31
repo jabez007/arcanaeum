@@ -272,9 +272,7 @@ export default {
     },
     keys() {
       // By definition if we have exactly 1 firstCipher, we have exactly 1 lastCipher
-      return this.firstCipher.length !== 1
-        ? false
-        : this.scene.nodes.every(n => n.key);
+      return this.firstCipher.length === 1;
     },
     jsonString() {
       const self = this;
@@ -366,6 +364,7 @@ export default {
               : '';
           },
           component: self.ciphers[self.newCipher].component,
+          key: {},
           get encrypt() {
             return self.ciphers[this.type].encrypt(this.key);
           },

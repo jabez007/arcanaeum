@@ -2,9 +2,8 @@
     <v-form ref="form">
       <v-textarea
         label="Key Text"
-        v-model.trim="keyText"
+        v-model.trim="key.keyText"
         :rules="rules"
-        @input="onInput"
         rows="1"
         auto-grow
         clearable
@@ -19,25 +18,9 @@ import mixin from './cipherKeysMixin';
 
 export default {
   mixins: [mixin],
-  data: () => ({
-    keyText: '',
-  }),
   computed: {
     rules() {
       return [Rules.required];
-    },
-    key: {
-      get() {
-        const self = this;
-        return {
-          keyText: self.keyText,
-        };
-      },
-      set(value) {
-        if (value.keyText !== undefined && value.keyText !== this.keyText) {
-          this.keyText = value.keyText;
-        }
-      },
     },
   },
 };

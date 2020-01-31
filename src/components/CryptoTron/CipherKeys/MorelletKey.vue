@@ -13,27 +13,27 @@
         <v-layout row wrap>
             <v-flex xs4>
                 <h6 class="title">Red [5]</h6>
-                <material-picker v-model="red" @input="onInput"/>
+                <material-picker v-model="red"/>
             </v-flex>
             <v-flex xs4>
                 <h6 class="title">Orange [4]</h6>
-                <material-picker v-model="orange" @input="onInput"/>
+                <material-picker v-model="orange"/>
             </v-flex>
             <v-flex xs4>
                 <h6 class="title">Yellow [3]</h6>
-                <material-picker v-model="yellow" @input="onInput"/>
+                <material-picker v-model="yellow"/>
             </v-flex>
             <v-flex xs4>
                 <h6 class="title">Green [2]</h6>
-                <material-picker v-model="green" @input="onInput"/>
+                <material-picker v-model="green"/>
             </v-flex>
             <v-flex xs4>
                 <h6 class="title">Blue [1]</h6>
-                <material-picker v-model="blue" @input="onInput"/>
+                <material-picker v-model="blue"/>
             </v-flex>
             <v-flex xs4>
                 <h6 class="title">Purple [0]</h6>
-                <material-picker v-model="purple" @input="onInput"/>
+                <material-picker v-model="purple"/>
             </v-flex>
         </v-layout>
       </v-flex>
@@ -53,14 +53,6 @@ export default {
   components: {
     'material-picker': Material,
   },
-  data: () => ({
-    red: '#df2933',
-    orange: '#ff5c30',
-    yellow: '#ffd652',
-    green: '#177b4b',
-    blue: '#006597',
-    purple: '#562b42',
-  }),
   computed: {
     encoding() {
       return encoding;
@@ -68,39 +60,52 @@ export default {
     rules() {
       return [Rules.required];
     },
-    colors() {
-      const self = this;
-      return [
-        typeof self.purple === 'string' ? self.purple : self.purple.hex,
-        typeof self.blue === 'string' ? self.blue : self.blue.hex,
-        typeof self.green === 'string' ? self.green : self.green.hex,
-        typeof self.yellow === 'string' ? self.yellow : self.yellow.hex,
-        typeof self.orange === 'string' ? self.orange : self.orange.hex,
-        typeof self.red === 'string' ? self.red : self.red.hex,
-      ];
-    },
-    key: {
+    red: {
       get() {
-        const self = this;
-        return {
-          colors: self.colors,
-        };
+        return this.key.colors[5];
       },
       set(value) {
-        if (
-          value.colors !== undefined
-          && value.colors.some((c, i) => c !== this.colors[i])
-        ) {
-          const self = this;
-          [
-            self.purple,
-            self.blue,
-            self.green,
-            self.yellow,
-            self.orange,
-            self.red,
-          ] = value.colors;
-        }
+        this.key.colors.splice(5, 1, typeof value === 'string' ? value : value.hex);
+      },
+    },
+    orange: {
+      get() {
+        return this.key.colors[4];
+      },
+      set(value) {
+        this.key.colors.splice(4, 1, typeof value === 'string' ? value : value.hex);
+      },
+    },
+    yellow: {
+      get() {
+        return this.key.colors[3];
+      },
+      set(value) {
+        this.key.colors.splice(3, 1, typeof value === 'string' ? value : value.hex);
+      },
+    },
+    green: {
+      get() {
+        return this.key.colors[2];
+      },
+      set(value) {
+        this.key.colors.splice(2, 1, typeof value === 'string' ? value : value.hex);
+      },
+    },
+    blue: {
+      get() {
+        return this.key.colors[1];
+      },
+      set(value) {
+        this.key.colors.splice(1, 1, typeof value === 'string' ? value : value.hex);
+      },
+    },
+    purple: {
+      get() {
+        return this.key.colors[0];
+      },
+      set(value) {
+        this.key.colors.splice(0, 1, typeof value === 'string' ? value : value.hex);
       },
     },
   },

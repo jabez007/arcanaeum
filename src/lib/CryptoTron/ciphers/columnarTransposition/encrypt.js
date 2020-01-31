@@ -2,7 +2,7 @@
 export function encrypt(key) {
   return (plainText) => {
     const plaintext = (plainText || '').toLowerCase().replace(/[^a-z]/g, '');
-    const keywordArray = key.keyword.split('');
+    const keywordArray = (key.keyword || '').split('');
     const sortedKeyword = [...keywordArray];
     sortedKeyword.sort(); // sorts the elements of array IN PLACE
     let ciphertext = '';

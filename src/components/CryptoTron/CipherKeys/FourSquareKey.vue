@@ -5,9 +5,8 @@
             <v-flex xs-4>
                 <v-text-field
                   label="Keyword One"
-                  v-model.trim="keyword1"
+                  v-model.trim="compKeyword1"
                   :rules="keywordRules"
-                  @input="onInput"
                   required
                   clearable
                 ></v-text-field>
@@ -16,7 +15,7 @@
         <v-layout row>
             <v-flex xs4></v-flex>
             <v-flex class="polybius-square" xs4>
-                <polybius-square :square="plainSquare"></polybius-square>
+                <polybius-square :square="key.plainSquare"></polybius-square>
             </v-flex>
             <v-flex class="polybius-square" xs4>
                 <polybius-square :square="upperCipherSquare"></polybius-square>
@@ -26,9 +25,8 @@
             <v-flex xs4>
                 <v-text-field
                   label="Keyword Two"
-                  v-model.trim="keyword2"
+                  v-model.trim="compKeyword2"
                   :rules="keywordRules"
-                  @input="onInput"
                   required
                   clearable
                 ></v-text-field>
@@ -37,16 +35,16 @@
                 <polybius-square :square="lowerCipherSquare"></polybius-square>
             </v-flex>
             <v-flex class="polybius-square" xs4>
-                <polybius-square :square="plainSquare"></polybius-square>
+                <polybius-square :square="key.plainSquare"></polybius-square>
             </v-flex>
         </v-layout>
     </v-form>
 </template>
 
 <script>
-import PolybiusSquare from '@/components/CryptoTron/PolybiusSquare.vue';
 import Rules from '_/rules';
 import { square } from '_/CryptoTron/ciphers/polybius';
+import PolybiusSquare from '@/components/CryptoTron/PolybiusSquare.vue';
 import mixin from './cipherKeysMixin';
 
 export default {
@@ -54,43 +52,47 @@ export default {
   components: {
     PolybiusSquare,
   },
-  data: () => ({
-    keyword1: '',
-    keyword2: '',
-  }),
   computed: {
     keywordRules() {
       return [Rules.required, Rules.word];
     },
-    plainSquare() {
-      return square('');
-    },
-    upperCipherSquare() {
-      return square(this.keyword1);
-    },
-    lowerCipherSquare() {
-      return square(this.keyword2);
-    },
-    key: {
+    compKeyword1: {
       get() {
-        const self = this;
-        return {
-          plainSquare: self.plainSquare,
-          keyword1: self.keyword1,
-          upperCipherSquare: self.upperCipherSquare,
-          keyword2: self.keyword2,
-          lowerCipherSquare: self.lowerCipherSquare,
-        };
+        return this.key.keyword1;
       },
       set(value) {
-        if (value.keyword1 !== undefined && value.keyword1 !== this.keyword1) {
-          this.keyword1 = value.keyword1;
-        }
-        if (value.keyword2 !== undefined && value.keyword2 !== this.keyword2) {
-          this.keyword2 = value.keyword2;
-        }
+        this.key.keyword1 = value;
+        this.upperCipherSquare = value;
       },
     },
+    upperCipherSquare: {
+      get() {
+        return this.key.upperCipherSquare;
+      },
+      set(value) {
+        this.key.upperCipherSquare = square(value);
+      },
+    },
+    compKeyword2: {
+      get() {
+        return this.key.keyword2;
+      },
+      set(value) {
+        this.key.keyword2 = value;
+        this.lowerCipherSquare = value;
+      },
+    },
+    lowerCipherSquare: {
+      get() {
+        return this.key.lowerCipherSquare;
+      },
+      set(value) {
+        this.key.lowerCipherSquare = square(value);
+      },
+    },
+  },
+  created() {
+    this.key.plainSquare = square('');
   },
 };
 </script>

@@ -4,7 +4,7 @@ import { re, modulo } from '../index';
 export function encrypt(key) {
   return (plainText) => {
     const plaintext = (plainText || '').toLowerCase();
-    const autokey = (key.primer.toLowerCase() + plaintext).replace(
+    const autokey = ((key.primer || '').toLowerCase() + plaintext).replace(
       /[^a-z]/g,
       '',
     );

@@ -5,9 +5,8 @@
         <v-layout row>
           <v-text-field
             label="Keyword"
-            v-model.trim="keyword"
+            v-model.trim="compKeyword"
             :rules="keywordRules"
-            @input="onInput"
             required
             clearable
           ></v-text-field>
@@ -15,10 +14,9 @@
         <v-layout row>
           <v-text-field
             label="Ciphertext Characters"
-            v-model.trim="cipherChars"
+            v-model.trim="key.cipherChars"
             maxlength="5"
             :rules="cipherCharRules"
-            @input="onInput"
             required
             clearable
           ></v-text-field>
@@ -26,17 +24,17 @@
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex xs12 md3>
-        <polybius-square :square="square" :cipherChars="cipherChars"></polybius-square>
+        <polybius-square :square="key.square" :cipherChars="key.cipherChars"></polybius-square>
       </v-flex>
     </v-layout>
   </v-form>
 </template>
 
 <script>
-import PolybiusSquare from '@/components/CryptoTron/PolybiusSquare.vue';
 import Rules from '_/rules';
 import { getUniqueCharacters } from '_/CryptoTron/ciphers';
 import { square } from '_/CryptoTron/ciphers/polybius';
+import PolybiusSquare from '@/components/CryptoTron/PolybiusSquare.vue';
 import mixin from './cipherKeysMixin';
 
 export default {
@@ -46,7 +44,6 @@ export default {
   },
   data: () => ({
     keyword: '',
-    cipherChars: 'ABCDE',
   }),
   computed: {
     keywordRules() {
@@ -58,39 +55,19 @@ export default {
         value => Rules.exactLength(5)(getUniqueCharacters(value)),
       ];
     },
-    square() {
-      return square(this.keyword);
-    },
-    chars() {
-      return (this.cipherChars || '').substring(0, 5);
-    },
-    key: {
+    compKeyword: {
       get() {
-        const self = this;
-        return {
-          keyword: self.keyword,
-          square: self.square,
-          cipherChars: self.chars,
-        };
+        return this.key.keyword;
       },
       set(value) {
-        if (value.keyword !== undefined && value.keyword !== this.keyword) {
-          this.keyword = value.keyword;
-        }
-        if (
-          value.square !== undefined
-          && !value.square.every((arr, r) => arr.every((e, c) => e === this.square[r][c]))
-        ) {
-          this.keyword = value.square.map(r => r.join('')).join('');
-        }
-        if (
-          value.cipherChars !== undefined
-          && value.cipherChars !== this.cipherChars
-        ) {
-          this.cipherChars = value.cipherChars;
-        }
+        this.key.keyword = value;
+        this.key.square = square(value);
       },
     },
+  },
+  created() {
+    this.key.cipherChars = 'ABCDE';
+    this.key.square = square('');
   },
 };
 </script>

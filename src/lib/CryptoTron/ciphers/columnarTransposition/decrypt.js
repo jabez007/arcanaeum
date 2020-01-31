@@ -2,7 +2,7 @@
 export function decrypt(key) {
   return (cipherText) => {
     const ciphertext = (cipherText || '');
-    const keywordArray = key.keyword.split('');
+    const keywordArray = (key.keyword || '').split('');
     const sortedKeyword = [...keywordArray];
     sortedKeyword.sort(); // sorts the elements of array IN PLACE
     const plaintext = new Array(ciphertext.length);

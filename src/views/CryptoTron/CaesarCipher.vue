@@ -31,9 +31,9 @@
 
 <script>
 // @ is an alias to /src
+import { encrypt, decrypt } from '_/CryptoTron/ciphers/caesar';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import CaesarKey from '@/components/CryptoTron/CipherKeys/CaesarKey.vue';
-import { encrypt, decrypt } from '_/CryptoTron/ciphers/caesar';
 
 export default {
   components: {
@@ -63,7 +63,7 @@ export default {
       return { shift: key.shift + 1 };
     },
     onUpdateKey(newKey) {
-      this.shift = newKey.shift;
+      this.key = newKey;
     },
   },
 };

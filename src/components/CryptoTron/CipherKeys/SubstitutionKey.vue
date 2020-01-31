@@ -3,7 +3,7 @@
     <v-layout row>
       <div>
         <v-chip
-          v-for="char in plainAlphabet"
+          v-for="char in key.plainAlphabet"
           :key="char.toUpperCase()"
           style="margin: 1px !important; font-family: monospace, monospace;"
           label
@@ -12,10 +12,10 @@
       </div>
     </v-layout>
     <v-layout row>
-      <draggable v-model="cipherAlphabet" group="cipherAlphabet">
+      <draggable v-model="key.cipherAlphabet" group="key.cipherAlphabet">
         <transition-group>
           <v-chip
-            v-for="char in cipherAlphabet"
+            v-for="char in key.cipherAlphabet"
             :key="char"
             color="info"
             style="margin: 1px !important; font-family: monospace, monospace;"
@@ -26,7 +26,7 @@
       </draggable>
     </v-layout>
     <v-layout row>
-      <v-text-field label="Key Word" v-model.trim="keyword" @input="onInput" clearable></v-text-field>
+      <v-text-field label="Key Word" v-model.trim="compKeyword" clearable></v-text-field>
     </v-layout>
   </v-form>
 </template>
@@ -41,53 +41,30 @@ export default {
   components: {
     draggable,
   },
-  data: () => ({
-    plainAlphabet: [...alphaLower], // display as upper
-    keyword: '',
-    cipherAlphabet: [...alphaLower],
-  }),
   computed: {
-    key: {
+    compKeyword: {
       get() {
-        const self = this;
-        return {
-          plainAlphabet: self.plainAlphabet,
-          keyword: self.keyword,
-          cipherAlphabet: self.cipherAlphabet,
-        };
+        return this.key.keyword;
       },
       set(value) {
-        // plainAlphabet should never change
-        if (value.keyword !== undefined && value.keyword !== this.keyword) {
-          this.keyword = value.keyword;
-        }
-        if (
-          value.cipherAlphabet !== undefined
-          && value.cipherAlphabet.join('') !== this.cipherAlphabet.join('')
-        ) {
-          this.cipherAlphabet.splice(
-            0,
-            this.cipherAlphabet.length,
-            ...value.cipherAlphabet,
-          );
-        }
+        this.key.keyword = value;
       },
     },
   },
   watch: {
-    cipherAlphabet() {
-      this.onInput();
-    },
-    keyword(newVal) {
-      const word = newVal || '';
-      this.cipherAlphabet.splice(
+    compKeyword(newVal) {
+      this.key.cipherAlphabet.splice(
         0,
-        this.cipherAlphabet.length,
+        this.key.cipherAlphabet.length,
         ...getUniqueCharacters(
-          `${word.toLowerCase().replace(/[^a-z]/g, '')}${alphaLower}`,
+          `${(newVal || '').toLowerCase().replace(/[^a-z]/g, '')}${alphaLower}`,
         ),
       );
     },
+  },
+  created() {
+    this.key.plainAlphabet = [...alphaLower]; // display as upper
+    this.key.cipherAlphabet = [...alphaLower];
   },
 };
 </script>
