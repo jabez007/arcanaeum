@@ -16,6 +16,9 @@
         <v-btn style="position: absolute;" icon @click="saveSvg(scope.cipherText)"><v-icon>save</v-icon></v-btn>
       <canvas ref="doodle" :width="width" :height="width" style="border:3px solid #000000;"></canvas>
     </v-layout>
+    <file-upload slot="decrypt-cipherText" accept="image/svg+xml" @load="loadSvg" :disabled="true">
+      <p>hello world</p>
+    </file-upload>
   </Cipher>
 </template>
 
@@ -24,6 +27,7 @@
 import C2S from 'canvas2svg';
 import FileSaver from 'file-saver';
 import { encrypt, enstegano } from '_/CryptoTron/ciphers/morellet';
+import FileUpload from '@/components/FileUpload.vue';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import MorelletKey from '@/components/CryptoTron/CipherKeys/MorelletKey.vue';
 
@@ -40,6 +44,7 @@ export default {
   components: {
     Cipher,
     MorelletKey,
+    FileUpload,
   },
   data: () => ({
     key: {
@@ -97,6 +102,10 @@ export default {
         type: 'text/plain;charset=utf-8',
       });
       FileSaver.saveAs(blob, 'Cipher.svg');
+    },
+    loadSvg(buffer) {
+      const enc = new TextDecoder('utf-8');
+      console.log(enc.decode(buffer));
     },
   },
 };
