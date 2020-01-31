@@ -40,6 +40,8 @@
           :value="enstegano(scope.cipherText, key)"
           prepend-inner-icon="file_copy"
           @click:prepend-inner="scope.copyToClipboard(enstegano(scope.cipherText, key))"
+          append-icon="save"
+          @click:append="scope.save(enstegano(scope.cipherText, key))"
           outline
           auto-grow
           readonly
