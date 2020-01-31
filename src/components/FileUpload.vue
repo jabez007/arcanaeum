@@ -8,12 +8,16 @@
       @change="filesChange($event.target.files)"
       class="input-file"
     />
-    <p v-if="!disabled">
-      Drag your file(s) here to begin
-      <br />or click to browse
-    </p>
-    <slot v-else>
-      <p>Uploading {{ fileCount }} files...</p>
+    <v-fade-transition leave-absolute>
+      <p v-if="!disabled">
+        Drag your file(s) here to begin
+        <br />or click to browse
+      </p>
+    </v-fade-transition>
+    <slot>
+      <v-fade-transition leave-absolute>
+        <p v-if="disabled">Uploading {{ fileCount }} files...</p>
+      </v-fade-transition>
     </slot>
   </div>
 </template>
@@ -82,10 +86,5 @@ export default {
   font-size: 1.2em;
   padding: 50px 0;
   text-align: center;
-}
-
-.dropbox div {
-  display: flex;
-  align-content: center;
 }
 </style>

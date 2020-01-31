@@ -19,10 +19,14 @@
       @load="loadSvg"
       :disabled="!!cipherSvg"
     >
-      <v-btn style="position: absolute;" icon @click="cipherSvg = ''">
-        <v-icon>close</v-icon>
-      </v-btn>
-      <div class="cipher-svg" v-html="cipherSvg"></div>
+      <v-expand-transition>
+        <div v-if="!!cipherSvg" class="cipher-svg">
+          <v-btn style="position: absolute;" icon @click="cipherSvg = ''">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <div v-html="cipherSvg"></div>
+        </div>
+      </v-expand-transition>
     </file-upload>
   </Cipher>
 </template>
@@ -116,3 +120,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.cipher-svg div {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+</style>
