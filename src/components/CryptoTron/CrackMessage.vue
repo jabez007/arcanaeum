@@ -38,6 +38,8 @@
                     :value="plainText"
                     prepend-inner-icon="file_copy"
                     @click:prepend-inner="copyToClipboard"
+                    append-icon="save"
+                    @click:append="save"
                     outline
                     auto-grow
                     readonly>
@@ -49,6 +51,7 @@
 
 <script>
 import axios from 'axios';
+import FileSaver from 'file-saver';
 import lzString from 'lz-string/libs/lz-string';
 
 export default {
@@ -176,6 +179,12 @@ export default {
         .catch((err) => {
           self.$emit('error', err.message);
         });
+    },
+    save() {
+      const blob = new Blob([this.plainText], {
+        type: 'text/plain;charset=utf-8',
+      });
+      FileSaver.saveAs(blob, 'Plain.txt');
     },
   },
 };

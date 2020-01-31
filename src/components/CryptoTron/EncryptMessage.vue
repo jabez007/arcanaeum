@@ -10,11 +10,13 @@
         </v-textarea>
       </slot>
       <slot name="cipherText"
-            v-bind="{ cipherText, copyToClipboard }">
+            v-bind="{ cipherText, copyToClipboard, save }">
         <v-textarea label="Cipher Text"
                     :value="cipherText"
                     prepend-inner-icon="file_copy"
                     @click:prepend-inner="copyToClipboard(cipherText)"
+                    append-icon="save"
+                    @click:append="save(cipherText)"
                     outline
                     auto-grow
                     readonly>
@@ -25,6 +27,8 @@
 </template>
 
 <script>
+import FileSaver from 'file-saver';
+
 export default {
   name: 'EncryptMessage',
   props: {
@@ -58,6 +62,12 @@ export default {
         .catch((err) => {
           self.$emit('error', err.message);
         });
+    },
+    save(txt) {
+      const blob = new Blob([txt], {
+        type: 'text/plain;charset=utf-8',
+      });
+      FileSaver.saveAs(blob, 'Cipher.txt');
     },
   },
 };
