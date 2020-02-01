@@ -8,8 +8,8 @@
     </v-card>
     <morellet-key slot="key" v-model="key"></morellet-key>
     <v-layout
-      ref="container"
-      class="container"
+      ref="encryptContainer"
+      class="encrypt-ciphertext"
       slot="encrypt-cipherText"
       slot-scope="scope"
       row
@@ -19,7 +19,7 @@
         <v-btn style="position: absolute;" icon @click="saveSvg(scope.cipherText)">
           <v-icon>save</v-icon>
         </v-btn>
-        <canvas ref="doodle" :width="width" :height="width" style="border:3px solid #000000;"></canvas>
+        <canvas ref="encryptCiphertext" :width="width" :height="width" style="border:3px solid #000000;"></canvas>
       </v-flex>
     </v-layout>
     <file-upload
@@ -29,11 +29,13 @@
       :disabled="!!cipherSvg"
     >
       <v-fade-transition leave-absolute>
-        <v-flex v-if="!!cipherSvg" shrink>
+        <v-flex v-show="!!cipherSvg" shrink>
           <v-btn style="position: absolute;" icon @click="cipherSvg = ''">
             <v-icon>close</v-icon>
           </v-btn>
-          <div class="cipher-svg" v-html="cipherSvg"></div>
+          <div class="cipher-svg">
+            <canvas ref="decryptCiphertext"></canvas>
+          </div>
         </v-flex>
       </v-fade-transition>
     </file-upload>
@@ -44,6 +46,7 @@
 // @ is an alias to /src
 import C2S from 'canvas2svg';
 import FileSaver from 'file-saver';
+import Canvg from 'canvg';
 import { encrypt, enstegano } from '_/CryptoTron/ciphers/morellet';
 import FileUpload from '@/components/FileUpload.vue';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
@@ -71,6 +74,7 @@ export default {
     context: null,
     width: 0,
     cipherSvg: '',
+    cipherCanvg: null,
   }),
   computed: {
     cipherKey() {
@@ -90,14 +94,21 @@ export default {
       return this.width / (this.rowLength || 1);
     },
   },
+  watch: {
+    cipherSvg(newVal) {
+      if (newVal === '' && this.cipherCanvg) {
+        this.cipherCanvg.stop();
+      }
+    },
+  },
   mounted() {
     const self = this;
     this.$nextTick(() => {
       setTimeout(() => {
-        self.context = self.$refs.doodle.getContext('2d');
+        self.context = self.$refs.encryptCiphertext.getContext('2d');
         self.width = Math.min(
-          self.$refs.container.clientWidth,
-          self.$refs.container.clientHeight,
+          self.$refs.encryptContainer.clientWidth,
+          self.$refs.encryptContainer.clientHeight,
         );
       }, 100);
     });
@@ -128,13 +139,15 @@ export default {
     loadSvg(buffer) {
       const enc = new TextDecoder('utf-8');
       this.cipherSvg = enc.decode(buffer);
+      this.cipherCanvg = Canvg.fromString(this.$refs.decryptCiphertext.getContext('2d'), this.cipherSvg);
+      this.cipherCanvg.start();
     },
   },
 };
 </script>
 
 <style scoped>
-.container {
+.encrypt-ciphertext {
   min-height: 10rem;
 }
 
