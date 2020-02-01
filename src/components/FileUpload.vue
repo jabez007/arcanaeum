@@ -1,5 +1,5 @@
 <template>
-  <div class="dropbox">
+  <v-layout class="dropbox" row justify-center align-center>
     <input
       type="file"
       :accept="accept"
@@ -9,17 +9,21 @@
       class="input-file"
     />
     <v-fade-transition leave-absolute>
-      <p v-if="!disabled">
-        Drag your file(s) here to begin
-        <br />or click to browse
-      </p>
+      <v-flex v-if="!disabled" shrink>
+        <p>
+          Drag your file(s) here to begin
+          <br />or click to browse
+        </p>
+      </v-flex>
     </v-fade-transition>
     <slot>
       <v-fade-transition leave-absolute>
-        <p v-if="disabled">Uploading {{ fileCount }} files...</p>
+        <v-flex v-if="disabled" shrink>
+          <p>Uploading {{ fileCount }} files...</p>
+        </v-flex>
       </v-fade-transition>
     </slot>
-  </div>
+  </v-layout>
 </template>
 
 <script>
@@ -61,19 +65,20 @@ export default {
 <style scoped>
 .dropbox {
   outline: 2px dashed grey; /* the dash box */
-  outline-offset: -10px;
+  outline-offset: -1rem;
   background: lightcyan;
   color: dimgray;
-  padding: 10px 10px;
-  min-height: 200px; /* minimum height */
+  padding: 1rem 1rem;
+  min-height: 10rem; /* minimum height */
   position: relative;
   cursor: pointer;
+  transition: height 0.5s linear;
 }
 
 .input-file {
   opacity: 0; /* invisible but it's there! */
   width: 100%;
-  height: 200px;
+  height: 10rem;
   position: absolute;
   cursor: pointer;
 }
@@ -84,7 +89,7 @@ export default {
 
 .dropbox p {
   font-size: 1.2em;
-  padding: 50px 0;
+  margin: auto 0;
   text-align: center;
 }
 </style>

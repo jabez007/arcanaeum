@@ -7,11 +7,20 @@
       <v-card-text></v-card-text>
     </v-card>
     <morellet-key slot="key" v-model="key"></morellet-key>
-    <v-layout ref="container" slot="encrypt-cipherText" slot-scope="scope" row wrap>
-      <v-btn style="position: absolute;" icon @click="saveSvg(scope.cipherText)">
-        <v-icon>save</v-icon>
-      </v-btn>
-      <canvas ref="doodle" :width="width" :height="width" style="border:3px solid #000000;"></canvas>
+    <v-layout
+      ref="container"
+      class="container"
+      slot="encrypt-cipherText"
+      slot-scope="scope"
+      row
+      justify-center
+    >
+      <v-flex shrink>
+        <v-btn style="position: absolute;" icon @click="saveSvg(scope.cipherText)">
+          <v-icon>save</v-icon>
+        </v-btn>
+        <canvas ref="doodle" :width="width" :height="width" style="border:3px solid #000000;"></canvas>
+      </v-flex>
     </v-layout>
     <file-upload
       slot="decrypt-cipherText"
@@ -19,14 +28,14 @@
       @load="loadSvg"
       :disabled="!!cipherSvg"
     >
-      <v-expand-transition>
-        <div v-if="!!cipherSvg" class="cipher-svg">
+      <v-fade-transition leave-absolute>
+        <v-flex v-if="!!cipherSvg" shrink>
           <v-btn style="position: absolute;" icon @click="cipherSvg = ''">
             <v-icon>close</v-icon>
           </v-btn>
-          <div v-html="cipherSvg"></div>
-        </div>
-      </v-expand-transition>
+          <div class="cipher-svg" v-html="cipherSvg"></div>
+        </v-flex>
+      </v-fade-transition>
     </file-upload>
   </Cipher>
 </template>
@@ -86,7 +95,10 @@ export default {
     this.$nextTick(() => {
       setTimeout(() => {
         self.context = self.$refs.doodle.getContext('2d');
-        self.width = self.$refs.container.clientWidth;
+        self.width = Math.min(
+          self.$refs.container.clientWidth,
+          self.$refs.container.clientHeight,
+        );
       }, 100);
     });
   },
@@ -122,9 +134,12 @@ export default {
 </script>
 
 <style scoped>
-.cipher-svg div {
+.container {
+  min-height: 10rem;
+}
+
+.cipher-svg {
   display: flex;
   align-content: center;
-  justify-content: center;
 }
 </style>
