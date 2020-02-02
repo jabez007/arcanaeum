@@ -22,23 +22,7 @@
         <canvas ref="encryptCiphertext" :width="width" :height="width" style="border:3px solid #000000;"></canvas>
       </v-flex>
     </v-layout>
-    <file-upload
-      slot="decrypt-cipherText"
-      accept="image/svg+xml"
-      @load="loadSvg"
-      :disabled="!!cipherSvg"
-    >
-      <v-fade-transition leave-absolute>
-        <v-flex v-show="!!cipherSvg" shrink>
-          <v-btn style="position: absolute;" icon @click="cipherSvg = ''">
-            <v-icon>close</v-icon>
-          </v-btn>
-          <div class="cipher-svg">
-            <canvas ref="decryptCiphertext"></canvas>
-          </div>
-        </v-flex>
-      </v-fade-transition>
-    </file-upload>
+    <svg-upload slot="decrypt-cipherText" @input="onDecryptInput"></svg-upload>
   </Cipher>
 </template>
 
@@ -46,10 +30,9 @@
 // @ is an alias to /src
 import C2S from 'canvas2svg';
 import FileSaver from 'file-saver';
-import Canvg from 'canvg';
 import { encrypt, enstegano } from '_/CryptoTron/ciphers/morellet';
-import FileUpload from '@/components/FileUpload.vue';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
+import SvgUpload from '@/components/CryptoTron/SvgUpload.vue';
 import MorelletKey from '@/components/CryptoTron/CipherKeys/MorelletKey.vue';
 
 const blue = '#006597';
@@ -65,7 +48,7 @@ export default {
   components: {
     Cipher,
     MorelletKey,
-    FileUpload,
+    SvgUpload,
   },
   data: () => ({
     key: {
@@ -73,8 +56,6 @@ export default {
     },
     context: null,
     width: 0,
-    cipherSvg: '',
-    cipherCanvg: null,
   }),
   computed: {
     cipherKey() {
@@ -136,11 +117,8 @@ export default {
       });
       FileSaver.saveAs(blob, 'Cipher.svg');
     },
-    loadSvg(buffer) {
-      const enc = new TextDecoder('utf-8');
-      this.cipherSvg = enc.decode(buffer);
-      this.cipherCanvg = Canvg.fromString(this.$refs.decryptCiphertext.getContext('2d'), this.cipherSvg);
-      this.cipherCanvg.start();
+    onDecryptInput(canvas) {
+      console.log(canvas.height);
     },
   },
 };
@@ -149,10 +127,5 @@ export default {
 <style scoped>
 .encrypt-ciphertext {
   min-height: 10rem;
-}
-
-.cipher-svg {
-  display: flex;
-  align-content: center;
 }
 </style>

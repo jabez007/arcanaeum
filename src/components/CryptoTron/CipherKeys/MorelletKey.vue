@@ -11,7 +11,7 @@
       </v-flex>
       <v-flex xs12 lg5>
         <v-layout row wrap>
-            <v-flex xs4>
+            <v-flex xs6 lg4>
                 <h6 class="title">Red [5]</h6>
                 <material-picker v-model="red"/>
             </v-flex>
