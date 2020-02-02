@@ -30,7 +30,11 @@
 // @ is an alias to /src
 import C2S from 'canvas2svg';
 import FileSaver from 'file-saver';
-import { encrypt, enstegano } from '_/CryptoTron/ciphers/morellet';
+import {
+  encrypt,
+  enstegano,
+  findSquareWidth,
+} from '_/CryptoTron/ciphers/morellet';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import SvgUpload from '@/components/CryptoTron/SvgUpload.vue';
 import MorelletKey from '@/components/CryptoTron/CipherKeys/MorelletKey.vue';
@@ -118,7 +122,8 @@ export default {
       FileSaver.saveAs(blob, 'Cipher.svg');
     },
     onDecryptInput(canvas) {
-      console.log(canvas.height);
+      const squareWidth = findSquareWidth(canvas);
+      console.log(squareWidth);
     },
   },
 };
