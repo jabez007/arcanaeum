@@ -1,6 +1,19 @@
 import { encoding } from './encoding';
 import * as steganography from '../steganography';
 
+function hex2rgb(hex) {
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  const shorthandRegex = /^#?([a-fA-F\d])([a-fA-F\d])([a-fA-F\d])$/i;
+  const fullHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+
+  const result = /^#?([a-fA-F\d]{2})([a-fA-F\d]{2})([a-fA-F\d]{2})$/i.exec(fullHex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16),
+  } : null;
+}
+
 function component2hex(c) {
   const hex = c.toString(16);
   return hex.length === 1 ? `0${hex}` : hex;
