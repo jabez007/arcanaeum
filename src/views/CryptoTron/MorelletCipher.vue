@@ -8,18 +8,28 @@
     </v-card>
     <morellet-key slot="key" v-model="key"></morellet-key>
     <v-layout
-      ref="encryptContainer"
-      class="encrypt-ciphertext"
       slot="encrypt-cipherText"
       slot-scope="scope"
       row
+      wrap
       justify-center
     >
-      <v-flex shrink>
-        <v-btn style="position: absolute;" icon @click="saveSvg(scope.cipherText)">
-          <v-icon>save</v-icon>
-        </v-btn>
-        <canvas ref="encryptCiphertext" :width="width" :height="width" style="border:3px solid #000000;"></canvas>
+      <v-flex xs12 md6>
+        <v-textarea
+          label="Encoding"
+          v-model="scope.cipherText"
+          outline
+          auto-grow
+          readonly
+        ></v-textarea>
+      </v-flex>
+      <v-flex ref="encryptContainer" class="encrypt-ciphertext" xs12 md6>
+        <div>
+          <v-btn style="position: absolute;" icon @click="saveSvg(scope.cipherText)">
+            <v-icon>save</v-icon>
+          </v-btn>
+          <canvas ref="encryptCiphertext" :width="width" :height="width" style="border:3px solid #000000;"></canvas>
+        </div>
       </v-flex>
     </v-layout>
     <svg-upload slot="decrypt-cipherText" @input="onDecryptInput"></svg-upload>
@@ -122,7 +132,7 @@ export default {
       FileSaver.saveAs(blob, 'Cipher.svg');
     },
     onDecryptInput(canvas) {
-      const squareWidth = findSquareWidth(canvas);
+      const squareWidth = findSquareWidth(canvas, this.key);
       console.log(squareWidth);
     },
   },
@@ -131,6 +141,7 @@ export default {
 
 <style scoped>
 .encrypt-ciphertext {
-  min-height: 10rem;
+  display: flex;
+  justify-content: center;
 }
 </style>
