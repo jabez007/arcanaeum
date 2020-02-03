@@ -44,6 +44,7 @@ import {
   encrypt,
   enstegano,
   findSquareWidth,
+  flattenSquare,
 } from '_/CryptoTron/ciphers/morellet';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import SvgUpload from '@/components/CryptoTron/SvgUpload.vue';
@@ -133,7 +134,7 @@ export default {
     },
     onDecryptInput(canvas) {
       const squareWidth = findSquareWidth(canvas, this.key);
-      console.log(squareWidth);
+      console.log(flattenSquare(canvas, squareWidth));
     },
   },
 };

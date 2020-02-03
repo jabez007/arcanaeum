@@ -12,6 +12,7 @@ function rgb2hex(red, green, blue) {
 
 export function findSquareWidth(canvas, key) {
   const canvasWidth = Math.max(canvas.width, canvas.scrollWidth);
+  // console.log(canvasWidth);
   const context = canvas.getContext('2d');
   // start down and in one to account for color difference on the edges
   const canvasPixelArray = context.getImageData(1, 1, canvasWidth - 1, 1).data;
@@ -25,17 +26,40 @@ export function findSquareWidth(canvas, key) {
     const green = canvasPixelArray[i + 1];
     const blue = canvasPixelArray[i + 2];
     const alpha = canvasPixelArray[i + 3];
-    console.log(firstRed, firstGreen, firstBlue);
+    // console.log(firstRed, firstGreen, firstBlue);
     if ((red !== firstRed
       || green !== firstGreen
       || blue !== firstBlue
       || alpha !== firstAlpha)
       && colors.includes(rgb2hex(red, green, blue))) {
-      console.log(red, green, blue);
+      // console.log(red, green, blue);
+      // console.log(i / 4);
       return (i / 4);
     }
   }
   return 0;
+}
+
+export function flattenSquare(canvas, width) {
+  const canvasWidth = Math.max(canvas.width, canvas.scrollWidth);
+  // console.log(canvasWidth);
+  const context = canvas.getContext('2d');
+  const canvasColorsArray = [];
+  let y = width / 2;
+  while (y < canvasWidth) {
+    // console.log(y);
+    const row = context.getImageData(1, y, canvasWidth - 1, 1).data;
+    for (let x = 0; x < ((canvasWidth - 1) * 4); x += width * 4) {
+      const red = row[x];
+      const green = row[x + 1];
+      const blue = row[x + 2];
+      // const alpha = row[x + 3];
+      // console.log(rgb2hex(red, green, blue));
+      canvasColorsArray.push(rgb2hex(red, green, blue));
+    }
+    y += width;
+  }
+  return canvasColorsArray;
 }
 
 export function decrypt() {
