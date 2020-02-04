@@ -43,7 +43,6 @@ import FileSaver from 'file-saver';
 import {
   encrypt,
   enstegano,
-  findColorWidth,
   flattenSquare,
 } from '_/CryptoTron/ciphers/morellet';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
@@ -133,8 +132,7 @@ export default {
       FileSaver.saveAs(blob, 'Cipher.svg');
     },
     onDecryptInput(canvas) {
-      const colorWidth = findColorWidth(canvas, this.key);
-      console.log(flattenSquare(canvas, colorWidth));
+      console.log(flattenSquare(canvas, this.key));
     },
   },
 };

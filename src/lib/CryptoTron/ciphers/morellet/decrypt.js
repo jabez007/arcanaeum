@@ -23,7 +23,28 @@ function rgb2hex(red, green, blue) {
   return `#${component2hex(red)}${component2hex(green)}${component2hex(blue)}`.toUpperCase();
 }
 
-export function findColorWidth(canvas, key) {
+function colorDifference(minuend, subtrahend) {
+  if (typeof minuend === 'string') {
+    return colorDifference(hex2rgb(minuend), subtrahend);
+  }
+  if (typeof subtrahend === 'string') {
+    return colorDifference(minuend, hex2rgb(subtrahend));
+  }
+  // 3D distance
+  return Math.sqrt(
+    ((minuend.r - subtrahend.r) ** 2)
+    + ((minuend.g - subtrahend.g) ** 2)
+    + ((minuend.b - subtrahend.b) ** 2),
+  );
+}
+
+function matchColor(searchColor, key) {
+  return key.colors
+    .map(c => ({ color: c, diff: colorDifference(searchColor, c) })) // calculate distance from each color
+    .reduce((prev, curr) => (prev.diff < curr.diff ? prev : curr)); // reduce to smallest distance
+}
+
+function findColorWidth(canvas, key) {
   const canvasWidth = Math.max(canvas.width, canvas.scrollWidth);
   // console.log(canvasWidth);
   const context = canvas.getContext('2d');
@@ -53,7 +74,8 @@ export function findColorWidth(canvas, key) {
   return 0;
 }
 
-export function flattenSquare(canvas, colorWidth) {
+export function flattenSquare(canvas, key) {
+  const colorWidth = findColorWidth(canvas, key);
   const canvasWidth = Math.max(canvas.width, canvas.scrollWidth);
   // console.log(canvasWidth);
   const context = canvas.getContext('2d');
@@ -68,11 +90,11 @@ export function flattenSquare(canvas, colorWidth) {
       const blue = row[x + 2];
       // const alpha = row[x + 3];
       // console.log(rgb2hex(red, green, blue));
-      canvasColorsArray.push(rgb2hex(red, green, blue));
+      canvasColorsArray.push(matchColor(rgb2hex(red, green, blue), key));
     }
     y += colorWidth;
   }
-  return canvasColorsArray;
+  return canvasColorsArray.map(obj => obj.color);
 }
 
 export function decrypt() {
