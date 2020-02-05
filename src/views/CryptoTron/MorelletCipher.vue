@@ -43,7 +43,7 @@ import FileSaver from 'file-saver';
 import {
   encrypt,
   enstegano,
-  flattenSquare,
+  getSquareEncoding,
 } from '_/CryptoTron/ciphers/morellet';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import SvgUpload from '@/components/CryptoTron/SvgUpload.vue';
@@ -132,7 +132,7 @@ export default {
       FileSaver.saveAs(blob, 'Cipher.svg');
     },
     onDecryptInput(canvas) {
-      console.log(flattenSquare(canvas, this.key));
+      console.log(getSquareEncoding(canvas, this.key));
     },
   },
 };

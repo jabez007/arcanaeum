@@ -74,7 +74,7 @@ function findColorWidth(canvas, key) {
   return 0;
 }
 
-export function flattenSquare(canvas, key) {
+function flattenSquare(canvas, key) {
   const colorWidth = findColorWidth(canvas, key);
   const canvasWidth = Math.max(canvas.width, canvas.scrollWidth);
   // console.log(canvasWidth);
@@ -95,6 +95,14 @@ export function flattenSquare(canvas, key) {
     y += colorWidth;
   }
   return canvasColorsArray.map(obj => obj.color);
+}
+
+export function getSquareEncoding(canvas, key) {
+  const colors = key.colors.map(c => c.toUpperCase());
+  const canvasColors = flattenSquare(canvas, key);
+  return canvasColors
+    .map(c => colors.findIndex(color => color === c.toUpperCase()))
+    .join('');
 }
 
 export function decrypt() {
