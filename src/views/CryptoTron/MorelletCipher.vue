@@ -7,32 +7,38 @@
       <v-card-text></v-card-text>
     </v-card>
     <morellet-key slot="key" v-model="key"></morellet-key>
-    <v-layout
-      slot="encrypt-cipherText"
-      slot-scope="scope"
-      row
-      wrap
-      justify-center
-    >
+    <v-layout slot="encrypt-cipherText" slot-scope="scope" row wrap justify-center>
       <v-flex xs12 md6>
-        <v-textarea
-          label="Encoding"
-          v-model="scope.cipherText"
-          outline
-          auto-grow
-          readonly
-        ></v-textarea>
+        <v-textarea label="Encoding" v-model="scope.cipherText" outline auto-grow readonly></v-textarea>
       </v-flex>
       <v-flex ref="encryptContainer" class="encrypt-ciphertext" xs12 md6>
         <div>
           <v-btn style="position: absolute;" icon @click="saveSvg(scope.cipherText)">
             <v-icon>save</v-icon>
           </v-btn>
-          <canvas ref="encryptCiphertext" :width="width" :height="width" style="border:3px solid #000000;"></canvas>
+          <canvas
+            ref="encryptCiphertext"
+            :width="width"
+            :height="width"
+            style="border:3px solid #000000;"
+          ></canvas>
         </div>
       </v-flex>
     </v-layout>
-    <svg-upload slot="decrypt-cipherText" @input="onDecryptInput"></svg-upload>
+    <svg-upload slot="decrypt-cipherText" @input="onDecryptInput" @clear="plainText = ''"></svg-upload>
+    <v-layout slot="decrypt-plainText" slot-scope="scope" row wrap>
+      <v-textarea
+        label="Plain Text"
+        :value="plainText"
+        prepend-inner-icon="file_copy"
+        @click:prepend-inner="scope.copyToClipboard(plainText)"
+        append-icon="save"
+        @click:append="scope.save(plainText)"
+        outline
+        auto-grow
+        readonly
+      ></v-textarea>
+    </v-layout>
   </Cipher>
 </template>
 
@@ -40,11 +46,7 @@
 // @ is an alias to /src
 import C2S from 'canvas2svg';
 import FileSaver from 'file-saver';
-import {
-  encrypt,
-  enstegano,
-  getSquareEncoding,
-} from '_/CryptoTron/ciphers/morellet';
+import { encrypt, enstegano, decode } from '_/CryptoTron/ciphers/morellet';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import SvgUpload from '@/components/CryptoTron/SvgUpload.vue';
 import MorelletKey from '@/components/CryptoTron/CipherKeys/MorelletKey.vue';
@@ -70,6 +72,7 @@ export default {
     },
     context: null,
     width: 0,
+    plainText: '',
   }),
   computed: {
     cipherKey() {
@@ -112,8 +115,8 @@ export default {
     encrypt(plainText, key) {
       return encrypt(key)(plainText);
     },
-    decrypt(cipherText) {
-      return cipherText || 'Not Implemented Yet';
+    decrypt() {
+      return '';
     },
     saveSvg(encodedString) {
       const self = this;
@@ -132,7 +135,7 @@ export default {
       FileSaver.saveAs(blob, 'Cipher.svg');
     },
     onDecryptInput(canvas) {
-      console.log(getSquareEncoding(canvas, this.key));
+      this.plainText = canvas ? decode(canvas, this.key) : '';
     },
   },
 };

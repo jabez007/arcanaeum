@@ -72,7 +72,6 @@ export default {
   min-height: 10rem; /* minimum height */
   position: relative;
   cursor: pointer;
-  transition: height 0.5s linear;
 }
 
 .input-file {

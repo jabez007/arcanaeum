@@ -31,6 +31,13 @@ export default {
     cipherSvg: '',
     cipherCanvg: null,
   }),
+  watch: {
+    cipherSvg(newVal) {
+      if (!newVal) {
+        this.$emit('clear');
+      }
+    },
+  },
   methods: {
     loadSvg(buffer) {
       const enc = new TextDecoder('utf-8');

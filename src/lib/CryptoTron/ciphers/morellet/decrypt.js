@@ -97,7 +97,7 @@ function flattenSquare(canvas, key) {
   return canvasColorsArray.map(obj => obj.color);
 }
 
-export function getSquareEncoding(canvas, key) {
+function getSquareEncoding(canvas, key) {
   const colors = key.colors.map(c => c.toUpperCase());
   const canvasColors = flattenSquare(canvas, key);
   return canvasColors
@@ -105,6 +105,33 @@ export function getSquareEncoding(canvas, key) {
     .join('');
 }
 
-export function decrypt() {
-  return cipherText => steganography.decrypt(cipherText, encoding);
+function findEncoding(block) {
+  return e => (e || {}).encoding === (block || '');
+}
+
+// eslint-disable-next-line import/prefer-default-export
+export function decode(canvas, key) {
+  const ciphertext = getSquareEncoding(canvas, key);
+  const encodingArray = Object.keys(encoding)
+    .filter(k => k.length === 1)
+    .map(char => ({
+      char,
+      encoding: encoding[char],
+    }));
+  let block = '';
+  let plainText = '';
+  for (let i = 0; i < ciphertext.length; i += 1) {
+    const char = ciphertext[i];
+    if (/[0-5]/.test(char)) {
+      block += char;
+      const enc = encodingArray.find(findEncoding(block));
+      if (enc) {
+        plainText += encodingArray.find(findEncoding(block)).char;
+        block = '';
+      }
+    } else {
+      plainText += char;
+    }
+  }
+  return plainText;
 }
