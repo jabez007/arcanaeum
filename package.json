@@ -3,14 +3,15 @@
   "version": "1.0.2",
   "private": true,
   "scripts": {
-    "imagemin": "node imagemin",
-    "preserve": "npm run imagemin",
     "serve": "vue-cli-service serve",
-    "prebuild": "npm run imagemin",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "deploy": "push-dir --dir=dist --branch=master --cleanup",
+    "imagemin": "node imagemin",
+    "prebuild": "npm run imagemin",
     "predeploy": "npm run build",
-    "deploy": "push-dir --dir=dist --branch=master --cleanup"
+    "preserve": "npm run imagemin",
+    "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
     "@babylonjs/core": "^4.0.3",
@@ -43,9 +44,12 @@
     "@vue/cli-plugin-babel": "^3.12.1",
     "@vue/cli-plugin-eslint": "^3.12.1",
     "@vue/cli-plugin-pwa": "^3.12.1",
+    "@vue/cli-plugin-unit-mocha": "^4.2.2",
     "@vue/cli-service": "^3.12.1",
     "@vue/eslint-config-airbnb": "^4.0.1",
+    "@vue/test-utils": "1.0.0-beta.31",
     "babel-eslint": "^10.0.3",
+    "chai": "^4.1.2",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.3",
     "imagemin": "^7.0.1",
@@ -70,7 +74,18 @@
     "rules": {},
     "parserOptions": {
       "parser": "babel-eslint"
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)",
+          "**/tests/unit/**/*.spec.{j,t}s?(x)"
+        ],
+        "env": {
+          "mocha": true
+        }
+      }
+    ]
   },
   "postcss": {
     "plugins": {
