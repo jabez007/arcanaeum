@@ -1,7 +1,7 @@
 import { getUniqueCharacters } from './index';
 
 export function encode(plainText, encoding) {
-  const plaintext = (plainText || '').toUpperCase();
+  const plaintext = (plainText || '').toUpperCase().replace(/[^A-Z]/g, '');
   let ciphertext = '';
   for (let i = 0; i < plaintext.length; i += 1) {
     const char = plaintext[i];
@@ -68,7 +68,7 @@ export function decrypt(cipherText, encoding) {
         plainText += char;
       }
     }
-    return plainText;
+    return plainText.toLowerCase();
   }
   if (unique.length > 0) {
     // or we have the steganograph

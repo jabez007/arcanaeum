@@ -4,14 +4,34 @@
       <v-card-title>
         <h5 class="headline">The Morellet Cipher</h5>
       </v-card-title>
-      <v-card-text></v-card-text>
+      <v-card-text>
+        <p>
+          The Morellet cipher is a method of steganography (a method of hiding a secret message as opposed to just a cipher) inspired by
+          <a href="https://maxhalford.github.io/blog/morellet-crosses-with-javascript/"
+          >Morellet Crosses</a> using a
+          <a
+            href="https://en.wikipedia.org/wiki/Huffman_coding"
+          >Huffman encoding</a> in
+          <a
+            href="https://en.wikipedia.org/wiki/Senary"
+          >Senary</a>.
+          That means we can map each letter of the English alphabet onto a variable length sequence of colors from the six colors given in the key.
+          This allows more common letters (like E and T) to be encoded using shorter sequences of colors, or even just a single color,
+          while the least common letters (like Z) are encoded using longer sequences.
+        </p>
+        <p>
+          This cipher offers very little communication security, as it is a substitution cipher.
+          As such all the methods used to cryptanalyse substitution ciphers can be used to break Baconian, Huffmanian, and Morellet ciphers.
+          The main advantage of the cipher is that it allows hiding the fact that a secret message has been sent at all.
+        </p>
+      </v-card-text>
     </v-card>
     <morellet-key slot="key" v-model="key"></morellet-key>
-    <v-layout slot="encrypt-cipherText" slot-scope="scope" row wrap justify-center>
+    <v-layout ref="encryptContainer" slot="encrypt-cipherText" slot-scope="scope" row wrap justify-center>
       <v-flex xs12 md6>
         <v-textarea label="Encoding" v-model="scope.cipherText" outline auto-grow readonly></v-textarea>
       </v-flex>
-      <v-flex ref="encryptContainer" class="encrypt-ciphertext" xs12 md6>
+      <v-flex class="encrypt-ciphertext" xs12 md6>
         <div>
           <v-btn style="position: absolute;" icon @click="saveSvg(scope.cipherText)">
             <v-icon>save</v-icon>

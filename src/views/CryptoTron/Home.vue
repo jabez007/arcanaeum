@@ -101,6 +101,12 @@
                         <v-list-tile-title class="text-xs-center">Huffmanian</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
+                <v-list-tile to="/cryptotron/morellet"
+                             ripple>
+                    <v-list-tile-content>
+                        <v-list-tile-title class="text-xs-center">Morellet</v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
             </v-list-group>
             <v-list-group prepend-icon="border_inner"
                           active-class=""

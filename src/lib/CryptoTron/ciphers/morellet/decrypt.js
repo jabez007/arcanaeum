@@ -1,5 +1,4 @@
 import { encoding } from './encoding';
-import * as steganography from '../steganography';
 
 function hex2rgb(hex) {
   // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -133,5 +132,5 @@ export function decode(canvas, key) {
       plainText += char;
     }
   }
-  return plainText;
+  return plainText.toLowerCase();
 }
