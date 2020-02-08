@@ -1,12 +1,12 @@
 import { expect } from "chai";
-import { encrypt, decrypt } from "_/CryptoTron/ciphers/caesar";
+import { encrypt, decrypt } from "_/CryptoTron/ciphers/autokey";
 
-describe("Caesar Cipher", () => {
+describe("Autokey Cipher", () => {
   const key = {
-    shift: 5
+    primer: "fortification"
   };
-  const plaintext = "attack at dawn";
-  const ciphertext = "fyyfhp fy ifbs";
+  const plaintext = "defend the east wall of the castle";
+  const ciphertext = "iswxvi bje xigg zeqp bi moi gakmhe";
 
   it("Encrypts a message", () => {
     expect(encrypt(key)(plaintext)).to.eq(ciphertext);

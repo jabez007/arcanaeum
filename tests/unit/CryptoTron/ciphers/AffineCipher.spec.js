@@ -1,12 +1,13 @@
 import { expect } from "chai";
-import { encrypt, decrypt } from "_/CryptoTron/ciphers/caesar";
+import { encrypt, decrypt } from "_/CryptoTron/ciphers/affine";
 
-describe("Caesar Cipher", () => {
+describe("Affine Cipher", () => {
   const key = {
-    shift: 5
+    alpha: 3,
+    beta: 2
   };
-  const plaintext = "attack at dawn";
-  const ciphertext = "fyyfhp fy ifbs";
+  const plaintext = "defend the east wall of the castle";
+  const ciphertext = "loropl hxo oceh qcjj sr hxo icehjo";
 
   it("Encrypts a message", () => {
     expect(encrypt(key)(plaintext)).to.eq(ciphertext);

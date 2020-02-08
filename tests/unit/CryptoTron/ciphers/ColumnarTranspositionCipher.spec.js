@@ -1,12 +1,12 @@
 import { expect } from "chai";
-import { encrypt, decrypt } from "_/CryptoTron/ciphers/caesar";
+import { encrypt, decrypt } from "_/CryptoTron/ciphers/columnarTransposition";
 
-describe("Caesar Cipher", () => {
+describe("Columnar Transposition Cipher", () => {
   const key = {
-    shift: 5
+    keyword: "zebra"
   };
-  const plaintext = "attack at dawn";
-  const ciphertext = "fyyfhp fy ifbs";
+  const plaintext = "attackatdawn";
+  const ciphertext = "catttanadakw";
 
   it("Encrypts a message", () => {
     expect(encrypt(key)(plaintext)).to.eq(ciphertext);
