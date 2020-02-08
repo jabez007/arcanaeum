@@ -1,6 +1,7 @@
 <template>
     <v-form ref="form">
       <v-text-field
+        id="key-shift"
         label="Shift"
         type="number"
         v-model.number="key.shift"
