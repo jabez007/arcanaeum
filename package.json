@@ -21,7 +21,7 @@
     "canvas2svg": "^1.0.16",
     "canvg": "^3.0.5",
     "file-saver": "^2.0.2",
-    "jquery": "^1.7.2",
+    "jquery": "^3.4.0",
     "konva": "^3.4.1",
     "lz-string": "^1.4.4",
     "register-service-worker": "^1.6.2",
