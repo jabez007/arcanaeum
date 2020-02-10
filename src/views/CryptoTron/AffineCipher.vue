@@ -29,7 +29,7 @@
           When encrypting, we first convert all the letters to numbers ('a'=0, 'b'=1, ..., 'z'=25).
           The ciphertext letter c, for any given letter p is (remember p is the number representing a letter):
           <code>c = alpha * p + beta (mod m)</code>
-          <br>The decryption function then is:
+          <br />The decryption function then is:
           <code>p = alpha^-1 * (c - beta) (mod m)</code>
           where alpha^-1 is the multiplicative inverse of alpha in the group of integers modulo m.
           To find the multiplicative inverse of alpha, we need to find a number x such that:
@@ -38,7 +38,7 @@
         </p>
         <p>
           The
-          <a class="example" @click="key={ alpha: 25, beta: 25 }">Atbash</a> cipher is also an Affine cipher with alpaha=25 and beta=25.
+          <a id="example-1" class="example" @click="key={ alpha: 25, beta: 25 }">Atbash</a> cipher is also an Affine cipher with alpaha=25 and beta=25.
         </p>
       </v-card-text>
     </v-card>
@@ -48,9 +48,9 @@
 
 <script>
 // @ is an alias to /src
+import { gcd, encrypt, decrypt } from '_/CryptoTron/ciphers/affine';
 import Cipher from '@/components/CryptoTron/Cipher.vue';
 import AffineKey from '@/components/CryptoTron/CipherKeys/AffineKey.vue';
-import { gcd, encrypt, decrypt } from '_/CryptoTron/ciphers/affine';
 
 export default {
   components: {

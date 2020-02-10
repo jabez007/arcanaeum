@@ -3,6 +3,7 @@
       <v-layout row>
         <v-flex xs5>
           <v-text-field
+            id="key-alpha"
             label="Alpha"
             type="number"
             v-model.number="key.alpha"
@@ -14,6 +15,7 @@
         <v-spacer></v-spacer>
         <v-flex xs5>
           <v-text-field
+            id="key-beta"
             label="Beta"
             type="number"
             v-model.number="key.beta"
