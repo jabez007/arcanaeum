@@ -1,59 +1,12 @@
 <template>
   <div id="aether">
-    <Scene v-if="!isMobile()"
-           id="canvas"
-           :height="windowHeight"
-           ref="scene"
-           fog="exp"
-           :fogDensity="0.01"
-           v-model="scene">
-      <Camera v-model="camera"
-              type="arcRotate"
-              :radius="20">
-      </Camera>
-      <HemisphericLight diffuse="#512da8"></HemisphericLight>
-      <RotatingEntity :duration="60">
-        <PointLight diffuse="#03a9f4"></PointLight>
-        <RotatingEntity v-for="(box, key) in boxes"
-                        :key="key"
-                        :position="box.pos"
-                        :duration="15">
-          <Box v-model="nodes[key]">
-            <Material :alpha="0.8">
-            </Material>
-          </Box>
-        </RotatingEntity>
-      </RotatingEntity>
-    </Scene>
-    <div v-if="isMobile()"
-         id="mobileMenu">
-      <div>
-        <div v-for="(box, key) in boxes.filter(b => b.name)"
-             :key="key">
-          <div>
-            <button @click="$router.push(box.path)">
-              {{ box.name }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div ref="tooltip"
-         id="tooltip">
-    </div>
+    <component :is="menu" :boxes="boxes"></component>
   </div>
 </template>
 
 <script>
-import {
-  Entity,
-  Scene,
-  Camera,
-  HemisphericLight,
-  PointLight,
-  Box,
-  Material,
-} from 'vue-babylonjs';
+import DesktopMenu from '@/components/DesktopMenu.vue';
+import MobileMenu from '@/components/MobileMenu.vue';
 
 const BOXES = [
   {
@@ -90,167 +43,47 @@ const BOXES = [
 
 export default {
   name: 'home',
-  mixins: [Entity],
-  components: {
-    Scene,
-    Camera,
-    HemisphericLight,
-    PointLight,
-    Box,
-    Material,
-    RotatingEntity: () => import('@/components/RotatingEntity'),
-  },
-  data: () => ({
-    windowHeight: 0,
-    scene: null,
-    camera: null,
-    nodes: [],
-  }),
   computed: {
     boxes() {
       return BOXES;
     },
-  },
-  watch: {
-    scene() {
-      // console.log('scene ready');
-    },
-    camera() {
-      // console.log('camera ready');
-      // cheat scene in here
-      // eslint-disable-next-line no-underscore-dangle
-      this.scene = this.scene || this.camera._scene;
-    },
-  },
-  mounted() {
-    const self = this;
-    if (!this.isMobile()) {
-      window.removeEventListener('click', this.navigateToBox);
-      window.addEventListener('click', this.navigateToBox);
-      //
-      window.removeEventListener('mousemove', this.showTooltip);
-      window.addEventListener('mousemove', this.showTooltip);
-    }
-    //
-    this.windowHeight = window.innerHeight;
-    window.addEventListener('resize', () => {
-      self.windowHeight = window.innerHeight;
-    });
-  },
-  beforeDestroy() {
-    window.removeEventListener('click', this.navigateToBox);
-    window.removeEventListener('mousemove', this.showTooltip);
-  },
-  methods: {
-    isMobile() {
-      return window.innerWidth < 600;
-    },
-    pickMesh() {
-      const pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY);
-      if (pickResult.hit) {
-        const index = this.nodes.findIndex(n => n.id === pickResult.pickedMesh.id);
-        if (index >= 0) {
-          return BOXES[index];
-        }
+    isTouchDevice() {
+      /*
+       * https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript/4819886#4819886
+       */
+      if (
+        'ontouchstart' in window
+        // eslint-disable-next-line no-undef
+        || (window.DocumentTouch && document instanceof DocumentTouch)
+      ) {
+        return true;
       }
-      return {};
+
+      const prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
+
+      const mq = query => window.matchMedia(query).matches;
+
+      // include the 'heartz' as a way to have a non matching MQ to help terminate the join
+      // https://git.io/vznFH
+      const query = [
+        '(',
+        prefixes.join('touch-enabled),('),
+        'heartz',
+        ')',
+      ].join('');
+      return mq(query);
     },
-    showTooltip() {
-      if (this.$refs.tooltip) {
-        const box = this.pickMesh();
-        if (box.name) {
-          this.$refs.tooltip.style.background = '#D1C4E9';
-          this.$refs.tooltip.style.border = '1px solid #673ab7';
-          this.$refs.tooltip.innerText = box.name;
-        } else {
-          this.$refs.tooltip.style.background = 'transparent';
-          this.$refs.tooltip.style.border = '';
-          this.$refs.tooltip.innerText = '';
-        }
-      }
-    },
-    navigateToBox() {
-      const box = this.pickMesh();
-      if (box.path) {
-        this.$router.replace(box.path);
-      }
+    menu() {
+      return this.isTouchDevice ? MobileMenu : DesktopMenu;
     },
   },
 };
 </script>
 
 <style scoped>
-@font-face {
-  font-family: 'Aclonica';
-  font-display: swap;
-  src: local('Aclonica'), url(https://fonts.gstatic.com/s/aclonica/v9/K2FyfZJVlfNNSEBXGY7UAo8.woff2) format('woff2');
-}
-
-@font-face {
-  font-family: 'Merienda';
-  font-display: swap;
-  src: local('Merienda'), url(https://fonts.gstatic.com/s/merienda/v7/gNMHW3x8Qoy5_mf8uWMFMIo.woff2) format('woff2');
-}
-
 #aether {
   width: 100%;
   height: 100%;
   position: fixed;
-}
-
-#tooltip {
-  position: absolute;
-  top: 50%;
-  right: 40%;
-  min-width: 20%;
-  border-radius: 25px;
-  opacity: 0.5;
-  color: #212121;
-  font-size: large;
-  font-family: Aclonica, Merienda, 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
-  text-align: center;
-  padding: 5px;
-  margin: 0 auto;
-}
-
-#mobileMenu {
-  width: 100%;
-  height: 100%;
-  background: #512da8;
-  opacity: 0.9;
-}
-
-#mobileMenu > div {
-  width: 50%;
-  height: 100%;
-  margin: 0 auto;
-  border-radius: 25px;
-  background: #03a9f4;
-  opacity: 0.9;
-  box-shadow: 5px 5px 5px rgba(0,0,0, 0.5);
-  display: table;
-}
-
-#mobileMenu > div > div {
-  display: table-row;
-}
-
-#mobileMenu > div > div > div {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-#mobileMenu button {
-  width: 100%;
-  padding: 5px;
-  border: 1px solid #673ab7;
-  border-radius: 25px;
-  background: #D1C4E9;
-  opacity: 0.9;
-  box-shadow: 5px 5px 5px rgba(0,0,0, 0.5);
-  text-align: center;
-  color: #212121;
-  font-size: large;
-  font-family: Aclonica, Merienda, 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
 }
 </style>
