@@ -35,7 +35,16 @@ import {
 } from 'vue-babylonjs';
 
 export default {
-  props: ['boxes'],
+  props: {
+    boxes: {
+      type: Array,
+      required: true,
+    },
+    isTouchDevice: {
+      type: Boolean,
+      default: false,
+    },
+  },
   mixins: [Entity],
   components: {
     Scene,
