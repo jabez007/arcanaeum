@@ -96,7 +96,8 @@ export default {
     sans-serif;
 }
 
-button::-moz-focus-inner { border: 0; }
+#mobileMenu > #openAether::-moz-focus-inner { border: 0; }
+#mobileMenu > #openAether:focus { outline: none !important; }
 
 #mobileMenu > #openAether {
   display: inline-block;
