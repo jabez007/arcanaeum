@@ -5,4 +5,9 @@ module.exports = {
     // alias to lib directory
     config.resolve.alias.set('_', path.resolve(__dirname, './src/lib'));
   },
+  pwa: {
+    workboxOptions: {
+      skipWaiting: true,
+    },
+  },
 };
