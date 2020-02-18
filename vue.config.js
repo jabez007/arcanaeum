@@ -6,8 +6,9 @@ module.exports = {
     config.resolve.alias.set('_', path.resolve(__dirname, './src/lib'));
   },
   pwa: {
+    workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      skipWaiting: true,
+      swSrc: 'service-worker.js',
     },
   },
 };
