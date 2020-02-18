@@ -15,7 +15,7 @@ workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
  * Force Update on Reload in Chrome
  */
 self.addEventListener('message', (event) => {
-  if (event.data === 'skipWaiting') {
+  if (event.data.action === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });

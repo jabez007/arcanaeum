@@ -8,7 +8,7 @@
       <router-view />
     </transition>
     <v-snackbar
-      v-model="update"
+      :value="update !== null"
       color="info"
       :timeout="0"
       top
@@ -32,17 +32,20 @@ import EventBus from '_/eventBus';
 export default {
   name: 'app',
   data: () => ({
-    update: false,
+    update: null,
   }),
   methods: {
     onRefresh() {
-      window.location.reload(true);
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 1000);
+      this.update.postMessage({ action: 'SKIP_WAITING' });
     },
   },
   created() {
     const self = this;
-    EventBus.$once('swUpdated', () => {
-      self.update = true;
+    EventBus.$once('swUpdated', (event) => {
+      self.update = event.waiting;
     });
   },
 };
