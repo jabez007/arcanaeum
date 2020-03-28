@@ -21,7 +21,8 @@
     <v-card>
       <v-card-title>
         <v-text-field :label="`Seed text (${(seed || '').length} / ${seedLength})`"
-                      v-model.trim="seed"
+                      :value="seed"
+                      @input="sanitizeSeed"
                       :maxlength="seedLength"
                       :disabled="!model || (charVectors || []).length < 38"
                       :readonly="running"
@@ -81,6 +82,13 @@ function sample(probs, temperature) {
   });
 }
 
+function sanitize(seed) {
+  return (seed || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^0-9a-z_ ]/g, '');
+}
+
 export default {
   name: 'OracleAbout',
   data: () => ({
@@ -102,11 +110,12 @@ export default {
     this.charVectors = Object.keys(char2vec).map(key => ({ char: key, vec: char2vec[key] }));
   },
   methods: {
+    sanitizeSeed(val) {
+      this.seed = sanitize(val);
+    },
     generateText(seedText) {
       const self = this;
-      const seed = (seedText || '')
-        .toLowerCase()
-        .replace(/[^0-9a-z_ ]/g, '');
+      const seed = sanitize(seedText);
       if (seed.length >= this.seedLength && seed.length < this.maxLength) {
         setTimeout(async () => {
           const input = seed
