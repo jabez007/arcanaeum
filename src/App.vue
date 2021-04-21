@@ -1,25 +1,12 @@
 <template>
   <div id="arcanaeum">
-    <div id="background">
-      <!--img src="/img/background.jpg" class="stretch" alt="" /-->
-    </div>
-    <transition name="scale-transition"
-                mode="out-in">
+    <div id="background"></div>
+    <transition name="scale-transition" mode="out-in">
       <router-view />
     </transition>
-    <v-snackbar
-      :value="update !== null"
-      color="info"
-      :timeout="0"
-      top
-    >
-      <h3 style="font-family: Roboto">
-        New content is available
-      </h3>
-      <v-btn
-        icon
-        @click="onRefresh"
-      >
+    <v-snackbar :value="update !== null" color="info" :timeout="0" top>
+      <h3 style="font-family: Roboto">New content is available</h3>
+      <v-btn icon @click="onRefresh">
         <v-icon>refresh</v-icon>
       </v-btn>
     </v-snackbar>
@@ -52,11 +39,17 @@ export default {
 </script>
 
 <style>
-/* html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-} */
+html,
+body {
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome */
+}
 
 #background {
   width: 100%;
@@ -69,10 +62,5 @@ export default {
   background-repeat: none;
   background-size: cover;
   z-index: -1; /* Ensure div tag stays behind content; -999 might work, too. */
-}
-
-.stretch {
-  width: 100%;
-  height: 100%;
 }
 </style>
