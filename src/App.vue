@@ -5,7 +5,7 @@ import { RouterView } from "vue-router";
 <template>
   <RouterView v-slot="{ Component, route }">
     <transition name="scale-transition" mode="out-in">
-      <div id="arcanaeum" :key="route.name">
+      <div id="arcanaeum" :key="(route.name as string).split('-')[0]">
         <component :is="Component" />
       </div>
     </transition>
