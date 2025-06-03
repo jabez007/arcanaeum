@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { RouterLink } from "vue-router";
 import ParticlesDiv from "@/components/ParticlesDiv.vue";
 import AppCard from "@/components/AppCard.vue";
 </script>
@@ -19,12 +18,12 @@ import AppCard from "@/components/AppCard.vue";
       <p class="subtitle">Choose your digital realm</p>
     </header>
     <div class="app-grid">
-      <AppCard title="CryptoTron" description="Lorem ipsum dolor sit amet, consectetuer adipiscing
+      <AppCard icon="🔏" title="CryptoTron" description="Lorem ipsum dolor sit amet, consectetuer adipiscing
         elit." :to="{ name: 'cryptotron' }" />
-      <AppCard title="The Forgotten Pepper" description="Lorem ipsum dolor sit amet, consectetuer adipiscing
+      <AppCard icon="🫑" title="The Forgotten Pepper" description="Lorem ipsum dolor sit amet, consectetuer adipiscing
         elit." to="https://theforgottenpepper.com" />
-      <AppCard />
-      <AppCard />
+      <AppCard icon="🧙" title="About" description="Lorem ipsum dolor sit amet, consectetuer adipiscing
+        elit." :to="{ name: 'about' }" />
     </div>
   </div>
 </template>

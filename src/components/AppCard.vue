@@ -1,19 +1,21 @@
 <template>
   <div class="app-card" @click="navigateTo">
-    <div class="app-icon">🔮</div>
+    <div class="app-icon">{{ props.icon }}</div>
     <h3 class="app-title">{{ props.title }}</h3>
     <p class="app-description">{{ props.description }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { PropType } from "vue";
 import type { RouteLocationRaw } from "vue-router";
 import { useRouter } from "vue-router";
 
 const props = defineProps({
+  icon: String,
   title: String,
   description: String,
-  to: String || Object,
+  to: [String, Object] as PropType<RouteLocationRaw>,
 });
 
 const router = useRouter();
