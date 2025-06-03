@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
 import ParticlesDiv from "@/components/ParticlesDiv.vue";
+import AppCard from "@/components/AppCard.vue";
 </script>
 
 <template>
@@ -17,6 +18,14 @@ import ParticlesDiv from "@/components/ParticlesDiv.vue";
       <h1 class="title">Archon's Arcanaeum</h1>
       <p class="subtitle">Choose your digital realm</p>
     </header>
+    <div class="app-grid">
+      <AppCard title="CryptoTron" description="Lorem ipsum dolor sit amet, consectetuer adipiscing
+        elit." :to="{ name: 'cryptotron' }" />
+      <AppCard title="The Forgotten Pepper" description="Lorem ipsum dolor sit amet, consectetuer adipiscing
+        elit." to="https://theforgottenpepper.com" />
+      <AppCard />
+      <AppCard />
+    </div>
   </div>
 </template>
 
@@ -31,10 +40,13 @@ import ParticlesDiv from "@/components/ParticlesDiv.vue";
 }
 
 header {
+  text-align: center;
+  margin-bottom: 3rem;
   line-height: 1.5;
   display: flex;
   flex-direction: column;
   place-items: center;
+  animation: fadeInDown 1s ease-out;
 }
 
 .title {
@@ -57,28 +69,62 @@ header {
   font-weight: 300;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+@keyframes gradientShift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+.app-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+.app-card {
+  margin: 1rem;
+  flex: 1 0 31%;
 }
 
-nav a:first-of-type {
-  border: 0;
+:deep(.app-card:nth-child(1)) {
+  --delay: 2;
+}
+
+:deep(.app-card:nth-child(2)) {
+  --delay: 5;
+}
+
+:deep(.app-card:nth-child(3)) {
+  --delay: 7;
+}
+
+:deep(.app-card:nth-child(4)) {
+  --delay: 3;
+}
+
+:deep(.app-card:nth-child(5)) {
+  --delay: 11;
+}
+
+:deep(.app-card:nth-child(6)) {
+  --delay: 13;
 }
 </style>
