@@ -1,0 +1,1 @@
+import{f as n,g as o,h as t,i as p,u as a,o as s}from"./index-BZr2yWIy.js";const _=n({__name:"CryptoTronApp",setup(r){const e=o(t.app);return(c,i)=>(s(),p(a(e),{style:{"min-height":"100vh","min-width":"100vw","z-index":"10"}}))}});export{_ as default};
