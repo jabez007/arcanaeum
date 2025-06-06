@@ -18,7 +18,7 @@ import AppCard from "@/components/AppCard.vue";
     <div class="app-grid">
       <AppCard icon="🔏" title="CryptoTron" description="A classical cryptography lab for decrypting
         ancient secrets using modern tech. Interactive ciphers in a cyberpunk-themed digital laboratory."
-        :to="{ name: 'cryptotron' }" />
+        :to="{ name: 'cryptotron-home' }" />
       <AppCard icon="🫑" title="The Forgotten Pepper"
         description="A tasty little blog cooked up with VuePress and Tailwind—where simple ingredients meet bold design. From everyday meals to unexpected flavor twists, it's a clean, fast, and flavorful experience."
         to="https://theforgottenpepper.com" />
