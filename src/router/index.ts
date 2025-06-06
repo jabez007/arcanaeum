@@ -23,18 +23,6 @@ const router = createRouter({
       component: () => import("../views/CryptoTronApp.vue"),
       children: [],
     },
-    {
-      path: "/cryptotron/:pathMatch(.*)",
-      redirect: (to) => {
-        console.debug(`Redirecting: ${to.path}`);
-        return {
-          name: "cryptotron",
-          query: {
-            initialRoute: to.path,
-          },
-        };
-      },
-    },
   ],
 });
 
