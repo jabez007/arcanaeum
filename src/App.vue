@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import ParticlesDiv from "@/components/ParticlesDiv.vue";
 import { RouterView } from "vue-router";
 </script>
 
 <template>
+  <ParticlesDiv />
   <RouterView v-slot="{ Component, route }">
     <transition name="scale-transition" mode="out-in">
       <div id="arcanaeum" :key="((route.name || '') as string).split('-')[0]">

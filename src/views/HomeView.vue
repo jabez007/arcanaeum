@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import ParticlesDiv from "@/components/ParticlesDiv.vue";
 import AppCard from "@/components/AppCard.vue";
 </script>
 
 <template>
-  <ParticlesDiv />
   <div class="floating-orbs">
     <div class="orb"></div>
     <div class="orb"></div>
@@ -24,7 +22,7 @@ import AppCard from "@/components/AppCard.vue";
       <AppCard icon="🫑" title="The Forgotten Pepper"
         description="A tasty little blog cooked up with VuePress and Tailwind—where simple ingredients meet bold design. From everyday meals to unexpected flavor twists, it's a clean, fast, and flavorful experience."
         to="https://theforgottenpepper.com" />
-      <AppCard icon="🧙" title="Meet the Vice Magus" description="Who's behind the glyphs and code? Learn more about the backend conjurer with
+      <AppCard icon="🧙‍♂️ " title="Meet the Vice Magus" description="Who's behind the glyphs and code? Learn more about the backend conjurer with
         his scroll of sarcasm and compiler of chaos." :to="{ name: 'about' }" />
     </div>
   </div>
@@ -95,6 +93,7 @@ header {
 }
 
 .app-grid {
+  animation: fadeInUp 1s ease-out;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -103,6 +102,29 @@ header {
 .app-card {
   margin: 1rem;
   flex: 1 0 31%;
+}
+
+@media only screen and (max-width: 768px) {
+  .app-grid {
+    padding: 0;
+  }
+
+  .app-card {
+    min-width: 100%;
+    margin: 1rem auto;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 :deep(.app-card:nth-child(1)) {

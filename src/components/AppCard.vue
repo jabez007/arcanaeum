@@ -44,7 +44,7 @@ const navigateTo = () => {
   position: relative;
   overflow: hidden;
   animation:
-    fadeInUp 1s ease-out,
+    /* fadeInUp 1s ease-out, */
     mysticalFloat 12s ease-in-out infinite;
   animation-delay: calc(var(--delay) * 0.2s), calc(var(--delay) * 1s);
 }
@@ -118,18 +118,6 @@ const navigateTo = () => {
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.6;
   font-size: 0.95rem;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @keyframes mysticalFloat {

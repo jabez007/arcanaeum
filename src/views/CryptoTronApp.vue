@@ -3,7 +3,7 @@ import CryptoTron from "cryptotron.vue";
 </script>
 
 <template>
-  <CryptoTron style="min-height: 100vh; min-width: 100vw" />
+  <CryptoTron style="min-height: 100vh; min-width: 100vw; z-index: 10" />
 </template>
 
 <style>
