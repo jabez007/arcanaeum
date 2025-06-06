@@ -10,7 +10,9 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "predeploy": "npm run build",
+    "deploy": "push-dir --dir=dist --branch=master --cleanup"
   },
   "dependencies": {
     "cryptotron.vue": "file:../cryptotron.vue",
@@ -28,6 +30,7 @@
     "jiti": "^2.4.2",
     "npm-run-all2": "^7.0.2",
     "prettier": "3.5.3",
+    "push-dir": "^0.4.1",
     "sass-embedded": "^1.89.1",
     "typescript": "~5.8.0",
     "vite": "^6.2.4",

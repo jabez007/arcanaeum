@@ -69,6 +69,8 @@
         <a href="https://github.com/jabez007" target="_blank">🧙‍♂️ GitHub</a>
         <a href="https://linkedin.com/in/crafted-by-mccann" target="_blank">🦉 LinkedIn</a>
         <a href="https://discord.com/users/308182638425014273" target="_blank">🔮 Discord</a>
+        <a href="https://www.npmjs.com/~jabez007" target="_blank">📦 npm</a>
+        <a href="https://pypi.org/user/jabez007/" target="_blank">🐍 PyPI</a>
       </div>
       <br />
       <div class="back-home">
