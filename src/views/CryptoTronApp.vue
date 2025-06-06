@@ -1,4 +1,5 @@
 <script setup lang="ts">
+//@ts-expect-error CryptoTron is a self contained app, the type doesn't matter
 import CryptoTron from "cryptotron.vue";
 </script>
 

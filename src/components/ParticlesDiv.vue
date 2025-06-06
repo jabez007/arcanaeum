@@ -29,6 +29,7 @@ function createParticles() {
     particle.style.animationDelay = Math.random() * 8 + "s";
     particle.style.animationDuration = Math.random() * 4 + 6 + "s";
     particle.style.setProperty("--drift", (Math.random() - 0.5) * 100 + "px");
+    //@ts-expect-error particles container wont be null
     particlesContainer.appendChild(particle);
   }
 }
