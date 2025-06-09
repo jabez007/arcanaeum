@@ -8,7 +8,10 @@ import CryptoTronPlugin from "@jabez007/cryptotron.vue";
 
 const app = createApp(App);
 
-app.use(CryptoTronPlugin, { router, parentRouteName: "cryptotron" });
+app.use(CryptoTronPlugin, {
+  router,
+  parentRouteName: "cryptotron",
+});
 
 console.debug(router.getRoutes());
 
