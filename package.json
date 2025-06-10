@@ -17,6 +17,7 @@
   "dependencies": {
     "@jabez007/cryptotron.vue": "^0.0.5",
     "vue": "^3.5.13",
+    "vue-gtag": "^3.5.1",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
