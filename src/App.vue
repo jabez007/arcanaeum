@@ -7,7 +7,7 @@ import { RouterView } from "vue-router";
   <ParticlesDiv />
   <RouterView v-slot="{ Component, route }">
     <transition name="scale-transition" mode="out-in">
-      <div id="arcanaeum" :key="((route.name || '') as string).split('-')[0]">
+      <div class="arcanaeum" :key="((route.name || '') as string).split('-')[0]">
         <component :is="Component" />
       </div>
     </transition>
@@ -15,11 +15,12 @@ import { RouterView } from "vue-router";
 </template>
 
 <style scoped lang="scss">
-#arcanaeum {
+.arcanaeum {
   min-height: 100vh;
   min-width: 100vw;
   display: flex;
-  place-items: center;
+  align-items: center;
+  justify-items: center;
 }
 
 $transition-duration-root: 0.3s !default;
