@@ -1,0 +1,39 @@
+name: Deploy Vue App to GitHub Pages
+
+on:
+  push:
+    branches: # Triggers on pushes to vue or vue3 branches
+      - vue
+      - vue3
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # Needed to push to the repository
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run build script
+        run: npm run build # Replace 'build' with your actual script name from package.json
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jabez007/arcanaeum.git
+
+      - name: Run deploy script
+        run: npm run deploy

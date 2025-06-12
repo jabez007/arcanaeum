@@ -1,85 +1,72 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import ParticlesDiv from "@/components/ParticlesDiv.vue";
+import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <ParticlesDiv />
+  <RouterView v-slot="{ Component, route }">
+    <transition name="scale-transition" mode="out-in">
+      <div class="arcanaeum" :key="((route.name || '') as string).split('-')[0]">
+        <component :is="Component" />
+      </div>
+    </transition>
+  </RouterView>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+<style scoped lang="scss">
+.arcanaeum {
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-items: center;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+$transition-duration-root: 0.3s !default;
+$transition-move-duration-root: 0.5s !default;
+$standard-easing: cubic-bezier(0.4, 0, 0.2, 1) !default;
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+@mixin transition-default() {
+  &-enter-active {
+    transition-duration: $transition-duration-root !important;
+    transition-timing-function: $standard-easing !important;
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
+  &-leave-active {
+    transition-duration: $transition-duration-root !important;
+    transition-timing-function: $standard-easing !important;
   }
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+  &-move {
+    transition-duration: $transition-move-duration-root !important;
+    transition-property: transform !important;
+    transition-timing-function: $standard-easing !important;
+  }
+}
+
+@mixin fade-out() {
+  &-leave-to {
+    opacity: 0;
   }
 
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
+  &-leave-active {
+    transition-duration: 100ms !important;
+  }
+}
 
-    padding: 1rem 0;
-    margin-top: 1rem;
+.scale-transition {
+  @include transition-default();
+  @include fade-out();
+
+  &-enter-from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition-property: transform, opacity !important;
   }
 }
 </style>
