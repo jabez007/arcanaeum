@@ -4,7 +4,8 @@
   min-height: 100vh;
   min-width: 100vw;
   display: flex;
-  place-items: center;
+  align-items: center; /* vertical centring  */
+  justify-items: center; /* horizontal centring */
 }
 
 a,
