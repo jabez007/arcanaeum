@@ -1,5 +1,5 @@
 <template>
-  <div class="app-card" @click="navigateTo">
+  <div class="app-card" role="button" @click="navigateTo" @keyup.enter="navigateTo">
     <div class="app-icon">{{ props.icon }}</div>
     <h3 class="app-title">{{ props.title }}</h3>
     <p class="app-description">{{ props.description }}</p>
@@ -7,25 +7,24 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from "vue";
 import type { RouteLocationRaw } from "vue-router";
 import { useRouter } from "vue-router";
 
-const props = defineProps({
-  icon: String,
-  title: String,
-  description: String,
-  to: [String, Object] as PropType<RouteLocationRaw>,
-});
+const props = defineProps<{
+  icon: string;
+  title: string;
+  description: string;
+  to: RouteLocationRaw;
+}>();
 
 const router = useRouter();
 
 const navigateTo = () => {
   if (props.to) {
     if (typeof props.to === "string" && props.to.startsWith("http")) {
-      window.open(props.to, "_blank")?.focus();
+      window.open(props.to, "_blank", "noopener,noreferrer")?.focus();
     } else {
-      router.push(props.to as RouteLocationRaw);
+      router.push(props.to);
     }
   }
 };
