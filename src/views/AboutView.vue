@@ -68,11 +68,11 @@
       </p>
 
       <div class="contact-links">
-        <a href="https://github.com/jabez007" target="_blank">🧙‍♂️ GitHub</a>
-        <a href="https://linkedin.com/in/crafted-by-mccann" target="_blank">🦉 LinkedIn</a>
-        <a href="https://discord.com/users/308182638425014273" target="_blank">🔮 Discord</a>
-        <a href="https://www.npmjs.com/~jabez007" target="_blank">📦 npm</a>
-        <a href="https://pypi.org/user/jabez007/" target="_blank">🐍 PyPI</a>
+        <a href="https://github.com/jabez007" target="_blank" rel="noopener noreferrer">🧙‍♂️ GitHub</a>
+        <a href="https://linkedin.com/in/crafted-by-mccann" target="_blank" rel="noopener noreferrer">🦉 LinkedIn</a>
+        <a href="https://discord.com/users/308182638425014273" target="_blank" rel="noopener noreferrer">🔮 Discord</a>
+        <a href="https://www.npmjs.com/~jabez007" target="_blank" rel="noopener noreferrer">📦 npm</a>
+        <a href="https://pypi.org/user/jabez007/" target="_blank" rel="noopener noreferrer">🐍 PyPI</a>
       </div>
       <br />
       <div class="back-home">
@@ -85,23 +85,22 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
-const parallaxBg = ref(null);
+const parallaxBg = ref<HTMLElement | null>(null);
 
 const handleParallax = () => {
-  const scrolled = window.pageYOffset;
+  const scrolled = window.scrollY;
   // const parallaxBg = this.$refs.parallaxBg;
 
   if (parallaxBg.value) {
     // Move background slower than scroll for parallax effect
     const speed = scrolled * 0.5;
-    //@ts-expect-error style should exist by the time this is called
     parallaxBg.value.style.transform = `translateY(${speed}px)`;
   }
 };
 
 onMounted(() => {
   // Add parallax scroll effect
-  window.addEventListener("scroll", handleParallax);
+  window.addEventListener("scroll", handleParallax, { passive: true });
 });
 
 onBeforeUnmount(() => {
