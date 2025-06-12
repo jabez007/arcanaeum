@@ -12,7 +12,7 @@ import AppCard from "@/components/AppCard.vue";
   </div>
   <div class="container">
     <header>
-      <h1 class="title">Archon's Arcanaeum</h1>
+      <h1 class="title">Archons' Arcanaeum</h1>
       <p class="subtitle">Choose your digital realm</p>
     </header>
     <div class="app-grid">
