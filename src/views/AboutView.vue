@@ -1,5 +1,7 @@
 <template>
   <section class="about-container">
+    <div class="parallax-bg" ref="parallaxBg"></div>
+
     <div class="content">
       <h1>The Arcane Origins of Jabez007</h1>
       <blockquote>
@@ -80,10 +82,39 @@
   </section>
 </template>
 
+<script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from "vue";
+
+const parallaxBg = ref(null);
+
+const handleParallax = () => {
+  const scrolled = window.pageYOffset;
+  // const parallaxBg = this.$refs.parallaxBg;
+
+  if (parallaxBg.value) {
+    // Move background slower than scroll for parallax effect
+    const speed = scrolled * 0.5;
+    //@ts-expect-error style should exist by the time this is called
+    parallaxBg.value.style.transform = `translateY(${speed}px)`;
+  }
+};
+
+onMounted(() => {
+  // Add parallax scroll effect
+  window.addEventListener("scroll", handleParallax);
+});
+
+onBeforeUnmount(() => {
+  // Clean up event listener
+  window.removeEventListener("scroll", handleParallax);
+});
+</script>
+
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap");
 
 .about-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -94,6 +125,68 @@
   color: #e0e0e0;
   border-radius: 16px;
   box-shadow: 0 0 20px rgba(100, 255, 218, 0.2);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.parallax-bg {
+  position: absolute;
+  top: -50%;
+  left: 0;
+  width: 100%;
+  height: 150%;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(100, 255, 218, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(128, 203, 196, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(100, 255, 218, 0.05) 0%, transparent 50%),
+    linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  z-index: -1;
+  will-change: transform;
+}
+
+/* Add some floating particles effect */
+.parallax-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(3px 3px at 19% 31%, rgba(100, 255, 218, 0.3), transparent),
+    radial-gradient(3px 3px at 41% 71%, rgba(128, 203, 196, 0.2), transparent),
+    radial-gradient(2px 2px at 61% 17%, rgba(100, 255, 218, 0.4), transparent),
+    radial-gradient(2px 2px at 79% 83%, rgba(128, 203, 196, 0.3), transparent),
+    radial-gradient(3px 3px at 11% 61%, rgba(100, 255, 218, 0.2), transparent);
+  background-size:
+    200px 200px,
+    300px 300px,
+    150px 150px,
+    250px 250px,
+    180px 180px;
+  animation: float 19s ease-in-out infinite;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-23px);
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 10;
 }
 
 .avatar img {
