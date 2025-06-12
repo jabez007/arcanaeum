@@ -3,11 +3,11 @@
 import CryptoTron from "@jabez007/cryptotron.vue";
 import { defineAsyncComponent } from "vue";
 
-const app = defineAsyncComponent(CryptoTron.app);
+const CryptoTronAsync = defineAsyncComponent(CryptoTron.app);
 </script>
 
 <template>
-  <app style="min-height: 100vh; min-width: 100vw; z-index: 10" />
+  <CryptoTronAsync style="min-height: 100vh; min-width: 100vw; z-index: 10" />
 </template>
 
 <style>
