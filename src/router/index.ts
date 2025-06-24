@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import { blogRoutes } from "@/blog/router/blog-routes";
 import HomeView from "@/views/HomeView.vue";
 
 const router = createRouter({
@@ -23,6 +24,7 @@ const router = createRouter({
       component: () => import("../views/CryptoTronApp.vue"),
       children: [],
     },
+    ...blogRoutes,
   ],
 });
 
