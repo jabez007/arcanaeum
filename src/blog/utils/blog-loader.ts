@@ -30,7 +30,6 @@ function importAll(modules: Record<string, any>): Record<string, any> {
     const key = path.replace("../posts/", "").replace(".md", "");
     console.debug("Extracted key", key);
     posts[key] = modules[path];
-    console.debug("Loaded module", modules[path]);
   });
   return posts;
 }
@@ -49,7 +48,9 @@ function extractExcerpt(content: string, maxLength: number = 160): string {
 }
 
 // Load all blog posts
-const blogPosts = importAll(import.meta.glob("../posts/*.md", { eager: true }));
+const blogPosts = importAll(
+  import.meta.glob("../posts/*.md", { eager: true, query: "?raw", import: "default" }),
+);
 
 let cachedPosts: BlogPost[] | null = null;
 let cachedIndex: BlogIndex | null = null;
@@ -61,7 +62,8 @@ export function getAllPosts(): BlogPost[] {
 
   Object.keys(blogPosts).forEach((key) => {
     const post = blogPosts[key];
-    const { data, content } = matter(post.default || post);
+    console.debug("Loaded post\n", post);
+    const { data, content } = matter(post);
 
     // Skip draft posts in production
     // @ts-expect-error process
