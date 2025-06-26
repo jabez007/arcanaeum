@@ -3,9 +3,9 @@
     <header class="search-header">
       <h1>Search Blog</h1>
       <div class="search-container">
-        <input v-model="searchQuery" type="text" placeholder="Search posts, tags, or content..." class="search-input"
-          @input="handleSearch" @keyup.enter="handleSearch" ref="searchInput" />
-        <button @click="handleSearch" class="search-btn">Search</button>
+        <input v-model="searchQuery" type="text" placeholder="Search posts, tags, or content..."
+          class="blog-input search-input" @input="handleSearch" @keyup.enter="handleSearch" ref="searchInput" />
+        <button @click="handleSearch" class="blog-btn blog-btn-primary search-btn">Search</button>
       </div>
     </header>
 
@@ -19,11 +19,11 @@
       </div>
 
       <div class="results-grid">
-        <article v-for="result in paginatedResults" :key="result.post.slug" class="result-card"
+        <article v-for="result in paginatedResults" :key="result.post.slug" class="blog-card result-card"
           @click="navigateToPost(result.post.slug)">
           <div class="result-meta">
             <time>{{ formatDate(result.post.frontmatter.date) }}</time>
-            <span class="relevance-score">{{ Math.round((1 - result.score) * 100) }}% match</span>
+            <span class="blog-badge relevance-score">{{ Math.round((1 - result.score) * 100) }}% match</span>
           </div>
 
           <h2>{{ result.post.frontmatter.title }}</h2>
@@ -39,7 +39,7 @@
           </div>
 
           <div class="result-tags" v-if="result.post.frontmatter.tags">
-            <span v-for="tag in result.post.frontmatter.tags.slice(0, 3)" :key="tag" class="tag">
+            <span v-for="tag in result.post.frontmatter.tags.slice(0, 3)" :key="tag" class="blog-tag">
               {{ tag }}
             </span>
           </div>
@@ -47,14 +47,14 @@
       </div>
 
       <!-- Pagination for search results -->
-      <div v-if="totalPages > 1" class="pagination">
-        <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn">
+      <div v-if="totalPages > 1" class="blog-pagination">
+        <button @click="currentPage--" :disabled="currentPage === 1" class="blog-page-btn">
           Previous
         </button>
 
-        <span class="page-info"> Page {{ currentPage }} of {{ totalPages }} </span>
+        <span class="blog-page-info"> Page {{ currentPage }} of {{ totalPages }} </span>
 
-        <button @click="currentPage++" :disabled="currentPage === totalPages" class="page-btn">
+        <button @click="currentPage++" :disabled="currentPage === totalPages" class="blog-page-btn">
           Next
         </button>
       </div>
@@ -81,7 +81,7 @@
       <div class="popular-tags">
         <h4>Popular tags:</h4>
         <div class="tag-cloud">
-          <router-link v-for="tag in popularTags" :key="tag" :to="`/blog/tag/${tag}`" class="tag-link">
+          <router-link v-for="tag in popularTags" :key="tag" :to="`/blog/tag/${tag}`" class="blog-tag tag-link">
             {{ tag }}
           </router-link>
         </div>
@@ -186,247 +186,217 @@ onMounted(async () => {
 
 <style scoped>
 .search-page {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--blog-spacing-xl);
 }
 
 .search-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: var(--blog-spacing-2xl);
 }
 
 .search-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  color: #2c3e50;
+  font-size: var(--blog-font-size-4xl);
+  margin-bottom: var(--blog-spacing-xl);
+  color: var(--blog-text-primary);
 }
 
 .search-container {
   display: flex;
   max-width: 600px;
   margin: 0 auto;
-  gap: 0.5rem;
+  gap: var(--blog-spacing-sm);
 }
 
 .search-input {
   flex: 1;
-  padding: 1rem;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  transition: border-color 0.3s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #3498db;
+  font-size: var(--blog-font-size-lg);
 }
 
 .search-btn {
-  padding: 1rem 2rem;
-  background: #3498db;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  transition: background 0.3s ease;
-}
-
-.search-btn:hover {
-  background: #2980b9;
+  font-size: var(--blog-font-size-lg);
+  padding: var(--blog-spacing-sm) var(--blog-spacing-xl);
 }
 
 .results-info {
-  margin-bottom: 2rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  margin-bottom: var(--blog-spacing-xl);
+  padding: var(--blog-spacing-lg);
+  background: var(--blog-background-light);
+  border-radius: var(--blog-radius-md);
   text-align: center;
+  color: var(--blog-text-secondary);
 }
 
 .results-grid {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: var(--blog-spacing-lg);
+  margin-bottom: var(--blog-spacing-xl);
 }
 
 .result-card {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: var(--blog-spacing-xl);
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.result-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .result-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--blog-spacing-lg);
   font-size: 0.9rem;
-  color: #7f8c8d;
+  color: var(--blog-text-muted);
 }
 
 .relevance-score {
-  background: #e9ecef;
-  padding: 0.25rem 0.5rem;
-  border-radius: 1rem;
+  background: var(--blog-background-lighter);
+  color: var(--blog-text-muted);
+  padding: var(--blog-spacing-xs) var(--blog-spacing-sm);
+  border-radius: var(--blog-radius-full);
   font-size: 0.8rem;
 }
 
 .result-card h2 {
-  margin-bottom: 1rem;
-  color: #2c3e50;
-  line-height: 1.3;
+  margin-bottom: var(--blog-spacing-lg);
+  color: var(--blog-text-primary);
+  line-height: var(--blog-line-height-tight);
+  font-size: var(--blog-font-size-xl);
 }
 
 .excerpt {
-  color: #5a6c7d;
-  line-height: 1.6;
-  margin-bottom: 1rem;
+  color: var(--blog-text-secondary);
+  line-height: var(--blog-line-height-base);
+  margin-bottom: var(--blog-spacing-lg);
 }
 
 .match-highlights {
-  background: #f8f9fa;
-  padding: 1rem;
-  border-radius: 6px;
-  margin-bottom: 1rem;
-  border-left: 4px solid #3498db;
+  background: var(--blog-background-light);
+  padding: var(--blog-spacing-lg);
+  border-radius: var(--blog-radius-md);
+  margin-bottom: var(--blog-spacing-lg);
+  border-left: 4px solid var(--blog-primary);
 }
 
 .match-item {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--blog-spacing-sm);
   font-size: 0.9rem;
 }
 
 .match-field {
   font-weight: 600;
-  color: #2c3e50;
-  margin-right: 0.5rem;
+  color: var(--blog-text-primary);
+  margin-right: var(--blog-spacing-sm);
 }
 
 .match-text {
-  color: #5a6c7d;
+  color: var(--blog-text-secondary);
 }
 
 .result-tags {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--blog-spacing-sm);
   flex-wrap: wrap;
-}
-
-.tag {
-  background: #ecf0f1;
-  color: #2c3e50;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
-  font-size: 0.8rem;
 }
 
 .no-results {
   text-align: center;
-  padding: 3rem;
-  color: #7f8c8d;
+  padding: var(--blog-spacing-2xl);
+  color: var(--blog-text-muted);
+}
+
+.no-results h3 {
+  color: var(--blog-text-primary);
+  margin-bottom: var(--blog-spacing-lg);
+}
+
+.no-results p {
+  margin-bottom: var(--blog-spacing-xl);
 }
 
 .search-suggestions {
-  margin-top: 2rem;
+  margin-top: var(--blog-spacing-xl);
   text-align: left;
   max-width: 400px;
   margin-left: auto;
   margin-right: auto;
 }
 
+.search-suggestions h4 {
+  color: var(--blog-text-primary);
+  margin-bottom: var(--blog-spacing-md);
+}
+
 .search-suggestions ul {
-  padding-left: 1.5rem;
+  padding-left: var(--blog-spacing-lg);
 }
 
 .search-suggestions li {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--blog-spacing-sm);
+}
+
+.search-suggestions a {
+  color: var(--blog-primary);
+  text-decoration: none;
+  transition: color var(--blog-transition-base);
+}
+
+.search-suggestions a:hover {
+  color: var(--blog-primary-dark);
 }
 
 .search-placeholder {
   text-align: center;
-  padding: 3rem;
-  color: #7f8c8d;
+  padding: var(--blog-spacing-2xl);
+  color: var(--blog-text-muted);
+}
+
+.search-placeholder h3 {
+  color: var(--blog-text-primary);
+  margin-bottom: var(--blog-spacing-lg);
+}
+
+.search-placeholder p {
+  margin-bottom: var(--blog-spacing-xl);
 }
 
 .popular-tags {
-  margin-top: 3rem;
+  margin-top: var(--blog-spacing-2xl);
+}
+
+.popular-tags h4 {
+  color: var(--blog-text-primary);
+  margin-bottom: var(--blog-spacing-lg);
 }
 
 .tag-cloud {
   display: flex;
-  gap: 0.75rem;
+  gap: var(--blog-spacing-sm);
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 1rem;
 }
 
 .tag-link {
-  background: #ecf0f1;
-  color: #2c3e50;
-  padding: 0.5rem 1rem;
-  border-radius: 1rem;
   text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.tag-link:hover {
-  background: #3498db;
-  color: white;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.page-btn {
-  padding: 0.5rem 1rem;
-  border: 2px solid #3498db;
-  background: white;
-  color: #3498db;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.page-btn:hover:not(:disabled) {
-  background: #3498db;
-  color: white;
-}
-
-.page-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.page-info {
-  color: #7f8c8d;
-  font-weight: 500;
+  transition: all var(--blog-transition-base);
 }
 
 @media (max-width: 768px) {
+  .search-page {
+    padding: var(--blog-spacing-lg);
+  }
+
+  .search-header h1 {
+    font-size: var(--blog-font-size-3xl);
+  }
+
   .search-container {
     flex-direction: column;
   }
 
   .result-meta {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--blog-spacing-sm);
     align-items: flex-start;
   }
 }

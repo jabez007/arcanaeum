@@ -107,7 +107,7 @@
         Previous
       </button>
 
-      <span class="page-info"> Page {{ currentPage }} of {{ totalPages }} </span>
+      <span class="blog-page-info"> Page {{ currentPage }} of {{ totalPages }} </span>
 
       <button @click="currentPage++" :disabled="currentPage === totalPages" class="blog-page-btn">
         Next
