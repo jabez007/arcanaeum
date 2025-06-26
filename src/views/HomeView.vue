@@ -16,14 +16,18 @@ import AppCard from "@/components/AppCard.vue";
       <p class="subtitle">Choose your digital realm</p>
     </header>
     <div class="app-grid">
-      <AppCard icon="🔏" title="CryptoTron" description="A classical cryptography lab for decrypting
-        ancient secrets using modern tech. Interactive ciphers in a cyberpunk-themed digital laboratory."
+      <AppCard icon="🔏" title="CryptoTron"
+        description="A classical cryptography lab for decrypting ancient secrets using modern tech. Interactive ciphers in a cyberpunk-themed digital laboratory."
         :to="{ name: 'cryptotron-home' }" />
       <AppCard icon="🫑" title="The Forgotten Pepper"
-        description="A tasty little blog cooked up with VuePress and Tailwind—where simple ingredients meet bold design. From everyday meals to unexpected flavor twists, it's a clean, fast, and flavorful experience."
+        description="A tasty little blog cooked up with VuePress and Tailwind, where simple ingredients meet bold design. From everyday meals to unexpected flavor twists, it's a clean, fast, and flavorful experience."
         to="https://theforgottenpepper.com" />
-      <AppCard icon="🧙‍♂️ " title="Meet the Vice Magus" description="Who's behind the glyphs and code? Learn more about the backend conjurer with
-        his scroll of sarcasm and compiler of chaos." :to="{ name: 'about' }" />
+      <AppCard icon="📓" title="Commits & Conjurations"
+        description="From cursed configs to enchanted endpoints, explore the lab notes of a dev with a flair for the arcane."
+        :to="{ name: 'BlogList' }" />
+      <AppCard icon="🧙‍♂️ " title="Meet the Vice Magus"
+        description="Who's behind the glyphs and code? Learn more about the backend conjurer with his scroll of sarcasm and compiler of chaos."
+        :to="{ name: 'about' }" />
     </div>
   </div>
 </template>
@@ -132,7 +136,7 @@ header {
 }
 
 :deep(.app-card:nth-child(2)) {
-  --delay: 5;
+  --delay: 11;
 }
 
 :deep(.app-card:nth-child(3)) {
@@ -140,14 +144,14 @@ header {
 }
 
 :deep(.app-card:nth-child(4)) {
-  --delay: 3;
+  --delay: 13;
 }
 
 :deep(.app-card:nth-child(5)) {
-  --delay: 11;
+  --delay: 3;
 }
 
 :deep(.app-card:nth-child(6)) {
-  --delay: 13;
+  --delay: 11;
 }
 </style>

@@ -44,7 +44,7 @@ const navigateTo = () => {
   overflow: hidden;
   animation:
     /* fadeInUp 1s ease-out, */
-    mysticalFloat 12s ease-in-out infinite;
+    mysticalFloat 13s ease-in-out infinite;
   animation-delay: calc(var(--delay) * 0.2s), calc(var(--delay) * 1s);
 }
 
