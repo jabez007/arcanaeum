@@ -141,8 +141,9 @@ onMounted(() => {
 
 <style scoped>
 .blog-post {
-  width: 800px;
+  max-width: 900px;
   height: 100vh;
+  overflow: auto;
   margin: 0 auto;
   padding: var(--blog-spacing-xl);
   background: var(--blog-background);
