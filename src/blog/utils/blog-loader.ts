@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import matter from "gray-matter";
+import matter from "front-matter";
 import MarkdownIt from "markdown-it";
 import hljs from "highlight.js";
 import type { BlogPost, BlogFrontmatter, BlogIndex } from "../types";
@@ -22,7 +22,7 @@ const md = new MarkdownIt({
 
 // Function to import all markdown files
 function importAll(modules: Record<string, any>): Record<string, any> {
-  const posts: Record<string, any> = {};
+  const posts: Record<string, string> = {};
 
   Object.keys(modules).forEach((path: string) => {
     // Extract filename from path: "../posts/filename.md" -> "filename"
@@ -63,30 +63,30 @@ export function getAllPosts(): BlogPost[] {
   Object.keys(blogPosts).forEach((key) => {
     const post = blogPosts[key];
     console.debug("Loaded post\n", post);
-    const { data, content } = matter(post);
+    const { attributes, body }: { attributes: BlogFrontmatter; body: string } = matter(post);
 
     // Skip draft posts in production
     // @ts-expect-error process
-    if (data.draft && process.env.NODE_ENV === "production") {
+    if (attributes.draft && process.env.NODE_ENV === "production") {
       return;
     }
 
     // Extract slug from filename or use custom slug
-    const slug = data.slug || key.replace(/^\d{4}-\d{2}-\d{2}-/, "");
+    const slug = attributes.slug || key.replace(/^\d{4}-\d{2}-\d{2}-/, "");
 
     // Generate excerpt if not provided
-    const excerpt = data.excerpt || extractExcerpt(content);
+    const excerpt = attributes.excerpt || extractExcerpt(body);
 
     const blogPost: BlogPost = {
       slug,
       frontmatter: {
-        ...data,
+        ...attributes,
         excerpt,
-        date: data.date || new Date().toISOString().split("T")[0],
+        date: attributes.date || new Date().toISOString().split("T")[0],
       } as BlogFrontmatter,
-      content: md.render(content),
-      rawContent: content,
-      readingTime: calculateReadingTime(content),
+      content: md.render(body),
+      rawContent: body,
+      readingTime: calculateReadingTime(body),
     };
 
     posts.push(blogPost);

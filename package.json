@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@jabez007/cryptotron.vue": "^0.1.0",
+    "front-matter": "^4.0.2",
     "fuse.js": "^7.1.0",
-    "gray-matter": "^4.0.3",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
     "vue": "^3.5.13",
