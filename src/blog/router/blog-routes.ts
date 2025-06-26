@@ -28,17 +28,11 @@ export const blogRoutes: RouteRecordRaw[] = [
       title: "Posts by Tag",
     },
   },
-  /*
   {
     path: "/blog/author/:author",
     name: "BlogAuthor",
-    component: () => import("@/components/blog/BlogAuthor.vue"),
-    props: true,
-    meta: {
-      title: "Posts by Author",
-    },
+    redirect: { name: "about" },
   },
-  */
   {
     path: "/blog/:slug",
     name: "BlogPost",
