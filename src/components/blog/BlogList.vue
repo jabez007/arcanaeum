@@ -1,8 +1,8 @@
 <template>
   <div class="blog-container">
     <header class="blog-header">
-      <h1>Blog</h1>
-      <p>Thoughts, tutorials, and updates</p>
+      <h1>{{ blogTitle }}</h1>
+      <p>Crafting code, weaving algorithms, and brewing solutions in the realm of technology</p>
     </header>
 
     <!-- Search and Filters -->
@@ -122,6 +122,8 @@ import { useRouter } from "vue-router";
 import { useBlog } from "@/blog/composables/use-blog";
 import type { BlogPost, BlogFilters } from "@/blog/types";
 
+const blogTitle = "Commits & Conjurations";
+
 const router = useRouter();
 const { posts, loading, error, allTags, allAuthors, loadPosts, filterPostsByFilters } = useBlog();
 
@@ -203,6 +205,8 @@ watch(filters, () => {
 });
 
 onMounted(() => {
+  document.title = `${blogTitle} - Blog`;
+
   loadPosts();
 });
 </script>
@@ -336,6 +340,7 @@ onMounted(() => {
 }
 
 .post-card h2 {
+  font-family: var(--blog-font-heading);
   margin-bottom: var(--blog-spacing-md);
   color: var(--blog-text-primary);
   line-height: var(--blog-line-height-tight);
@@ -343,6 +348,7 @@ onMounted(() => {
 }
 
 .excerpt {
+  font-family: var(--blog-font-primary);
   color: var(--blog-text-secondary);
   line-height: var(--blog-line-height-base);
   margin-bottom: var(--blog-spacing-md);

@@ -136,6 +136,7 @@ onMounted(() => {
 </script>
 
 <style>
+@import "highlight.js/styles/atom-one-dark.css";
 @import "@/assets/blog/theme.css";
 </style>
 
@@ -211,13 +212,25 @@ onMounted(() => {
 }
 
 .post-content {
+  font-family: var(--blog-font-primary);
   line-height: var(--blog-line-height-relaxed);
   font-size: var(--blog-font-size-lg);
   color: var(--blog-text-primary);
   margin-bottom: var(--blog-spacing-2xl);
 }
 
+.post-content :deep(h1) {
+  font-family: var(--blog-font-heading);
+  font-weight: 700;
+  background: var(--blog-gradient-mystical);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+}
+
 .post-content :deep(h2) {
+  font-family: var(--blog-font-heading);
   margin-top: calc(var(--blog-spacing-2xl) + var(--blog-spacing-sm));
   margin-bottom: var(--blog-spacing-lg);
   color: var(--blog-text-primary);
@@ -226,6 +239,7 @@ onMounted(() => {
 }
 
 .post-content :deep(h3) {
+  font-family: var(--blog-font-heading);
   margin-top: var(--blog-spacing-xl);
   margin-bottom: var(--blog-spacing-md);
   color: var(--blog-text-primary);
@@ -234,6 +248,7 @@ onMounted(() => {
 }
 
 .post-content :deep(h4) {
+  font-family: var(--blog-font-heading);
   margin-top: var(--blog-spacing-lg);
   margin-bottom: var(--blog-spacing-sm);
   color: var(--blog-text-primary);
@@ -262,6 +277,7 @@ onMounted(() => {
   overflow-x: auto;
   margin: var(--blog-spacing-xl) 0;
   border-left: 4px solid var(--blog-primary);
+  font-family: var(--blog-font-mono);
 }
 
 .post-content :deep(code) {
@@ -269,7 +285,7 @@ onMounted(() => {
   padding: var(--blog-spacing-xs) var(--blog-spacing-sm);
   border-radius: var(--blog-radius-sm);
   font-size: 0.9em;
-  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  font-family: var(--blog-font-mono);
 }
 
 .post-content :deep(pre code) {

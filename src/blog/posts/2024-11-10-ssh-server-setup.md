@@ -22,9 +22,9 @@ featured: true
 draft: true
 ---
 
-# 🖥️ Breathing New Life into an Old Laptop: Setting It Up as an SSH Server for Your Home Lab
+# Breathing New Life into an Old Laptop: An SSH Server for Your Home Lab
 
-_That dusty ThinkPad in your closet? It's about to become your new favorite server._
+🖥️ _That dusty ThinkPad in your closet? It's about to become your new favorite server._
 
 Like many of you in the homelab community, I have a soft spot for old hardware.
 That laptop collecting dust might seem obsolete for daily use,
@@ -37,6 +37,7 @@ Whether you're just starting your homelab journey or adding another node to your
 **What you'll need:**
 
 - An old laptop (pretty much anything from the last 10 years will work)
+  - I've even done this on a Gateway from 2010 with _only_ 4 GB of RAM
 - A fresh Linux installation (Ubuntu, Debian, or similar)
 - 20 minutes of your time
 
