@@ -1,0 +1,185 @@
+:root {
+  /* Colors */
+  --blog-primary: #3498db;
+  --blog-primary-dark: #2980b9;
+  --blog-secondary: #f39c12;
+  --blog-text-primary: #2c3e50;
+  --blog-text-secondary: #5a6c7d;
+  --blog-text-muted: #7f8c8d;
+  --blog-background: white;
+  --blog-background-light: #f8f9fa;
+  --blog-background-lighter: #ecf0f1;
+  --blog-border: #e9ecef;
+  --blog-error: #e74c3c;
+
+  /* Typography */
+  --blog-font-size-base: 1rem;
+  --blog-font-size-lg: 1.1rem;
+  --blog-font-size-xl: 1.2rem;
+  --blog-font-size-2xl: 2rem;
+  --blog-font-size-3xl: 2.5rem;
+  --blog-font-size-4xl: 3rem;
+  --blog-line-height-base: 1.6;
+  --blog-line-height-tight: 1.2;
+  --blog-line-height-relaxed: 1.8;
+
+  /* Spacing */
+  --blog-spacing-xs: 0.25rem;
+  --blog-spacing-sm: 0.5rem;
+  --blog-spacing-md: 1rem;
+  --blog-spacing-lg: 1.5rem;
+  --blog-spacing-xl: 2rem;
+  --blog-spacing-2xl: 3rem;
+
+  /* Border radius */
+  --blog-radius-sm: 0.5rem;
+  --blog-radius-md: 0.75rem;
+  --blog-radius-lg: 1rem;
+  --blog-radius-xl: 1.5rem;
+  --blog-radius-full: 50rem;
+
+  /* Shadows */
+  --blog-shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --blog-shadow-md: 0 8px 20px rgba(0, 0, 0, 0.15);
+  --blog-shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+  /* Transitions */
+  --blog-transition-fast: 0.2s ease;
+  --blog-transition-base: 0.3s ease;
+  --blog-transition-slow: 0.5s ease;
+}
+
+/* Utility classes that can be used across components */
+.blog-card {
+  background: var(--blog-background);
+  border-radius: var(--blog-radius-xl);
+  box-shadow: var(--blog-shadow-sm);
+  transition:
+    transform var(--blog-transition-base),
+    box-shadow var(--blog-transition-base);
+}
+
+.blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--blog-shadow-lg);
+}
+
+.blog-btn {
+  padding: var(--blog-spacing-sm) var(--blog-spacing-md);
+  border: 2px solid;
+  border-radius: var(--blog-radius-md);
+  cursor: pointer;
+  transition: all var(--blog-transition-base);
+  font-size: var(--blog-font-size-base);
+}
+
+.blog-btn-primary {
+  border-color: var(--blog-primary);
+  background: var(--blog-primary);
+  color: white;
+}
+
+.blog-btn-primary:hover {
+  background: var(--blog-primary-dark);
+  border-color: var(--blog-primary-dark);
+}
+
+.blog-btn-secondary {
+  border-color: var(--blog-border);
+  background: var(--blog-background);
+  color: var(--blog-text-primary);
+}
+
+.blog-btn-secondary:hover {
+  background: var(--blog-background-light);
+}
+
+.blog-input {
+  padding: var(--blog-spacing-sm) var(--blog-spacing-md);
+  border: 2px solid var(--blog-border);
+  border-radius: var(--blog-radius-md);
+  font-size: var(--blog-font-size-base);
+  transition: border-color var(--blog-transition-base);
+}
+
+.blog-input:focus {
+  outline: none;
+  border-color: var(--blog-primary);
+}
+
+.blog-tag {
+  background: var(--blog-background-lighter);
+  color: var(--blog-text-primary);
+  padding: var(--blog-spacing-xs) var(--blog-spacing-sm);
+  border-radius: var(--blog-radius-sm);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--blog-transition-base);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.blog-tag:hover {
+  background: var(--blog-primary);
+  color: white;
+}
+
+.blog-badge {
+  padding: var(--blog-spacing-xs) var(--blog-spacing-sm);
+  border-radius: var(--blog-radius-full);
+  font-size: 0.8rem;
+}
+
+.blog-badge-featured {
+  background: var(--blog-secondary);
+  color: white;
+}
+
+.blog-badge-reading-time {
+  background: var(--blog-background-lighter);
+  color: var(--blog-text-muted);
+}
+
+.blog-loading,
+.blog-error {
+  text-align: center;
+  padding: var(--blog-spacing-2xl);
+  font-size: var(--blog-font-size-xl);
+}
+
+.blog-error {
+  color: var(--blog-error);
+}
+
+.blog-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--blog-spacing-md);
+  margin-top: var(--blog-spacing-xl);
+}
+
+.blog-page-btn {
+  padding: var(--blog-spacing-sm) var(--blog-spacing-md);
+  border: 2px solid var(--blog-primary);
+  background: var(--blog-background);
+  color: var(--blog-primary);
+  border-radius: var(--blog-radius-md);
+  cursor: pointer;
+  transition: all var(--blog-transition-base);
+}
+
+.blog-page-btn:hover:not(:disabled) {
+  background: var(--blog-primary);
+  color: white;
+}
+
+.blog-page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.blog-page-info {
+  color: var(--blog-text-muted);
+  font-weight: 500;
+}

@@ -8,13 +8,13 @@
     <!-- Search and Filters -->
     <div class="blog-controls">
       <div class="search-container">
-        <input v-model="searchQuery" type="text" placeholder="Search posts..." class="search-input"
+        <input v-model="searchQuery" type="text" placeholder="Search posts..." class="blog-input search-input"
           @input="handleSearch" />
         <button v-if="searchQuery" @click="clearSearch" class="clear-search">✕</button>
       </div>
 
       <div class="filters-container">
-        <select v-model="selectedAuthor" class="filter-select">
+        <select v-model="selectedAuthor" class="blog-input filter-select">
           <option value="">All Authors</option>
           <option v-for="author in allAuthors" :key="author" :value="author">
             {{ author }}
@@ -22,7 +22,7 @@
         </select>
 
         <button @click="showFeaturedOnly = !showFeaturedOnly" :class="{ active: showFeaturedOnly }"
-          class="featured-toggle">
+          class="blog-btn blog-btn-secondary featured-toggle">
           Featured Only
         </button>
       </div>
@@ -30,11 +30,11 @@
 
     <!-- Tags Filter -->
     <div class="blog-tags">
-      <button @click="selectedTag = ''" :class="{ active: !selectedTag }" class="tag-btn">
+      <button @click="selectedTag = ''" :class="{ active: !selectedTag }" class="blog-tag tag-btn">
         All Posts ({{ filteredPosts.length }})
       </button>
       <button v-for="tag in allTags" :key="tag" @click="selectedTag = tag" :class="{ active: selectedTag === tag }"
-        class="tag-btn">
+        class="blog-tag tag-btn">
         {{ tag }} ({{ getTagCount(tag) }})
       </button>
     </div>
@@ -49,20 +49,23 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="loading">Loading posts...</div>
+    <div v-if="loading" class="blog-loading">Loading posts...</div>
 
     <!-- Error State -->
-    <div v-if="error" class="error">
+    <div v-if="error" class="blog-error">
       {{ error }}
     </div>
 
     <!-- Posts Grid -->
     <div class="posts-grid" v-if="!loading && !error">
-      <article v-for="post in paginatedPosts" :key="post.slug" class="post-card" @click="navigateToPost(post.slug)">
+      <article v-for="post in paginatedPosts" :key="post.slug" class="blog-card post-card"
+        @click="navigateToPost(post.slug)">
         <div class="post-meta">
           <time>{{ formatDate(post.frontmatter.date) }}</time>
-          <span v-if="post.frontmatter.featured" class="featured-badge"> Featured </span>
-          <span class="reading-time">{{ post.readingTime }} min read</span>
+          <span v-if="post.frontmatter.featured" class="blog-badge blog-badge-featured">
+            Featured
+          </span>
+          <span class="blog-badge blog-badge-reading-time">{{ post.readingTime }} min read</span>
         </div>
 
         <h2>{{ post.frontmatter.title }}</h2>
@@ -71,7 +74,8 @@
 
         <div class="post-footer">
           <div class="post-tags">
-            <span v-for="tag in post.frontmatter.tags?.slice(0, 3)" :key="tag" class="tag" @click.stop="selectTag(tag)">
+            <span v-for="tag in post.frontmatter.tags?.slice(0, 3)" :key="tag" class="blog-tag tag"
+              @click.stop="selectTag(tag)">
               {{ tag }}
             </span>
             <span v-if="post.frontmatter.tags && post.frontmatter.tags.length > 3" class="tag-more">
@@ -94,18 +98,18 @@
     <div v-if="!loading && !error && filteredPosts.length === 0" class="empty-state">
       <h3>No posts found</h3>
       <p>Try adjusting your search or filter criteria.</p>
-      <button @click="clearAllFilters" class="clear-filters-btn">Clear All Filters</button>
+      <button @click="clearAllFilters" class="blog-btn blog-btn-primary">Clear All Filters</button>
     </div>
 
     <!-- Pagination -->
-    <div v-if="totalPages > 1" class="pagination">
-      <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn">
+    <div v-if="totalPages > 1" class="blog-pagination">
+      <button @click="currentPage--" :disabled="currentPage === 1" class="blog-page-btn">
         Previous
       </button>
 
       <span class="page-info"> Page {{ currentPage }} of {{ totalPages }} </span>
 
-      <button @click="currentPage++" :disabled="currentPage === totalPages" class="page-btn">
+      <button @click="currentPage++" :disabled="currentPage === totalPages" class="blog-page-btn">
         Next
       </button>
     </div>
@@ -203,33 +207,37 @@ onMounted(() => {
 });
 </script>
 
+<style>
+@import "@/assets/blog/theme.css";
+</style>
+
 <style scoped>
 .blog-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--blog-spacing-xl);
 }
 
 .blog-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: var(--blog-spacing-2xl);
 }
 
 .blog-header h1 {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
-  color: #2c3e50;
+  font-size: var(--blog-font-size-4xl);
+  margin-bottom: var(--blog-spacing-sm);
+  color: var(--blog-text-primary);
 }
 
 .blog-header p {
-  font-size: 1.2rem;
-  color: #7f8c8d;
+  font-size: var(--blog-font-size-xl);
+  color: var(--blog-text-muted);
 }
 
 .blog-controls {
   display: flex;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: var(--blog-spacing-xl);
+  margin-bottom: var(--blog-spacing-xl);
   flex-wrap: wrap;
   align-items: center;
 }
@@ -242,275 +250,147 @@ onMounted(() => {
 
 .search-input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #3498db;
 }
 
 .clear-search {
   position: absolute;
-  right: 0.5rem;
+  right: var(--blog-spacing-sm);
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.5rem;
-  color: #7f8c8d;
+  padding: var(--blog-spacing-sm);
+  color: var(--blog-text-muted);
 }
 
 .filters-container {
   display: flex;
-  gap: 1rem;
+  gap: var(--blog-spacing-md);
   align-items: center;
 }
 
 .filter-select {
-  padding: 0.5rem 1rem;
-  border: 2px solid #e9ecef;
-  border-radius: 6px;
-  background: white;
+  background: var(--blog-background);
   cursor: pointer;
 }
 
-.featured-toggle {
-  padding: 0.5rem 1rem;
-  border: 2px solid #e9ecef;
-  background: white;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.featured-toggle.active,
-.featured-toggle:hover {
-  border-color: #f39c12;
-  background: #f39c12;
+.featured-toggle.active {
+  border-color: var(--blog-secondary);
+  background: var(--blog-secondary);
   color: white;
 }
 
 .blog-tags {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
+  gap: var(--blog-spacing-sm);
+  margin-bottom: var(--blog-spacing-xl);
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .tag-btn {
-  padding: 0.5rem 1rem;
-  border: 2px solid #e9ecef;
-  background: white;
-  border-radius: 2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  border: 2px solid var(--blog-border);
+  border-radius: var(--blog-radius-full);
   font-size: 0.9rem;
 }
 
-.tag-btn:hover,
 .tag-btn.active {
-  border-color: #3498db;
-  background: #3498db;
+  border-color: var(--blog-primary);
+  background: var(--blog-primary);
   color: white;
 }
 
 .search-info {
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  margin-bottom: var(--blog-spacing-lg);
+  padding: var(--blog-spacing-md);
+  background: var(--blog-background-light);
+  border-radius: var(--blog-radius-md);
   text-align: center;
-}
-
-.loading,
-.error {
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.2rem;
-}
-
-.error {
-  color: #e74c3c;
 }
 
 .posts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
+  gap: var(--blog-spacing-xl);
+  margin-bottom: var(--blog-spacing-2xl);
 }
 
 .post-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: var(--blog-spacing-lg);
   cursor: pointer;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-.post-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .post-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--blog-spacing-md);
   font-size: 0.9rem;
-  color: #7f8c8d;
+  color: var(--blog-text-muted);
   flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.featured-badge {
-  background: #f39c12;
-  color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 1rem;
-  font-size: 0.8rem;
-}
-
-.reading-time {
-  background: #ecf0f1;
-  padding: 0.25rem 0.5rem;
-  border-radius: 1rem;
-  font-size: 0.8rem;
+  gap: var(--blog-spacing-sm);
 }
 
 .post-card h2 {
-  margin-bottom: 1rem;
-  color: #2c3e50;
-  line-height: 1.3;
+  margin-bottom: var(--blog-spacing-md);
+  color: var(--blog-text-primary);
+  line-height: var(--blog-line-height-tight);
   flex-grow: 0;
 }
 
 .excerpt {
-  color: #5a6c7d;
-  line-height: 1.6;
-  margin-bottom: 1rem;
+  color: var(--blog-text-secondary);
+  line-height: var(--blog-line-height-base);
+  margin-bottom: var(--blog-spacing-md);
   flex-grow: 1;
 }
 
 .post-footer {
   margin-top: auto;
-  margin-bottom: 1rem;
+  margin-bottom: var(--blog-spacing-md);
 }
 
 .post-tags {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  gap: var(--blog-spacing-sm);
+  margin-bottom: var(--blog-spacing-sm);
   flex-wrap: wrap;
   align-items: center;
 }
 
-.tag {
-  background: #ecf0f1;
-  color: #2c3e50;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.tag:hover {
-  background: #3498db;
-  color: white;
-}
-
 .tag-more {
-  color: #7f8c8d;
+  color: var(--blog-text-muted);
   font-size: 0.8rem;
 }
 
 .post-author {
   font-size: 0.9rem;
-  color: #7f8c8d;
+  color: var(--blog-text-muted);
 }
 
 .post-author span {
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color var(--blog-transition-base);
 }
 
 .post-author span:hover {
-  color: #3498db;
+  color: var(--blog-primary);
 }
 
 .read-more {
-  color: #3498db;
+  color: var(--blog-primary);
   font-weight: 500;
-  margin-top: 0.5rem;
+  margin-top: var(--blog-spacing-sm);
 }
 
 .empty-state {
   text-align: center;
-  padding: 3rem;
-  color: #7f8c8d;
-}
-
-.clear-filters-btn {
-  margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  background: #3498db;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.clear-filters-btn:hover {
-  background: #2980b9;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.page-btn {
-  padding: 0.5rem 1rem;
-  border: 2px solid #3498db;
-  background: white;
-  color: #3498db;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.page-btn:hover:not(:disabled) {
-  background: #3498db;
-  color: white;
-}
-
-.page-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.page-info {
-  color: #7f8c8d;
-  font-weight: 500;
+  padding: var(--blog-spacing-2xl);
+  color: var(--blog-text-muted);
 }
 
 @media (max-width: 768px) {

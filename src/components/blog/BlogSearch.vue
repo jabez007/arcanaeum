@@ -180,6 +180,10 @@ onMounted(async () => {
 });
 </script>
 
+<style>
+@import "@/assets/blog/theme.css";
+</style>
+
 <style scoped>
 .search-page {
   max-width: 1000px;

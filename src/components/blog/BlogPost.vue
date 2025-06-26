@@ -135,6 +135,10 @@ onMounted(() => {
 });
 </script>
 
+<style>
+@import "@/assets/blog/theme.css";
+</style>
+
 <style scoped>
 .blog-post {
   max-width: 800px;
