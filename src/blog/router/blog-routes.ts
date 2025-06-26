@@ -18,6 +18,7 @@ export const blogRoutes: RouteRecordRaw[] = [
       title: "Search Blog",
     },
   },
+  */
   {
     path: "/blog/tag/:tag",
     name: "BlogTag",
@@ -27,6 +28,7 @@ export const blogRoutes: RouteRecordRaw[] = [
       title: "Posts by Tag",
     },
   },
+  /*
   {
     path: "/blog/author/:author",
     name: "BlogAuthor",
