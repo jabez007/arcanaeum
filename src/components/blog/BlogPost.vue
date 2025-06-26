@@ -9,17 +9,17 @@
         <time>{{ formatDate(post.frontmatter.date) }}</time>
         <span v-if="post.frontmatter.author" class="author">
           by
-          <router-link :to="`/blog/author/${post.frontmatter.author}`">
+          <router-link :to="`/blog/author/${post.frontmatter.author}`" class="author-link">
             {{ post.frontmatter.author }}
           </router-link>
         </span>
-        <span class="reading-time">{{ post.readingTime }} min read</span>
+        <span class="blog-badge blog-badge-reading-time">{{ post.readingTime }} min read</span>
       </div>
 
       <h1>{{ post.frontmatter.title }}</h1>
 
       <div class="post-tags" v-if="post.frontmatter.tags">
-        <router-link v-for="tag in post.frontmatter.tags" :key="tag" :to="`/blog/tag/${tag}`" class="tag">
+        <router-link v-for="tag in post.frontmatter.tags" :key="tag" :to="`/blog/tag/${tag}`" class="blog-tag tag-link">
           {{ tag }}
         </router-link>
       </div>
@@ -31,13 +31,13 @@
     <section v-if="relatedPosts.length > 0" class="related-posts">
       <h3>Related Posts</h3>
       <div class="related-grid">
-        <div v-for="relatedPost in relatedPosts" :key="relatedPost.slug" class="related-card"
+        <div v-for="relatedPost in relatedPosts" :key="relatedPost.slug" class="blog-card related-card"
           @click="navigateToPost(relatedPost.slug)">
           <h4>{{ relatedPost.frontmatter.title }}</h4>
           <p>{{ relatedPost.frontmatter.excerpt }}</p>
           <div class="related-meta">
             <time>{{ formatDate(relatedPost.frontmatter.date) }}</time>
-            <span>{{ relatedPost.readingTime }} min read</span>
+            <span class="blog-badge blog-badge-reading-time">{{ relatedPost.readingTime }} min read</span>
           </div>
         </div>
       </div>
@@ -61,10 +61,10 @@
   <div v-else-if="!loading" class="not-found">
     <h1>Post not found</h1>
     <p>The post you're looking for doesn't exist or has been moved.</p>
-    <router-link to="/blog" class="back-link">← Back to Blog</router-link>
+    <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
   </div>
 
-  <div v-else class="loading">Loading post...</div>
+  <div v-else class="blog-loading">Loading post...</div>
 </template>
 
 <script setup lang="ts">
@@ -141,141 +141,132 @@ onMounted(() => {
 
 <style scoped>
 .blog-post {
-  max-width: 800px;
+  width: 800px;
+  height: 100vh;
   margin: 0 auto;
-  padding: 2rem;
-}
-
-.loading {
-  text-align: center;
-  padding: 3rem;
-  font-size: 1.2rem;
+  padding: var(--blog-spacing-xl);
+  background: var(--blog-background);
+  border-radius: var(--blog-radius-xl);
+  box-shadow: var(--blog-shadow-sm);
 }
 
 .breadcrumb {
-  margin-bottom: 2rem;
+  margin-bottom: var(--blog-spacing-xl);
 }
 
-.breadcrumb a {
-  color: #3498db;
+.breadcrumb-link {
+  color: var(--blog-primary);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color var(--blog-transition-base);
 }
 
-.breadcrumb a:hover {
-  color: #2980b9;
+.breadcrumb-link:hover {
+  color: var(--blog-primary-dark);
 }
 
 .post-header {
-  margin-bottom: 3rem;
+  margin-bottom: var(--blog-spacing-2xl);
   text-align: center;
 }
 
 .post-meta {
-  color: #7f8c8d;
-  margin-bottom: 1.5rem;
+  color: var(--blog-text-muted);
+  margin-bottom: var(--blog-spacing-lg);
   font-size: 0.95rem;
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--blog-spacing-lg);
   flex-wrap: wrap;
+  align-items: center;
 }
 
-.post-meta .author a {
-  color: #3498db;
+.author-link {
+  color: var(--blog-primary);
   text-decoration: none;
+  transition: color var(--blog-transition-base);
 }
 
-.post-meta .reading-time {
-  background: #ecf0f1;
-  padding: 0.25rem 0.5rem;
-  border-radius: 1rem;
+.author-link:hover {
+  color: var(--blog-primary-dark);
 }
 
 .post-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  color: #2c3e50;
-  line-height: 1.2;
+  font-size: var(--blog-font-size-4xl);
+  margin-bottom: var(--blog-spacing-lg);
+  color: var(--blog-text-primary);
+  line-height: var(--blog-line-height-tight);
 }
 
 .post-tags {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--blog-spacing-sm);
   justify-content: center;
   flex-wrap: wrap;
 }
 
-.tag {
-  background: #ecf0f1;
-  color: #2c3e50;
-  padding: 0.5rem 1rem;
-  border-radius: 1rem;
+.tag-link {
   text-decoration: none;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-}
-
-.tag:hover {
-  background: #3498db;
-  color: white;
+  transition: all var(--blog-transition-base);
 }
 
 .post-content {
-  line-height: 1.8;
-  font-size: 1.1rem;
-  color: #2c3e50;
-  margin-bottom: 3rem;
+  line-height: var(--blog-line-height-relaxed);
+  font-size: var(--blog-font-size-lg);
+  color: var(--blog-text-primary);
+  margin-bottom: var(--blog-spacing-2xl);
 }
 
 .post-content :deep(h2) {
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  color: #2c3e50;
-  font-size: 1.8rem;
+  margin-top: calc(var(--blog-spacing-2xl) + var(--blog-spacing-sm));
+  margin-bottom: var(--blog-spacing-lg);
+  color: var(--blog-text-primary);
+  font-size: var(--blog-font-size-2xl);
+  line-height: var(--blog-line-height-tight);
 }
 
 .post-content :deep(h3) {
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
-  color: #2c3e50;
-  font-size: 1.4rem;
+  margin-top: var(--blog-spacing-xl);
+  margin-bottom: var(--blog-spacing-md);
+  color: var(--blog-text-primary);
+  font-size: var(--blog-font-size-xl);
+  line-height: var(--blog-line-height-tight);
 }
 
 .post-content :deep(h4) {
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #2c3e50;
-  font-size: 1.2rem;
+  margin-top: var(--blog-spacing-lg);
+  margin-bottom: var(--blog-spacing-sm);
+  color: var(--blog-text-primary);
+  font-size: var(--blog-font-size-lg);
+  line-height: var(--blog-line-height-tight);
 }
 
 .post-content :deep(p) {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--blog-spacing-lg);
 }
 
 .post-content :deep(ul),
 .post-content :deep(ol) {
-  margin-bottom: 1.5rem;
-  padding-left: 2rem;
+  margin-bottom: var(--blog-spacing-lg);
+  padding-left: var(--blog-spacing-xl);
 }
 
 .post-content :deep(li) {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--blog-spacing-sm);
 }
 
 .post-content :deep(pre) {
-  background: #f8f9fa;
-  padding: 1.5rem;
-  border-radius: 8px;
+  background: var(--blog-background-light);
+  padding: var(--blog-spacing-lg);
+  border-radius: var(--blog-radius-md);
   overflow-x: auto;
-  margin: 2rem 0;
-  border-left: 4px solid #3498db;
+  margin: var(--blog-spacing-xl) 0;
+  border-left: 4px solid var(--blog-primary);
 }
 
 .post-content :deep(code) {
-  background: #f8f9fa;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
+  background: var(--blog-background-light);
+  padding: var(--blog-spacing-xs) var(--blog-spacing-sm);
+  border-radius: var(--blog-radius-sm);
   font-size: 0.9em;
   font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
 }
@@ -286,119 +277,117 @@ onMounted(() => {
 }
 
 .post-content :deep(blockquote) {
-  border-left: 4px solid #3498db;
-  padding-left: 1.5rem;
-  margin: 2rem 0;
+  border-left: 4px solid var(--blog-primary);
+  padding-left: var(--blog-spacing-lg);
+  margin: var(--blog-spacing-xl) 0;
   font-style: italic;
-  color: #5a6c7d;
-  background: #f8f9fa;
-  padding: 1.5rem;
-  border-radius: 0 8px 8px 0;
+  color: var(--blog-text-secondary);
+  background: var(--blog-background-light);
+  padding: var(--blog-spacing-lg);
+  border-radius: 0 var(--blog-radius-md) var(--blog-radius-md) 0;
 }
 
 .post-content :deep(img) {
   max-width: 100%;
   height: auto;
-  border-radius: 8px;
-  margin: 2rem 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: var(--blog-radius-md);
+  margin: var(--blog-spacing-xl) 0;
+  box-shadow: var(--blog-shadow-sm);
 }
 
 .post-content :deep(table) {
   width: 100%;
   border-collapse: collapse;
-  margin: 2rem 0;
+  margin: var(--blog-spacing-xl) 0;
 }
 
 .post-content :deep(th),
 .post-content :deep(td) {
-  padding: 0.75rem;
-  border: 1px solid #e9ecef;
+  padding: var(--blog-spacing-sm) var(--blog-spacing-md);
+  border: 1px solid var(--blog-border);
   text-align: left;
 }
 
 .post-content :deep(th) {
-  background: #f8f9fa;
+  background: var(--blog-background-light);
   font-weight: 600;
+  color: var(--blog-text-primary);
 }
 
 .related-posts {
-  margin: 3rem 0;
-  padding-top: 2rem;
-  border-top: 2px solid #e9ecef;
+  margin: var(--blog-spacing-2xl) 0;
+  padding-top: var(--blog-spacing-xl);
+  border-top: 2px solid var(--blog-border);
 }
 
 .related-posts h3 {
-  margin-bottom: 1.5rem;
-  color: #2c3e50;
+  margin-bottom: var(--blog-spacing-lg);
+  color: var(--blog-text-primary);
   text-align: center;
+  font-size: var(--blog-font-size-2xl);
 }
 
 .related-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  gap: var(--blog-spacing-lg);
 }
 
 .related-card {
-  background: #f8f9fa;
-  padding: 1.5rem;
-  border-radius: 8px;
+  padding: var(--blog-spacing-lg);
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.related-card:hover {
-  background: #e9ecef;
-  transform: translateY(-2px);
+  transition: all var(--blog-transition-base);
 }
 
 .related-card h4 {
-  margin-bottom: 0.75rem;
-  color: #2c3e50;
-  font-size: 1.1rem;
+  margin-bottom: var(--blog-spacing-sm);
+  color: var(--blog-text-primary);
+  font-size: var(--blog-font-size-lg);
+  line-height: var(--blog-line-height-tight);
 }
 
 .related-card p {
-  color: #5a6c7d;
+  color: var(--blog-text-secondary);
   font-size: 0.9rem;
-  margin-bottom: 1rem;
-  line-height: 1.5;
+  margin-bottom: var(--blog-spacing-lg);
+  line-height: var(--blog-line-height-base);
 }
 
 .related-meta {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 0.8rem;
-  color: #7f8c8d;
+  color: var(--blog-text-muted);
 }
 
 .post-footer {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 2px solid #e9ecef;
+  margin-top: var(--blog-spacing-2xl);
+  padding-top: var(--blog-spacing-xl);
+  border-top: 2px solid var(--blog-border);
 }
 
 .post-navigation {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: var(--blog-spacing-xl);
 }
 
 .nav-link {
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  padding: var(--blog-spacing-lg);
+  background: var(--blog-background-light);
+  border-radius: var(--blog-radius-md);
   text-decoration: none;
-  color: #2c3e50;
-  transition: all 0.3s ease;
+  color: var(--blog-text-primary);
+  transition: all var(--blog-transition-base);
 }
 
 .nav-link:hover {
-  background: #e9ecef;
+  background: var(--blog-background-lighter);
   transform: translateY(-2px);
+  box-shadow: var(--blog-shadow-sm);
 }
 
 .nav-link.next {
@@ -407,56 +396,41 @@ onMounted(() => {
 
 .nav-label {
   font-size: 0.9rem;
-  color: #7f8c8d;
-  margin-bottom: 0.5rem;
+  color: var(--blog-text-muted);
+  margin-bottom: var(--blog-spacing-sm);
 }
 
 .nav-title {
   font-weight: 600;
-  line-height: 1.3;
+  line-height: var(--blog-line-height-tight);
 }
 
 .not-found {
   text-align: center;
-  padding: 3rem;
+  padding: var(--blog-spacing-2xl);
   max-width: 600px;
   margin: 0 auto;
 }
 
 .not-found h1 {
-  color: #e74c3c;
-  margin-bottom: 1rem;
-  font-size: 2rem;
+  color: var(--blog-error);
+  margin-bottom: var(--blog-spacing-lg);
+  font-size: var(--blog-font-size-3xl);
 }
 
 .not-found p {
-  color: #7f8c8d;
-  margin-bottom: 2rem;
-  font-size: 1.1rem;
-}
-
-.back-link {
-  color: #3498db;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 0.75rem 1.5rem;
-  border: 2px solid #3498db;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-.back-link:hover {
-  background: #3498db;
-  color: white;
+  color: var(--blog-text-muted);
+  margin-bottom: var(--blog-spacing-xl);
+  font-size: var(--blog-font-size-lg);
 }
 
 @media (max-width: 768px) {
   .blog-post {
-    padding: 1rem;
+    padding: var(--blog-spacing-lg);
   }
 
   .post-header h1 {
-    font-size: 2rem;
+    font-size: var(--blog-font-size-3xl);
   }
 
   .post-navigation {
@@ -469,7 +443,7 @@ onMounted(() => {
 
   .post-meta {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--blog-spacing-sm);
   }
 }
 </style>
