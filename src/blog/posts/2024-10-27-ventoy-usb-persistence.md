@@ -84,9 +84,11 @@ Think of it as carrying multiple complete operating systems in your pocket, each
    _Find latest version [here](https://github.com/ventoy/Ventoy/releases) and update the command below_
 
    ```bash
-   wget https://github.com/ventoy/Ventoy/releases/download/v1.0.XX/ventoy-x.x.xx-linux.tar.gz
-   tar -xzf ventoy-x.x.xx-linux.tar.gz
-   cd ventoy-x.x.xx
+   # 👉 Always look up the latest version first: https://github.com/ventoy/Ventoy/releases
+   VENTOY_VER=1.0.99
+   wget "https://github.com/ventoy/Ventoy/releases/download/v${VENTOY_VER}/ventoy-${VENTOY_VER}-linux.tar.gz"
+   tar -xzf "ventoy-${VENTOY_VER}-linux.tar.gz"
+   cd "ventoy-${VENTOY_VER}"
    ```
 
 2. **Identify your USB drive:**
