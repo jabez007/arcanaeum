@@ -95,6 +95,7 @@ import { ref, computed, onMounted, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useBlog } from "@/blog/composables/use-blog";
 import type { SearchResult } from "@/blog/types";
+import type { FuseResultMatch } from "fuse.js";
 
 const router = useRouter();
 const route = useRoute();
@@ -158,8 +159,7 @@ const getFieldName = (field: string): string => {
   return fieldMap[field] || field;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getMatchText = (match: any): string => {
+const getMatchText = (match: FuseResultMatch): string => {
   if (typeof match.value === "string") {
     return match.value.length > 100 ? match.value.substring(0, 100) + "..." : match.value;
   }

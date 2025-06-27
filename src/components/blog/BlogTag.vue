@@ -209,7 +209,9 @@ const selectTag = (tag: string): void => {
 };
 
 const selectAuthor = (author: string): void => {
-  router.push(`/blog/author/${author}`);
+  if (author) {
+    router.push(`/blog/author/${author}`);
+  }
 };
 
 // Reset page when sort changes

@@ -26,7 +26,6 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.1",
-    "@types/highlight.js": "^9.12.4",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^22.15.33",
     "@vitejs/plugin-vue": "^5.2.3",

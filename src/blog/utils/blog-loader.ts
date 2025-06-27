@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import matter from "front-matter";
 import MarkdownIt from "markdown-it";
 import hljs from "highlight.js";
@@ -21,6 +20,7 @@ const md = new MarkdownIt({
 });
 
 // Function to import all markdown files
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function importAll(modules: Record<string, any>): Record<string, any> {
   const posts: Record<string, string> = {};
 
@@ -62,7 +62,7 @@ export function getAllPosts(): BlogPost[] {
 
   Object.keys(blogPosts).forEach((key) => {
     const post = blogPosts[key];
-    console.debug("Loaded post\n", post);
+    //console.debug("Loaded post\n", post);
     const { attributes, body }: { attributes: BlogFrontmatter; body: string } = matter(post);
 
     // Skip draft posts in production

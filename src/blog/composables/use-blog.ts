@@ -12,7 +12,7 @@ export function useBlog() {
   const allTags = computed(() => blogIndex.value.tags);
   const allAuthors = computed(() => blogIndex.value.authors);
 
-  const loadPosts = async () => {
+  const loadPosts = () => {
     try {
       loading.value = true;
       posts.value = getAllPosts();
