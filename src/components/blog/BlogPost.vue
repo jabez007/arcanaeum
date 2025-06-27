@@ -359,6 +359,7 @@ onMounted(() => {
 .related-card h4 {
   margin-bottom: var(--blog-spacing-sm);
   color: var(--blog-text-primary);
+  font-family: var(--blog-font-heading);
   font-size: var(--blog-font-size-lg);
   line-height: var(--blog-line-height-tight);
 }
@@ -366,6 +367,7 @@ onMounted(() => {
 .related-card p {
   color: var(--blog-text-secondary);
   font-size: 0.9rem;
+  font-family: var(--blog-font-primary);
   margin-bottom: var(--blog-spacing-lg);
   line-height: var(--blog-line-height-base);
 }
