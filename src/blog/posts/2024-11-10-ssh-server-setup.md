@@ -365,8 +365,6 @@ More importantly, you've learned the fundamentals of SSH hardening and firewall 
 What started as forgotten hardware is now a valuable piece of infrastructure.
 Whether you use it for development, file sharing, monitoring, or just SSH practice, you've given that old laptop a new purpose.
 
-Got questions or improvements to suggest?
-Drop them in the comments — the home lab community thrives on shared knowledge and creative solutions.
 Happy homelabbing!
 
 ---

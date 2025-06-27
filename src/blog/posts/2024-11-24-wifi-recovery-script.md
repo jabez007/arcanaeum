@@ -265,10 +265,4 @@ Sometimes it just needs a little automation love.
 Now my old ThinkPad happily chugs along, automatically healing itself whenever my router decides to take a midnight reboot.
 And I can focus on more interesting problems than "why is SSH not working again?"
 
-**Happy homelabbing, and may your connections always reconnect themselves.**
-
----
-
-_Have a similar automation win in your homelab?
-I'd love to hear about it.
-Drop me a line or share your own self-healing scripts!_
+**Happy homelabbing, and may your wifi always reconnect itself.**
