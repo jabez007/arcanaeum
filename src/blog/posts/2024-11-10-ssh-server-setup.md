@@ -19,7 +19,7 @@ excerpt: |
   That laptop collecting dust might seem obsolete for daily use,
   but it's actually perfect for a home lab — especially when repurposed as an SSH-accessible Linux server.
 featured: true
-draft: true
+draft: false
 ---
 
 # Breathing New Life into an Old Laptop: An SSH Server for Your Home Lab
