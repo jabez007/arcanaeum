@@ -14,7 +14,7 @@ featured: true
 draft: false
 ---
 
-# Installing Proxmox VE 8.4 on an HP Laptop: My Homelab Journey
+# Installing Proxmox VE 8.4 on a Laptop: My Homelab Journey
 
 ## Introduction
 
