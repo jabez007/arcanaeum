@@ -98,7 +98,7 @@ Get your router's MAC address:
 
 ```bash
 # Get the gateway MAC address
-ip route show default | awk '{print $3}' | head -1 | xargs arp -n | awk '{print $3}'
+ip route show default | awk '{print $3}' | head -1 | xargs ip neigh show | awk '{print $5}' | head -1
 ```
 
 Or check your current connection details:
@@ -143,7 +143,7 @@ get_network_info() {
     # Get gateway MAC address
     GATEWAY_IP=$(ip route show default | awk '{print $3}' | head -1)
     if [ -n "$GATEWAY_IP" ]; then
-        GATEWAY_MAC=$(arp -n "$GATEWAY_IP" 2>/dev/null | awk '{print $3}' | head -1)
+        GATEWAY_MAC=$(ip neigh show "$GATEWAY_IP" 2>/dev/null | awk '{print $5}' | head -1)
     else
         GATEWAY_MAC=""
     fi
@@ -236,7 +236,7 @@ systemctl --user status syncthing
 # Test network detection
 CURRENT_SSID=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2)
 GATEWAY_IP=$(ip route show default | awk '{print $3}' | head -1)
-GATEWAY_MAC=$(arp -n "$GATEWAY_IP" 2>/dev/null | awk '{print $3}' | head -1)
+GATEWAY_MAC=$(ip neigh show "$GATEWAY_IP" | awk '{print $5}' | head -1)
 echo "SSID: $CURRENT_SSID"
 echo "Gateway MAC: $GATEWAY_MAC"
 ```
@@ -268,7 +268,8 @@ tail -f /tmp/syncthing-dispatch.log
 ### Common issues:
 
 - **SSID mismatch**: Network names are case-sensitive and must match exactly
-- **MAC address lookup fails**: The `arp` command might not have the gateway cached. Try `ping -c1 $(ip route show default | awk '{print $3}' | head -1)` first
+- **MAC address lookup fails**: The `ip neigh` command might not have the gateway cached.
+  Try `ping -c1 $(ip route show default | awk '{print $3}' | head -1)` first to populate the neighbor table
 - **Permissions**: Make sure the script is executable and the user exists
 - **D-Bus issues**: The script handles D-Bus session addressing, but older systems might need adjustments
 - **Multiple gateways**: If you have multiple default routes, the script takes the first one
