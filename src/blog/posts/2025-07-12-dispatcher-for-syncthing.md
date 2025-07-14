@@ -159,7 +159,8 @@ get_network_info() {
     # Get gateway MAC address
     GATEWAY_IP=$(ip route show default | awk '{print $3}' | head -1)
     if [ -n "$GATEWAY_IP" ]; then
-        GATEWAY_MAC=$(ip neigh show "$GATEWAY_IP" | awk '{print $5}' | head -1)
+        ping -c1 -W1 "$GATEWAY_IP" >/dev/null 2>&1 || true   # prime ARP cache
+        GATEWAY_MAC=$(ip neigh show "$GATEWAY_IP" | awk '$5 ~ /^[0-9a-f:]{17}$/ {print $5}' | head -1)
     else
         GATEWAY_MAC=""
     fi
