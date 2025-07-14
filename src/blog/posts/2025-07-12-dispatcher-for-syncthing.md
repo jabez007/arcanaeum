@@ -22,7 +22,8 @@ draft: false
 Picture this: You're on a business trip with your laptop, connected to hotel Wi-Fi, when SyncThing tries to sync with your home devices.
 Since your SyncThing setup only works on your local network (no internet relay), it just sits there spinning, wasting battery and bandwidth trying to connect to devices that aren't reachable.
 
-Sound familiar? Many people run SyncThing exclusively on their home network—it's faster, more secure, and doesn't require complex firewall configurations.
+Sound familiar?
+Many people run SyncThing exclusively on their home network—it's faster, more secure, and doesn't require complex firewall configurations.
 But that means SyncThing is useless (and resource-wasting) when you're traveling.
 
 Let's fix this by making SyncThing smart about when it runs—automatically starting only when you're connected to your trusted home network(s).
@@ -37,7 +38,8 @@ Running SyncThing 24/7 might seem convenient, but there are compelling reasons t
 - **Data usage**: Avoid connection attempts over mobile data
 - **Clean separation**: Travel laptop stays lean, home network stays synchronized
 
-The solution? A NetworkManager dispatcher script that automatically starts and stops SyncThing based on your trusted network connections.
+The solution?
+A NetworkManager dispatcher script that automatically starts and stops SyncThing based on your trusted network connections.
 
 ## What We're Building
 
@@ -56,10 +58,9 @@ This guide assumes you're running:
 - NetworkManager for Wi-Fi management
 - SyncThing already installed
 
-## Step 1: Switch to User-Scoped SyncThing
+## Step 1: Configure SyncThing Service Behavior
 
-First, let's move SyncThing from a system service to a user service.
-This is more secure and gives us better control.
+First, let's move SyncThing from a system service to a user service and configure it properly.
 
 If you're currently running SyncThing as a system service, stop it:
 
@@ -67,17 +68,33 @@ If you're currently running SyncThing as a system service, stop it:
 sudo systemctl disable --now syncthing@yourusername
 ```
 
-Now enable the user service:
+Now we have two options for the user service:
+
+### Option A: Manual Start Only (Recommended)
+
+If you want SyncThing to ONLY run when on trusted networks:
+
+```bash
+# Make sure the service is not enabled for auto-start
+systemctl --user disable syncthing
+# Make sure it's stopped now
+systemctl --user stop syncthing
+```
+
+This way, SyncThing will never auto-start on boot and will only be started by our dispatcher script when you connect to trusted networks.
+
+### Option B: Auto-start but Stop on Untrusted Networks
+
+If you want SyncThing to start on boot but stop when on untrusted networks:
 
 ```bash
 systemctl --user enable --now syncthing
 ```
 
-**Pro tip**: If you need SyncThing to start without logging in (unusual for this use case), enable lingering:
+**Important**: If you choose Option A, SyncThing will only start when you connect to a trusted network.
+If you choose Option B, it will start on boot but our script will stop it when you connect to untrusted networks.
 
-```bash
-sudo loginctl enable-linger yourusername
-```
+For most travel laptop scenarios, **Option A is recommended** because it saves battery and resources when you're not on trusted networks.
 
 ## Step 2: Identify Your Trusted Networks
 
@@ -93,8 +110,7 @@ nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2
 
 ### Method 2: By Router MAC Address (More Secure)
 
-SSIDs can be spoofed, but MAC addresses are harder to fake.
-Get your router's MAC address:
+SSIDs can be spoofed, but MAC addresses are harder to fake. Get your router's MAC address:
 
 ```bash
 # Get the gateway MAC address
@@ -133,7 +149,7 @@ DBUS_SESSION="unix:path=/run/user/$USER_UID/bus"
 declare -A TRUSTED_NETWORKS=(
     ["HomeNetwork"]="aa:bb:cc:dd:ee:ff"      # Home router MAC
     ["OfficeWiFi"]="11:22:33:44:55:66"       # Office router MAC
-    ["ParentsHouse"]=""                       # SSID-only (leave MAC empty)
+    ["ParentsHouse"]=""                      # SSID-only (leave MAC empty)
 )
 
 # Function to get current network info
@@ -143,7 +159,7 @@ get_network_info() {
     # Get gateway MAC address
     GATEWAY_IP=$(ip route show default | awk '{print $3}' | head -1)
     if [ -n "$GATEWAY_IP" ]; then
-        GATEWAY_MAC=$(ip neigh show "$GATEWAY_IP" 2>/dev/null | awk '{print $5}' | head -1)
+        GATEWAY_MAC=$(ip neigh show "$GATEWAY_IP" | awk '{print $5}' | head -1)
     else
         GATEWAY_MAC=""
     fi
@@ -181,27 +197,36 @@ is_trusted_network() {
 
 # Function to start SyncThing
 start_syncthing() {
-    sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
-        systemctl --user start syncthing
-    sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" DISPLAY=:0 \
-        notify-send "SyncThing" "Started on trusted network: $CURRENT_SSID" --icon=dialog-information
+    # Check if SyncThing is already running
+    if ! systemctl --user is-active --quiet syncthing; then
+        sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
+            systemctl --user start syncthing
+        sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" DISPLAY=:0 \
+            notify-send "SyncThing" "Started on trusted network: $CURRENT_SSID" --icon=dialog-information
+    fi
 }
 
 # Function to stop SyncThing
 stop_syncthing() {
-    sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
-        systemctl --user stop syncthing
-    sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" DISPLAY=:0 \
-        notify-send "SyncThing" "Stopped (left trusted network)" --icon=dialog-warning
+    # Check if SyncThing is actually running before stopping
+    if systemctl --user is-active --quiet syncthing; then
+        sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
+            systemctl --user stop syncthing
+        sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" DISPLAY=:0 \
+            notify-send "SyncThing" "Stopped (untrusted network: $CURRENT_SSID)" --icon=dialog-warning
+    fi
 }
 
 # Main logic
 if [ "$STATUS" = "up" ]; then
     if is_trusted_network; then
         start_syncthing
+    else
+        # Stop SyncThing if connecting to untrusted network
+        stop_syncthing
     fi
 elif [ "$STATUS" = "down" ]; then
-    # Always stop on disconnect (we'll restart if the new network is trusted)
+    # Always stop on disconnect
     stop_syncthing
 fi
 ```
@@ -219,16 +244,19 @@ sudo chmod +x /etc/NetworkManager/dispatcher.d/99-syncthing
 
 Time to see the magic in action:
 
-1. **Disconnect from Wi-Fi**: You should see a notification that SyncThing has stopped
-2. **Connect to a trusted network**: SyncThing should start with a notification showing the network name
-3. **Connect to an untrusted network**: SyncThing should remain stopped
-4. **Test MAC address verification**: Try connecting to a network with the same SSID but different router (if available)
+1. **Start with SyncThing stopped**: `systemctl --user stop syncthing`
+2. **Connect to an untrusted network**: SyncThing should remain stopped (or be stopped if it was running)
+3. **Connect to a trusted network**: SyncThing should start with a notification showing the network name
+4. **Switch back to untrusted network**: SyncThing should stop immediately
+5. **Disconnect from Wi-Fi entirely**: SyncThing should stop
 
 Check the service status anytime with:
 
 ```bash
 systemctl --user status syncthing
 ```
+
+**Key behavior**: The script now ensures SyncThing is stopped whenever you're on an untrusted network, preventing it from running where it shouldn't.
 
 **Debugging tip**: Test network detection manually by running parts of the script:
 
@@ -267,6 +295,8 @@ tail -f /tmp/syncthing-dispatch.log
 
 ### Common issues:
 
+- **SyncThing keeps running on untrusted networks**: Check that the script is executable and the `TRUSTED_NETWORKS` array is configured correctly
+- **SyncThing auto-starts on boot**: If you chose Option A but SyncThing still starts automatically, disable the user service: `systemctl --user disable syncthing`
 - **SSID mismatch**: Network names are case-sensitive and must match exactly
 - **MAC address lookup fails**: The `ip neigh` command might not have the gateway cached.
   Try `ping -c1 $(ip route show default | awk '{print $3}' | head -1)` first to populate the neighbor table
@@ -361,8 +391,7 @@ For maximum security, combine this with other measures like:
 ## Wrapping Up
 
 This smart SyncThing setup solves a real problem for people running local-only sync networks.
-No more watching your travel laptop waste battery trying to connect to unreachable home devices.
-No more worrying about connecting to spoofed networks.
+No more watching your travel laptop waste battery trying to connect to unreachable home devices. No more worrying about connecting to spoofed networks.
 
 Your SyncThing network becomes truly intelligent—active when it can be productive, dormant when it can't.
 Whether you're at home, the office, or visiting family, it knows exactly when to sync and when to stay quiet.
@@ -371,3 +400,7 @@ The best part? Once it's set up, you'll forget it's there.
 Your files just magically appear when you're on trusted networks, and your laptop stays lean and efficient everywhere else.
 
 _Perfect sync when you need it, peace of mind when you don't._ 🔁
+
+---
+
+_Have questions or improvements to suggest? The beauty of automation is that it can always be refined to fit your specific needs._
