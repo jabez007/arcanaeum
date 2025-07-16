@@ -196,10 +196,16 @@ is_trusted_network() {
     return 1
 }
 
+# Function to check if SyncThing is running (as the specified user)
+is_syncthing_running() {
+    sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
+        systemctl --user is-active --quiet syncthing
+}
+
 # Function to start SyncThing
 start_syncthing() {
     # Check if SyncThing is already running
-    if ! systemctl --user is-active --quiet syncthing; then
+    if ! is_syncthing_running; then
         sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
             systemctl --user start syncthing
         sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" DISPLAY=:0 \
@@ -210,7 +216,7 @@ start_syncthing() {
 # Function to stop SyncThing
 stop_syncthing() {
     # Check if SyncThing is actually running before stopping
-    if systemctl --user is-active --quiet syncthing; then
+    if is_syncthing_running; then
         sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
             systemctl --user stop syncthing
         sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" DISPLAY=:0 \
