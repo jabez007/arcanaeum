@@ -145,7 +145,8 @@ INTERFACE="$1"
 STATUS="$2"
 USER_NAME="yourusername"  # Change this to your username
 USER_UID=$(id -u "$USER_NAME")
-DBUS_SESSION="unix:path=/run/user/$USER_UID/bus"
+export XDG_RUNTIME_DIR="/run/user/$USER_UID"
+DBUS_SESSION="unix:path=$XDG_RUNTIME_DIR/bus"
 
 # Define trusted networks (add your networks here)
 declare -A TRUSTED_NETWORKS=(
@@ -201,8 +202,9 @@ is_trusted_network() {
 # Function to check if user session is available
 is_user_session_available() {
     # Check if user session bus exists and is responsive
-    if [ -S "/run/user/$USER_UID/bus" ]; then
-        if sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
+    if [ -S "$XDG_RUNTIME_DIR/bus" ]; then
+        if runuser -u "$USER_NAME" -- \
+            env DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
             systemctl --user list-units >/dev/null 2>&1; then
             return 0
         fi
@@ -216,7 +218,8 @@ is_syncthing_running() {
         return 1  # Can't check if session isn't available
     fi
 
-    sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
+    runuser -u "$USER_NAME" -- \
+        env DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
         systemctl --user is-active --quiet syncthing
 }
 
@@ -230,11 +233,13 @@ start_syncthing() {
 
     # Check if SyncThing is already running
     if ! is_syncthing_running; then
-        sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
+        runuser -u "$USER_NAME" -- \
+            env DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
             systemctl --user start syncthing
 
         # Try to send notification (may fail if no display session)
-        sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" DISPLAY=:0 \
+        runuser -u "$USER_NAME" -- \
+            env DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" DISPLAY=:0 \
             notify-send "SyncThing" "Started on trusted network: $CURRENT_SSID" --icon=dialog-information 2>/dev/null || true
     fi
 }
@@ -249,11 +254,13 @@ stop_syncthing() {
 
     # Check if SyncThing is actually running before stopping
     if is_syncthing_running; then
-        sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
+        runuser -u "$USER_NAME" -- \
+            env DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" \
             systemctl --user stop syncthing
 
         # Try to send notification (may fail if no display session)
-        sudo -u "$USER_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" DISPLAY=:0 \
+        runuser -u "$USER_NAME" -- \
+            env DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION" DISPLAY=:0 \
             notify-send "SyncThing" "Stopped (untrusted network: $CURRENT_SSID)" --icon=dialog-warning 2>/dev/null || true
     fi
 }
