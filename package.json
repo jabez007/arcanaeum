@@ -19,7 +19,7 @@
     "front-matter": "^4.0.2",
     "fuse.js": "^7.1.0",
     "highlight.js": "^11.11.1",
-    "markdown-it": "^14.1.0",
+    "markdown-it": "^14.1.1",
     "vue": "^3.5.13",
     "vue-gtag": "^3.5.1",
     "vue-router": "^4.5.0"
