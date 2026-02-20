@@ -64,5 +64,7 @@ export function getPostsByAuthor(author: string): BlogPostMetadata[] {
 }
 
 export function getRecentPosts(count: number = 5): BlogPostMetadata[] {
-  return getAllPosts().slice(0, count);
+  return getAllPosts()
+    .sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime())
+    .slice(0, count);
 }

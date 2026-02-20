@@ -14,9 +14,9 @@ export function useBlog() {
   const allTags = computed(() => blogIndex.value.tags);
   const allAuthors = computed(() => blogIndex.value.authors);
 
-  const loadPosts = () => {
+  const loadPosts = (preserveError: boolean = false) => {
     try {
-      error.value = null;
+      if (!preserveError) error.value = null;
       postsLoading.value = true;
       posts.value = getAllPosts();
     } catch (err) {
@@ -26,16 +26,13 @@ export function useBlog() {
     }
   };
 
-  const getPost = async (slug: string): Promise<BlogPost | undefined> => {
+  const getPost = async (slug: string, preserveError: boolean = false): Promise<BlogPost | undefined> => {
     try {
-      error.value = null;
-      postLoading.value = true;
+      if (!preserveError) error.value = null;
       return await getPostBySlug(slug);
     } catch (err) {
       error.value = err instanceof Error ? err.message : "Failed to load post";
       return undefined;
-    } finally {
-      postLoading.value = false;
     }
   };
 

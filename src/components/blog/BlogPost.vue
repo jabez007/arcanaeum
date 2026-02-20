@@ -88,6 +88,9 @@ const router = useRouter();
 
 const { posts, postLoading, error, getPost, getRelatedPostsForPost, loadPosts } = useBlog();
 
+// Synchronously set loading true before any rendering to prevent "not found" flash
+postLoading.value = true;
+
 const post = ref<BlogPost | undefined>(undefined);
 const relatedPosts = ref<BlogPostMetadata[]>([]);
 
@@ -126,8 +129,9 @@ const loadPostData = async (): Promise<void> => {
   relatedPosts.value = [];
   try {
     // Ensure we have the post list for navigation and related posts
+    // Use preserveError=true so we don't clear an error if one already exists
     if (allPosts.value.length === 0) {
-      loadPosts();
+      loadPosts(true);
     }
 
     const foundPost = await getPost(props.slug);
@@ -144,7 +148,6 @@ const loadPostData = async (): Promise<void> => {
     }
   } catch (err) {
     console.error(`Error in loadPostData for ${props.slug}:`, err);
-    // error from useBlog() is already reactive and will be set by getPost()
   } finally {
     postLoading.value = false;
   }
