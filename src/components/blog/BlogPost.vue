@@ -115,22 +115,27 @@ const navigateToPost = (slug: string): void => {
 };
 
 const loadPostData = async (): Promise<void> => {
-  // Ensure we have the post list for navigation and related posts
-  if (allPosts.value.length === 0) {
-    loadPosts();
-  }
-
-  const foundPost = await getPost(props.slug);
-  if (foundPost) {
-    post.value = foundPost;
-    relatedPosts.value = getRelatedPostsForPost(foundPost);
-
-    // Update page title
-    if (foundPost.frontmatter.title) {
-      document.title = `${foundPost.frontmatter.title} - Blog`;
+  loading.value = true;
+  try {
+    // Ensure we have the post list for navigation and related posts
+    if (allPosts.value.length === 0) {
+      loadPosts();
     }
-  } else {
-    post.value = undefined;
+
+    const foundPost = await getPost(props.slug);
+    if (foundPost) {
+      post.value = foundPost;
+      relatedPosts.value = getRelatedPostsForPost(foundPost);
+
+      // Update page title
+      if (foundPost.frontmatter.title) {
+        document.title = `${foundPost.frontmatter.title} - Blog`;
+      }
+    } else {
+      post.value = undefined;
+    }
+  } finally {
+    loading.value = false;
   }
 };
 

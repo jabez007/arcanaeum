@@ -17,6 +17,11 @@ function extractExcerpt(content, maxLength = 160) {
 }
 
 function generateIndex() {
+  if (!fs.existsSync(POSTS_DIR)) {
+    console.error(`Error: Blog posts directory not found at ${POSTS_DIR}`);
+    process.exit(1);
+  }
+
   const files = fs.readdirSync(POSTS_DIR).filter((file) => file.endsWith(".md"));
   const posts = [];
   const tags = new Set();
@@ -36,8 +41,13 @@ function generateIndex() {
     const slug = attributes.slug || key.replace(/^\d{4}-\d{2}-\d{2}-/, "");
     const excerpt = attributes.excerpt || extractExcerpt(body);
     const date = attributes.date;
-    // Format date string if it's a Date object
-    const dateStr = date instanceof Date ? date.toISOString().split("T")[0] : String(date);
+    // Format date string if it's a Date object, otherwise handle undefined/null
+    let dateStr = "";
+    if (date instanceof Date) {
+      dateStr = date.toISOString().split("T")[0];
+    } else if (date) {
+      dateStr = String(date);
+    }
 
     const metadata = {
       id: key,
@@ -61,7 +71,11 @@ function generateIndex() {
   });
 
   // Sort by date (newest first)
-  posts.sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime());
+  posts.sort((a, b) => {
+    const timeA = new Date(a.frontmatter.date).getTime() || 0;
+    const timeB = new Date(b.frontmatter.date).getTime() || 0;
+    return timeB - timeA;
+  });
 
   const index = {
     posts,
