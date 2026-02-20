@@ -1,9 +1,28 @@
 import fs from "fs";
 import path from "path";
 import matter from "front-matter";
+import MarkdownIt from "markdown-it";
+import hljs from "highlight.js";
 
 const POSTS_DIR = path.resolve("src/blog/posts");
-const OUTPUT_FILE = path.resolve("src/blog/posts-index.json");
+const OUTPUT_DIR = path.resolve("src/blog/rendered");
+const INDEX_FILE = path.resolve("src/blog/posts-index.json");
+
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true,
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(str, { language: lang }).value;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return "";
+  },
+});
 
 function calculateReadingTime(content) {
   const wordsPerMinute = 200;
@@ -22,8 +41,13 @@ function generateIndex() {
     process.exit(1);
   }
 
+  // Ensure output directory exists
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  }
+
   const files = fs.readdirSync(POSTS_DIR).filter((file) => file.endsWith(".md"));
-  const posts = [];
+  const postsMetadata = [];
   const tags = new Set();
   const authors = new Set();
 
@@ -40,8 +64,8 @@ function generateIndex() {
     const key = path.basename(file, ".md");
     const slug = attributes.slug || key.replace(/^\d{4}-\d{2}-\d{2}-/, "");
     const excerpt = attributes.excerpt || extractExcerpt(body);
+
     const date = attributes.date;
-    // Format date string if it's a Date object, otherwise handle undefined/null
     let dateStr = "";
     if (date instanceof Date) {
       dateStr = date.toISOString().split("T")[0];
@@ -60,7 +84,16 @@ function generateIndex() {
       readingTime: calculateReadingTime(body),
     };
 
-    posts.push(metadata);
+    postsMetadata.push(metadata);
+
+    // Render post and save as JSON
+    const renderedContent = md.render(body);
+    const postData = {
+      ...metadata,
+      content: renderedContent,
+    };
+
+    fs.writeFileSync(path.join(OUTPUT_DIR, `${slug}.json`), JSON.stringify(postData, null, 2));
 
     if (attributes.tags) {
       attributes.tags.forEach((tag) => tags.add(tag));
@@ -71,21 +104,21 @@ function generateIndex() {
   });
 
   // Sort by date (newest first)
-  posts.sort((a, b) => {
+  postsMetadata.sort((a, b) => {
     const timeA = new Date(a.frontmatter.date).getTime() || 0;
     const timeB = new Date(b.frontmatter.date).getTime() || 0;
     return timeB - timeA;
   });
 
   const index = {
-    posts,
+    posts: postsMetadata,
     tags: Array.from(tags).sort(),
     authors: Array.from(authors).sort(),
-    totalPosts: posts.length,
+    totalPosts: postsMetadata.length,
   };
 
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(index, null, 2));
-  console.log(`Successfully generated blog index with ${posts.length} posts.`);
+  fs.writeFileSync(INDEX_FILE, JSON.stringify(index, null, 2));
+  console.log(`Successfully generated blog index and rendered ${postsMetadata.length} posts.`);
 }
 
 generateIndex();

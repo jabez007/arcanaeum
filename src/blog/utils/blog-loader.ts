@@ -1,31 +1,5 @@
-import matter from "front-matter";
-import MarkdownIt from "markdown-it";
-import hljs from "highlight.js";
 import type { BlogPost, BlogIndex, BlogPostMetadata } from "../types";
 import blogIndexData from "../posts-index.json";
-
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-  highlight: function (str: string, lang: string): string {
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        return hljs.highlight(str, { language: lang }).value;
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    return "";
-  },
-});
-
-// Lazy load all markdown files
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const postModules = import.meta.glob("../posts/*.md", { query: "?raw", import: "default" }) as Record<
-  string,
-  () => Promise<string>
->;
 
 export function getAllPosts(): BlogPostMetadata[] {
   // Use the pre-generated index
@@ -48,28 +22,29 @@ export function getBlogIndex(): BlogIndex {
   };
 }
 
+// Lazy load all rendered JSON files
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const renderedModules = import.meta.glob("../rendered/*.json", { import: "default" }) as Record<
+  string,
+  () => Promise<any>
+>;
+
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
   const metadata = getAllPosts().find((post) => post.slug === slug);
   if (!metadata) return undefined;
 
   // Find the module corresponding to this post
-  const modulePath = `../posts/${metadata.id}.md`;
-  const loadModule = postModules[modulePath];
+  const modulePath = `../rendered/${slug}.json`;
+  const loadModule = renderedModules[modulePath];
 
   if (!loadModule) {
-    console.error(`Could not find module for post: ${metadata.id}`);
+    console.error(`Could not find rendered module for slug: ${slug}`);
     return undefined;
   }
 
   try {
-    const rawContent = await loadModule();
-    const { body } = matter(rawContent);
-
-    return {
-      ...metadata,
-      content: md.render(body),
-      rawContent: body,
-    };
+    const postData = (await loadModule()) as BlogPost;
+    return postData;
   } catch (err) {
     console.error(`Failed to load post content for ${slug}:`, err);
     return undefined;
