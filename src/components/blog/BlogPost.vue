@@ -1,76 +1,78 @@
 <template>
-  <article class="blog-post" v-if="post">
-    <header class="post-header">
-      <nav class="breadcrumb">
-        <router-link to="/blog">← Back to Blog</router-link>
-      </nav>
+  <Transition name="fade-slide" mode="out-in">
+    <article class="blog-post" v-if="post" :key="post.slug" ref="postContainer">
+      <header class="post-header">
+        <nav class="breadcrumb">
+          <router-link to="/blog">← Back to Blog</router-link>
+        </nav>
 
-      <div class="post-meta">
-        <time>{{ formatDate(post.frontmatter.date) }}</time>
-        <span v-if="post.frontmatter.author" class="author">
-          by
-          <router-link :to="`/blog/author/${post.frontmatter.author}`" class="author-link">
-            {{ post.frontmatter.author }}
+        <div class="post-meta">
+          <time>{{ formatDate(post.frontmatter.date) }}</time>
+          <span v-if="post.frontmatter.author" class="author">
+            by
+            <router-link :to="`/blog/author/${post.frontmatter.author}`" class="author-link">
+              {{ post.frontmatter.author }}
+            </router-link>
+          </span>
+          <span class="blog-badge blog-badge-reading-time">{{ post.readingTime }} min read</span>
+        </div>
+
+        <h1>{{ post.frontmatter.title }}</h1>
+
+        <div class="post-tags" v-if="post.frontmatter.tags">
+          <router-link v-for="tag in post.frontmatter.tags" :key="tag" :to="`/blog/tag/${tag}`" class="blog-tag tag-link">
+            {{ tag }}
           </router-link>
-        </span>
-        <span class="blog-badge blog-badge-reading-time">{{ post.readingTime }} min read</span>
-      </div>
+        </div>
+      </header>
 
-      <h1>{{ post.frontmatter.title }}</h1>
+      <div class="post-content" v-html="post.content"></div>
 
-      <div class="post-tags" v-if="post.frontmatter.tags">
-        <router-link v-for="tag in post.frontmatter.tags" :key="tag" :to="`/blog/tag/${tag}`" class="blog-tag tag-link">
-          {{ tag }}
-        </router-link>
-      </div>
-    </header>
-
-    <div class="post-content" v-html="post.content"></div>
-
-    <!-- Related Posts -->
-    <section v-if="relatedPosts.length > 0" class="related-posts">
-      <h3>Related Posts</h3>
-      <div class="related-grid">
-        <div v-for="relatedPost in relatedPosts" :key="relatedPost.slug" class="blog-card related-card"
-          @click="navigateToPost(relatedPost.slug)">
-          <h4>{{ relatedPost.frontmatter.title }}</h4>
-          <p>{{ relatedPost.frontmatter.excerpt }}</p>
-          <div class="related-meta">
-            <time>{{ formatDate(relatedPost.frontmatter.date) }}</time>
-            <span class="blog-badge blog-badge-reading-time">{{ relatedPost.readingTime }} min read</span>
+      <!-- Related Posts -->
+      <section v-if="relatedPosts.length > 0" class="related-posts">
+        <h3>Related Posts</h3>
+        <div class="related-grid">
+          <div v-for="relatedPost in relatedPosts" :key="relatedPost.slug" class="blog-card related-card"
+            @click="navigateToPost(relatedPost.slug)">
+            <h4>{{ relatedPost.frontmatter.title }}</h4>
+            <p>{{ relatedPost.frontmatter.excerpt }}</p>
+            <div class="related-meta">
+              <time>{{ formatDate(relatedPost.frontmatter.date) }}</time>
+              <span class="blog-badge blog-badge-reading-time">{{ relatedPost.readingTime }} min read</span>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <footer class="post-footer">
-      <div class="post-navigation">
-        <router-link v-if="previousPost" :to="`/blog/${previousPost.slug}`" class="nav-link prev">
-          <span class="nav-label">Previous</span>
-          <span class="nav-title">{{ previousPost.frontmatter.title }}</span>
-        </router-link>
+      <footer class="post-footer">
+        <div class="post-navigation">
+          <router-link v-if="previousPost" :to="`/blog/${previousPost.slug}`" class="nav-link prev">
+            <span class="nav-label">Previous</span>
+            <span class="nav-title">{{ previousPost.frontmatter.title }}</span>
+          </router-link>
 
-        <router-link v-if="nextPost" :to="`/blog/${nextPost.slug}`" class="nav-link next">
-          <span class="nav-label">Next</span>
-          <span class="nav-title">{{ nextPost.frontmatter.title }}</span>
-        </router-link>
-      </div>
-    </footer>
-  </article>
+          <router-link v-if="nextPost" :to="`/blog/${nextPost.slug}`" class="nav-link next">
+            <span class="nav-label">Next</span>
+            <span class="nav-title">{{ nextPost.frontmatter.title }}</span>
+          </router-link>
+        </div>
+      </footer>
+    </article>
 
-  <div v-else-if="!postLoading && error" class="blog-error">
-    <h1>Error Loading Post</h1>
-    <p>{{ error }}</p>
-    <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
-  </div>
+    <div v-else-if="!postLoading && error" class="blog-error" key="error">
+      <h1>Error Loading Post</h1>
+      <p>{{ error }}</p>
+      <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
+    </div>
 
-  <div v-else-if="!postLoading" class="not-found">
-    <h1>Post not found</h1>
-    <p>The post you're looking for doesn't exist or has been moved.</p>
-    <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
-  </div>
+    <div v-else-if="!postLoading" class="not-found" key="not-found">
+      <h1>Post not found</h1>
+      <p>The post you're looking for doesn't exist or has been moved.</p>
+      <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
+    </div>
 
-  <div v-else class="blog-loading">Loading post...</div>
+    <div v-else class="blog-loading" key="loading">Loading post...</div>
+  </Transition>
 </template>
 
 <script setup lang="ts">
@@ -123,10 +125,18 @@ const navigateToPost = (slug: string): void => {
   router.push(`/blog/${slug}`);
 };
 
+const postContainer = ref<HTMLElement | null>(null);
+
 const loadPostData = async (): Promise<void> => {
   postLoading.value = true;
   post.value = undefined;
   relatedPosts.value = [];
+
+  // Scroll to top of the post container
+  if (postContainer.value) {
+    postContainer.value.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   try {
     // Ensure we have the post list for navigation and related posts
     // Use preserveError=true so we don't clear an error if one already exists
@@ -490,5 +500,21 @@ onMounted(() => {
     flex-direction: column;
     gap: var(--blog-spacing-sm);
   }
+}
+
+/* Transition Animations */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 </style>
