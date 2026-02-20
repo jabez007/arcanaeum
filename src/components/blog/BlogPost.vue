@@ -71,7 +71,7 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useBlog } from "@/blog/composables/use-blog";
-import type { BlogPost } from "@/blog/types";
+import type { BlogPost, BlogPostMetadata } from "@/blog/types";
 
 interface Props {
   slug: string;
@@ -80,10 +80,10 @@ interface Props {
 const props = defineProps<Props>();
 const router = useRouter();
 
-const { posts, loading, getPost, getRelatedPostsForPost } = useBlog();
+const { posts, loading, getPost, getRelatedPostsForPost, loadPosts } = useBlog();
 
 const post = ref<BlogPost | undefined>(undefined);
-const relatedPosts = ref<BlogPost[]>([]);
+const relatedPosts = ref<BlogPostMetadata[]>([]);
 
 const allPosts = computed(() => posts.value);
 
@@ -92,12 +92,12 @@ const currentIndex = computed((): number => {
   return allPosts.value.findIndex((p) => p.slug === post.value?.slug);
 });
 
-const previousPost = computed((): BlogPost | undefined => {
+const previousPost = computed((): BlogPostMetadata | undefined => {
   const index = currentIndex.value;
   return index > 0 ? allPosts.value[index - 1] : undefined;
 });
 
-const nextPost = computed((): BlogPost | undefined => {
+const nextPost = computed((): BlogPostMetadata | undefined => {
   const index = currentIndex.value;
   return index >= 0 && index < allPosts.value.length - 1 ? allPosts.value[index + 1] : undefined;
 });
@@ -114,8 +114,13 @@ const navigateToPost = (slug: string): void => {
   router.push(`/blog/${slug}`);
 };
 
-const loadPost = (): void => {
-  const foundPost = getPost(props.slug);
+const loadPostData = async (): Promise<void> => {
+  // Ensure we have the post list for navigation and related posts
+  if (allPosts.value.length === 0) {
+    loadPosts();
+  }
+
+  const foundPost = await getPost(props.slug);
   if (foundPost) {
     post.value = foundPost;
     relatedPosts.value = getRelatedPostsForPost(foundPost);
@@ -124,14 +129,16 @@ const loadPost = (): void => {
     if (foundPost.frontmatter.title) {
       document.title = `${foundPost.frontmatter.title} - Blog`;
     }
+  } else {
+    post.value = undefined;
   }
 };
 
 // Watch for slug changes (when navigating between posts)
-watch(() => props.slug, loadPost);
+watch(() => props.slug, loadPostData);
 
 onMounted(() => {
-  loadPost();
+  loadPostData();
 });
 </script>
 

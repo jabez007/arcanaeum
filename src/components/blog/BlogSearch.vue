@@ -154,7 +154,6 @@ const getFieldName = (field: string): string => {
     "frontmatter.title": "Title",
     "frontmatter.excerpt": "Excerpt",
     "frontmatter.tags": "Tags",
-    rawContent: "Content",
   };
   return fieldMap[field] || field;
 };

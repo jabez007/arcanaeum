@@ -127,7 +127,7 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useBlog } from "@/blog/composables/use-blog";
-import type { BlogPost } from "@/blog/types";
+import type { BlogPostMetadata } from "@/blog/types";
 
 interface Props {
   tag: string;
@@ -143,7 +143,7 @@ const viewMode = ref<"grid" | "list">("grid");
 const currentPage = ref(1);
 const postsPerPage = 12;
 
-const taggedPosts = computed((): BlogPost[] => {
+const taggedPosts = computed((): BlogPostMetadata[] => {
   const filtered = posts.value.filter((post) => post.frontmatter.tags?.includes(props.tag));
 
   // Sort posts based on selected sort option
@@ -167,7 +167,7 @@ const totalPages = computed((): number => {
   return Math.ceil(taggedPosts.value.length / postsPerPage);
 });
 
-const paginatedPosts = computed((): BlogPost[] => {
+const paginatedPosts = computed((): BlogPostMetadata[] => {
   const start = (currentPage.value - 1) * postsPerPage;
   const end = start + postsPerPage;
   return taggedPosts.value.slice(start, end);

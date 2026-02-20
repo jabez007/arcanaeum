@@ -120,7 +120,7 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useBlog } from "@/blog/composables/use-blog";
-import type { BlogPost, BlogFilters } from "@/blog/types";
+import type { BlogPostMetadata, BlogFilters } from "@/blog/types";
 
 const blogTitle = "Commits & Conjurations";
 
@@ -143,7 +143,7 @@ const filters = computed(
   }),
 );
 
-const filteredPosts = computed((): BlogPost[] => {
+const filteredPosts = computed((): BlogPostMetadata[] => {
   return filterPostsByFilters(filters.value);
 });
 
@@ -151,7 +151,7 @@ const totalPages = computed((): number => {
   return Math.ceil(filteredPosts.value.length / postsPerPage);
 });
 
-const paginatedPosts = computed((): BlogPost[] => {
+const paginatedPosts = computed((): BlogPostMetadata[] => {
   const start = (currentPage.value - 1) * postsPerPage;
   const end = start + postsPerPage;
   return filteredPosts.value.slice(start, end);

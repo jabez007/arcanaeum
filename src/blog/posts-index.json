@@ -1,0 +1,210 @@
+{
+  "posts": [
+    {
+      "id": "2025-07-12-dispatcher-for-syncthing",
+      "slug": "dispatcher-for-syncthing",
+      "frontmatter": {
+        "title": "Dispatcher for SyncThing",
+        "date": "2025-07-12",
+        "author": "jabez007",
+        "tags": [
+          "syncthing",
+          "linux",
+          "NetworkManager",
+          "debian",
+          "wifi-security",
+          "bash-scripting",
+          "network-dispatcher"
+        ],
+        "excerpt": "Stop wasting battery on pointless sync attempts.\nLearn how to automatically start SyncThing only on trusted networks using NetworkManager scripts with MAC address verification and multi-network support—perfect for local-only setups and travel laptops.\n",
+        "featured": false,
+        "draft": false
+      },
+      "readingTime": 14
+    },
+    {
+      "id": "2025-06-17-laptop-lid-interlude",
+      "slug": "laptop-lid-interlude",
+      "frontmatter": {
+        "title": "Laptop Lid Interlude",
+        "date": "2025-06-17",
+        "author": "jabez007",
+        "tags": [
+          "proxmox",
+          "homelab",
+          "laptop-server",
+          "linux-power-management",
+          "logind"
+        ],
+        "excerpt": "So you've got Proxmox humming along on your repurposed laptop — WiFi configured, VMs ready to spin up, and everything looking great.\nThen you close the lid to tuck it away in its new home as a headless server, and... _poof_ 💤\n",
+        "featured": false,
+        "draft": false
+      },
+      "readingTime": 3
+    },
+    {
+      "id": "2025-06-16-proxmox-wifi-saga",
+      "slug": "proxmox-wifi-saga",
+      "frontmatter": {
+        "title": "ProxMox Wi-Fi Saga",
+        "date": "2025-06-16",
+        "author": "jabez007",
+        "tags": [
+          "proxmox",
+          "wifi-setup",
+          "usb-tethering",
+          "networking",
+          "troubleshooting",
+          "homelab",
+          "linux",
+          "wpa_supplicant",
+          "network-interfaces",
+          "dhcp"
+        ],
+        "excerpt": "Picture this: You've just installed Proxmox VE on an old laptop, ready to dive into virtualization glory.\nYou boot up, eager to start pulling container images and VM ISOs.\nThen reality hits—your \"server\" has no Ethernet port, and Proxmox looks at Wi-Fi like it's some alien technology from the future.\n",
+        "featured": false,
+        "draft": false
+      },
+      "readingTime": 5
+    },
+    {
+      "id": "2025-06-15-proxmox-laptop-install",
+      "slug": "proxmox-laptop-install",
+      "frontmatter": {
+        "title": "ProxMox Laptop Install",
+        "date": "2025-06-15",
+        "author": "jabez007",
+        "tags": [
+          "proxmox",
+          "homelab",
+          "virtualization",
+          "tutorial",
+          "selfhosted"
+        ],
+        "excerpt": "This post chronicles my **complete installation journey**, including the BIOS rabbit holes I fell into, the partitioning decisions that actually matter, and the **networking mistake that nearly drove me to throw the laptop out the window** (spoiler: I figured it out, and you won't make the same error).\n",
+        "featured": true,
+        "draft": false
+      },
+      "readingTime": 8
+    },
+    {
+      "id": "2024-11-24-wifi-recovery-script",
+      "slug": "wifi-recovery-script",
+      "frontmatter": {
+        "title": "Wifi Recovery Script",
+        "date": "2024-11-24",
+        "author": "jabez007",
+        "tags": [
+          "homelab",
+          "bash",
+          "NetworkManager",
+          "linux",
+          "wifi",
+          "automation",
+          "troubleshooting",
+          "self-healing",
+          "ssh",
+          "scripting"
+        ],
+        "excerpt": "Ever had that moment when you SSH into your homelab server only to get... nothing? Dead silence.\nYour trusty old laptop-turned-server has ghosted you again.\nIf you're running a homelab on repurposed hardware (guilty as charged), you've probably been there.\n",
+        "featured": false,
+        "draft": false
+      },
+      "readingTime": 5
+    },
+    {
+      "id": "2024-11-10-ssh-server-setup",
+      "slug": "ssh-server-setup",
+      "frontmatter": {
+        "title": "SSH Server Setup",
+        "date": "2024-11-10",
+        "author": "jabez007",
+        "tags": [
+          "homelab",
+          "ssh",
+          "ufw",
+          "linux",
+          "server-setup",
+          "security",
+          "home-network",
+          "firewall",
+          "ssh-hardening",
+          "tutorial",
+          "beginner-friendly"
+        ],
+        "excerpt": "Like many of you in the homelab community, I have a soft spot for old hardware.\nThat laptop collecting dust might seem obsolete for daily use,\nbut it's actually perfect for a home lab — especially when repurposed as an SSH-accessible Linux server.\n",
+        "featured": true,
+        "draft": false
+      },
+      "readingTime": 8
+    },
+    {
+      "id": "2024-10-27-ventoy-usb-persistence",
+      "slug": "ventoy-usb-persistence",
+      "frontmatter": {
+        "title": "Ventoy USB with Persistence",
+        "date": "2024-10-27",
+        "author": "jabez007",
+        "tags": [
+          "ventoy",
+          "linux",
+          "bootable-usb",
+          "lightweight-linux",
+          "persistence",
+          "tutorial",
+          "multi-boot"
+        ],
+        "excerpt": "That 15-year-old laptop gathering dust in your closet?\nThe one that wheezes trying to boot Windows 10?\nDon't trash it just yet.\n",
+        "featured": true,
+        "draft": false
+      },
+      "readingTime": 7
+    }
+  ],
+  "tags": [
+    "NetworkManager",
+    "automation",
+    "bash",
+    "bash-scripting",
+    "beginner-friendly",
+    "bootable-usb",
+    "debian",
+    "dhcp",
+    "firewall",
+    "home-network",
+    "homelab",
+    "laptop-server",
+    "lightweight-linux",
+    "linux",
+    "linux-power-management",
+    "logind",
+    "multi-boot",
+    "network-dispatcher",
+    "network-interfaces",
+    "networking",
+    "persistence",
+    "proxmox",
+    "scripting",
+    "security",
+    "self-healing",
+    "selfhosted",
+    "server-setup",
+    "ssh",
+    "ssh-hardening",
+    "syncthing",
+    "troubleshooting",
+    "tutorial",
+    "ufw",
+    "usb-tethering",
+    "ventoy",
+    "virtualization",
+    "wifi",
+    "wifi-security",
+    "wifi-setup",
+    "wpa_supplicant"
+  ],
+  "authors": [
+    "jabez007"
+  ],
+  "totalPosts": 7
+}
