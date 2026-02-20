@@ -16,6 +16,7 @@ export function useBlog() {
 
   const loadPosts = () => {
     try {
+      error.value = null;
       postsLoading.value = true;
       posts.value = getAllPosts();
     } catch (err) {
@@ -27,6 +28,7 @@ export function useBlog() {
 
   const getPost = async (slug: string): Promise<BlogPost | undefined> => {
     try {
+      error.value = null;
       postLoading.value = true;
       return await getPostBySlug(slug);
     } catch (err) {

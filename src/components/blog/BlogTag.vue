@@ -88,7 +88,7 @@
     </div>
 
     <!-- Empty State -->
-    <div v-if="!loading && !error && taggedPosts.length === 0" class="empty-state">
+    <div v-if="!postsLoading && !error && taggedPosts.length === 0" class="empty-state">
       <h3>No posts found for "{{ tag }}"</h3>
       <p>This tag doesn't exist or no posts have been tagged with it yet.</p>
       <div class="empty-actions">

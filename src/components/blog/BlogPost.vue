@@ -58,6 +58,12 @@
     </footer>
   </article>
 
+  <div v-else-if="!postLoading && error" class="blog-error">
+    <h1>Error Loading Post</h1>
+    <p>{{ error }}</p>
+    <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
+  </div>
+
   <div v-else-if="!postLoading" class="not-found">
     <h1>Post not found</h1>
     <p>The post you're looking for doesn't exist or has been moved.</p>
@@ -80,7 +86,7 @@ interface Props {
 const props = defineProps<Props>();
 const router = useRouter();
 
-const { posts, postLoading, getPost, getRelatedPostsForPost, loadPosts } = useBlog();
+const { posts, postLoading, error, getPost, getRelatedPostsForPost, loadPosts } = useBlog();
 
 const post = ref<BlogPost | undefined>(undefined);
 const relatedPosts = ref<BlogPostMetadata[]>([]);
@@ -116,6 +122,8 @@ const navigateToPost = (slug: string): void => {
 
 const loadPostData = async (): Promise<void> => {
   postLoading.value = true;
+  post.value = undefined;
+  relatedPosts.value = [];
   try {
     // Ensure we have the post list for navigation and related posts
     if (allPosts.value.length === 0) {
@@ -134,6 +142,9 @@ const loadPostData = async (): Promise<void> => {
     } else {
       post.value = undefined;
     }
+  } catch (err) {
+    console.error(`Error in loadPostData for ${props.slug}:`, err);
+    // error from useBlog() is already reactive and will be set by getPost()
   } finally {
     postLoading.value = false;
   }
