@@ -5,7 +5,9 @@ import { filterPosts, searchPosts, getRelatedPosts } from "../utils/blog-searche
 
 export function useBlog() {
   const posts: Ref<BlogPostMetadata[]> = ref([]);
-  const loading = ref(true);
+  const postsLoading = ref(true);
+  const postLoading = ref(false);
+  const loading = computed(() => postsLoading.value || postLoading.value);
   const error = ref<string | null>(null);
 
   const blogIndex = computed(() => getBlogIndex());
@@ -14,24 +16,24 @@ export function useBlog() {
 
   const loadPosts = () => {
     try {
-      loading.value = true;
+      postsLoading.value = true;
       posts.value = getAllPosts();
     } catch (err) {
       error.value = err instanceof Error ? err.message : "Failed to load posts";
     } finally {
-      loading.value = false;
+      postsLoading.value = false;
     }
   };
 
   const getPost = async (slug: string): Promise<BlogPost | undefined> => {
     try {
-      loading.value = true;
+      postLoading.value = true;
       return await getPostBySlug(slug);
     } catch (err) {
       error.value = err instanceof Error ? err.message : "Failed to load post";
       return undefined;
     } finally {
-      loading.value = false;
+      postLoading.value = false;
     }
   };
 
@@ -49,6 +51,8 @@ export function useBlog() {
 
   return {
     posts,
+    postsLoading,
+    postLoading,
     loading,
     error,
     allTags,

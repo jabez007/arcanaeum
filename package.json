@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "npm run generate-index && vite",
     "generate-index": "node scripts/generate-blog-index.js",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "npm run generate-index && run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "build-only": "npm run generate-index && vite build",
+    "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",

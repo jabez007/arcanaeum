@@ -58,7 +58,7 @@
     </footer>
   </article>
 
-  <div v-else-if="!loading" class="not-found">
+  <div v-else-if="!postLoading" class="not-found">
     <h1>Post not found</h1>
     <p>The post you're looking for doesn't exist or has been moved.</p>
     <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
@@ -80,7 +80,7 @@ interface Props {
 const props = defineProps<Props>();
 const router = useRouter();
 
-const { posts, loading, getPost, getRelatedPostsForPost, loadPosts } = useBlog();
+const { posts, postLoading, getPost, getRelatedPostsForPost, loadPosts } = useBlog();
 
 const post = ref<BlogPost | undefined>(undefined);
 const relatedPosts = ref<BlogPostMetadata[]>([]);
@@ -115,7 +115,7 @@ const navigateToPost = (slug: string): void => {
 };
 
 const loadPostData = async (): Promise<void> => {
-  loading.value = true;
+  postLoading.value = true;
   try {
     // Ensure we have the post list for navigation and related posts
     if (allPosts.value.length === 0) {
@@ -135,7 +135,7 @@ const loadPostData = async (): Promise<void> => {
       post.value = undefined;
     }
   } finally {
-    loading.value = false;
+    postLoading.value = false;
   }
 };
 

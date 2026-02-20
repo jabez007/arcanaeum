@@ -37,7 +37,7 @@ function generateIndex() {
       return;
     }
 
-    const key = file.replace(".md", "");
+    const key = path.basename(file, ".md");
     const slug = attributes.slug || key.replace(/^\d{4}-\d{2}-\d{2}-/, "");
     const excerpt = attributes.excerpt || extractExcerpt(body);
     const date = attributes.date;

@@ -31,8 +31,7 @@ export function getAllPosts(): BlogPostMetadata[] {
   // Use the pre-generated index
   return (blogIndexData.posts as BlogPostMetadata[]).filter((post) => {
     // Skip draft posts in production (though the script already skips them)
-    // @ts-expect-error process
-    if (post.frontmatter.draft && process.env.NODE_ENV === "production") {
+    if (post.frontmatter.draft && import.meta.env.PROD) {
       return false;
     }
     return true;

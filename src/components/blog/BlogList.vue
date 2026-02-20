@@ -49,7 +49,7 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="blog-loading">Loading posts...</div>
+    <div v-if="postsLoading" class="blog-loading">Loading posts...</div>
 
     <!-- Error State -->
     <div v-if="error" class="blog-error">
@@ -57,7 +57,7 @@
     </div>
 
     <!-- Posts Grid -->
-    <div class="posts-grid" v-if="!loading && !error">
+    <div class="posts-grid" v-if="!postsLoading && !error">
       <article v-for="post in paginatedPosts" :key="post.slug" class="blog-card post-card"
         @click="navigateToPost(post.slug)">
         <div class="post-meta">
@@ -95,7 +95,7 @@
     </div>
 
     <!-- Empty State -->
-    <div v-if="!loading && !error && filteredPosts.length === 0" class="empty-state">
+    <div v-if="!postsLoading && !error && filteredPosts.length === 0" class="empty-state">
       <h3>No posts found</h3>
       <p>Try adjusting your search or filter criteria.</p>
       <button @click="clearAllFilters" class="blog-btn blog-btn-primary">Clear All Filters</button>
@@ -125,7 +125,7 @@ import type { BlogPostMetadata, BlogFilters } from "@/blog/types";
 const blogTitle = "Commits & Conjurations";
 
 const router = useRouter();
-const { posts, loading, error, allTags, allAuthors, loadPosts, filterPostsByFilters } = useBlog();
+const { posts, postsLoading, error, allTags, allAuthors, loadPosts, filterPostsByFilters } = useBlog();
 
 const searchQuery = ref("");
 const selectedTag = ref("");

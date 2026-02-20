@@ -40,7 +40,7 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="blog-loading">Loading posts...</div>
+    <div v-if="postsLoading" class="blog-loading">Loading posts...</div>
 
     <!-- Error State -->
     <div v-if="error" class="blog-error">
@@ -48,7 +48,7 @@
     </div>
 
     <!-- Posts Grid/List -->
-    <div v-if="!loading && !error && taggedPosts.length > 0" :class="['posts-container', `posts-${viewMode}`]">
+    <div v-if="!postsLoading && !error && taggedPosts.length > 0" :class="['posts-container', `posts-${viewMode}`]">
       <article v-for="post in paginatedPosts" :key="post.slug" class="blog-card post-card"
         @click="navigateToPost(post.slug)">
         <div class="post-meta">
@@ -136,7 +136,7 @@ interface Props {
 const props = defineProps<Props>();
 const router = useRouter();
 
-const { posts, loading, error, loadPosts } = useBlog();
+const { posts, postsLoading, error, loadPosts } = useBlog();
 
 const sortBy = ref<string>("date-desc");
 const viewMode = ref<"grid" | "list">("grid");
