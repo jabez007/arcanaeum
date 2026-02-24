@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { useBlog } from "@/blog/composables/use-blog";
 import type { BlogPost, BlogPostMetadata } from "@/blog/types";
@@ -132,11 +132,6 @@ const loadPostData = async (): Promise<void> => {
   post.value = undefined;
   relatedPosts.value = [];
 
-  // Scroll to top of the post container
-  if (postContainer.value) {
-    postContainer.value.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
   try {
     // Ensure we have the post list for navigation and related posts
     // Use preserveError=true so we don't clear an error if one already exists
@@ -148,6 +143,12 @@ const loadPostData = async (): Promise<void> => {
     if (foundPost) {
       post.value = foundPost;
       relatedPosts.value = getRelatedPostsForPost(foundPost);
+
+      // Wait for the new post to be rendered before scrolling
+      await nextTick();
+      if (postContainer.value) {
+        postContainer.value.scrollTo({ top: 0, behavior: "smooth" });
+      }
 
       // Update page title
       if (foundPost.frontmatter.title) {
