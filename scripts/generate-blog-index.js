@@ -15,7 +15,8 @@ const md = new MarkdownIt({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return hljs.highlight(str, { language: lang }).value;
+        const highlighted = hljs.highlight(str, { language: lang, ignoreIllegals: true }).value;
+        return `<pre><code class="hljs language-${lang}">${highlighted}</code></pre>`;
       } catch (err) {
         console.error(err);
       }
