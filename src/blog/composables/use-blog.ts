@@ -1,33 +1,42 @@
 import { ref, computed, type Ref } from "vue";
-import type { BlogPost, BlogFilters, SearchResult } from "../types";
+import type { BlogPost, BlogPostMetadata, BlogFilters, SearchResult } from "../types";
 import { getAllPosts, getBlogIndex, getPostBySlug } from "../utils/blog-loader";
 import { filterPosts, searchPosts, getRelatedPosts } from "../utils/blog-searcher";
 
 export function useBlog() {
-  const posts: Ref<BlogPost[]> = ref([]);
-  const loading = ref(true);
+  const posts: Ref<BlogPostMetadata[]> = ref([]);
+  const postsLoading = ref(true);
+  const postLoading = ref(false);
+  const loading = computed(() => postsLoading.value || postLoading.value);
   const error = ref<string | null>(null);
 
   const blogIndex = computed(() => getBlogIndex());
   const allTags = computed(() => blogIndex.value.tags);
   const allAuthors = computed(() => blogIndex.value.authors);
 
-  const loadPosts = () => {
+  const loadPosts = (preserveError: boolean = false) => {
     try {
-      loading.value = true;
+      if (!preserveError) error.value = null;
+      postsLoading.value = true;
       posts.value = getAllPosts();
     } catch (err) {
       error.value = err instanceof Error ? err.message : "Failed to load posts";
     } finally {
-      loading.value = false;
+      postsLoading.value = false;
     }
   };
 
-  const getPost = (slug: string): BlogPost | undefined => {
-    return getPostBySlug(slug);
+  const getPost = async (slug: string, preserveError: boolean = false): Promise<BlogPost | undefined> => {
+    try {
+      if (!preserveError) error.value = null;
+      return await getPostBySlug(slug);
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : "Failed to load post";
+      return undefined;
+    }
   };
 
-  const filterPostsByFilters = (filters: BlogFilters): BlogPost[] => {
+  const filterPostsByFilters = (filters: BlogFilters): BlogPostMetadata[] => {
     return filterPosts(filters);
   };
 
@@ -35,12 +44,14 @@ export function useBlog() {
     return searchPosts(query);
   };
 
-  const getRelatedPostsForPost = (post: BlogPost, count?: number): BlogPost[] => {
+  const getRelatedPostsForPost = (post: BlogPostMetadata, count?: number): BlogPostMetadata[] => {
     return getRelatedPosts(post, count);
   };
 
   return {
     posts,
+    postsLoading,
+    postLoading,
     loading,
     error,
     allTags,

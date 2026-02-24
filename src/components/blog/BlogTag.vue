@@ -40,7 +40,7 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="blog-loading">Loading posts...</div>
+    <div v-if="postsLoading" class="blog-loading">Loading posts...</div>
 
     <!-- Error State -->
     <div v-if="error" class="blog-error">
@@ -48,7 +48,7 @@
     </div>
 
     <!-- Posts Grid/List -->
-    <div v-if="!loading && !error && taggedPosts.length > 0" :class="['posts-container', `posts-${viewMode}`]">
+    <div v-if="!postsLoading && !error && taggedPosts.length > 0" :class="['posts-container', `posts-${viewMode}`]">
       <article v-for="post in paginatedPosts" :key="post.slug" class="blog-card post-card"
         @click="navigateToPost(post.slug)">
         <div class="post-meta">
@@ -88,7 +88,7 @@
     </div>
 
     <!-- Empty State -->
-    <div v-if="!loading && !error && taggedPosts.length === 0" class="empty-state">
+    <div v-if="!postsLoading && !error && taggedPosts.length === 0" class="empty-state">
       <h3>No posts found for "{{ tag }}"</h3>
       <p>This tag doesn't exist or no posts have been tagged with it yet.</p>
       <div class="empty-actions">
@@ -127,7 +127,7 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useBlog } from "@/blog/composables/use-blog";
-import type { BlogPost } from "@/blog/types";
+import type { BlogPostMetadata } from "@/blog/types";
 
 interface Props {
   tag: string;
@@ -136,14 +136,14 @@ interface Props {
 const props = defineProps<Props>();
 const router = useRouter();
 
-const { posts, loading, error, loadPosts } = useBlog();
+const { posts, postsLoading, error, loadPosts } = useBlog();
 
 const sortBy = ref<string>("date-desc");
 const viewMode = ref<"grid" | "list">("grid");
 const currentPage = ref(1);
 const postsPerPage = 12;
 
-const taggedPosts = computed((): BlogPost[] => {
+const taggedPosts = computed((): BlogPostMetadata[] => {
   const filtered = posts.value.filter((post) => post.frontmatter.tags?.includes(props.tag));
 
   // Sort posts based on selected sort option
@@ -167,7 +167,7 @@ const totalPages = computed((): number => {
   return Math.ceil(taggedPosts.value.length / postsPerPage);
 });
 
-const paginatedPosts = computed((): BlogPost[] => {
+const paginatedPosts = computed((): BlogPostMetadata[] => {
   const start = (currentPage.value - 1) * postsPerPage;
   const end = start + postsPerPage;
   return taggedPosts.value.slice(start, end);

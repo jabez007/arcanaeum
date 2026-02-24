@@ -1,7 +1,7 @@
-import type { BlogPost } from "./blog-post";
+import type { BlogPostMetadata } from "./blog-post";
 
 export interface BlogIndex {
-  posts: BlogPost[];
+  posts: BlogPostMetadata[];
   tags: string[];
   authors: string[];
   totalPosts: number;

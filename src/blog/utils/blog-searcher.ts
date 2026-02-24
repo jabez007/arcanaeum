@@ -1,20 +1,19 @@
 import Fuse, { type IFuseOptions } from "fuse.js";
-import type { BlogPost, SearchResult, BlogFilters } from "../types";
+import type { BlogPostMetadata, SearchResult, BlogFilters } from "../types";
 import { getAllPosts } from "./blog-loader";
 
-let searchIndex: Fuse<BlogPost> | null = null;
+let searchIndex: Fuse<BlogPostMetadata> | null = null;
 
-export function initializeSearch(): Fuse<BlogPost> {
+export function initializeSearch(): Fuse<BlogPostMetadata> {
   if (searchIndex) return searchIndex;
 
   const posts = getAllPosts();
 
-  const options: IFuseOptions<BlogPost> = {
+  const options: IFuseOptions<BlogPostMetadata> = {
     keys: [
       { name: "frontmatter.title", weight: 0.7 },
       { name: "frontmatter.excerpt", weight: 0.3 },
       { name: "frontmatter.tags", weight: 0.2 },
-      { name: "rawContent", weight: 0.1 },
     ],
     includeScore: true,
     includeMatches: true,
@@ -39,7 +38,7 @@ export function searchPosts(query: string): SearchResult[] {
   }));
 }
 
-export function filterPosts(filters: BlogFilters): BlogPost[] {
+export function filterPosts(filters: BlogFilters): BlogPostMetadata[] {
   let posts = getAllPosts();
 
   if (filters.search) {
@@ -63,7 +62,7 @@ export function filterPosts(filters: BlogFilters): BlogPost[] {
 }
 
 // Get related posts based on tags
-export function getRelatedPosts(currentPost: BlogPost, count: number = 3): BlogPost[] {
+export function getRelatedPosts(currentPost: BlogPostMetadata, count: number = 3): BlogPostMetadata[] {
   if (!currentPost.frontmatter.tags) return [];
 
   const allPosts = getAllPosts().filter((post) => post.slug !== currentPost.slug);

@@ -1,77 +1,85 @@
 <template>
-  <article class="blog-post" v-if="post">
-    <header class="post-header">
-      <nav class="breadcrumb">
-        <router-link to="/blog">← Back to Blog</router-link>
-      </nav>
+  <Transition name="fade-slide" mode="out-in">
+    <article class="blog-post" v-if="post" :key="post.slug" ref="postContainer">
+      <header class="post-header">
+        <nav class="breadcrumb">
+          <router-link to="/blog">← Back to Blog</router-link>
+        </nav>
 
-      <div class="post-meta">
-        <time>{{ formatDate(post.frontmatter.date) }}</time>
-        <span v-if="post.frontmatter.author" class="author">
-          by
-          <router-link :to="`/blog/author/${post.frontmatter.author}`" class="author-link">
-            {{ post.frontmatter.author }}
+        <div class="post-meta">
+          <time>{{ formatDate(post.frontmatter.date) }}</time>
+          <span v-if="post.frontmatter.author" class="author">
+            by
+            <router-link :to="`/blog/author/${post.frontmatter.author}`" class="author-link">
+              {{ post.frontmatter.author }}
+            </router-link>
+          </span>
+          <span class="blog-badge blog-badge-reading-time">{{ post.readingTime }} min read</span>
+        </div>
+
+        <h1>{{ post.frontmatter.title }}</h1>
+
+        <div class="post-tags" v-if="post.frontmatter.tags">
+          <router-link v-for="tag in post.frontmatter.tags" :key="tag" :to="`/blog/tag/${tag}`" class="blog-tag tag-link">
+            {{ tag }}
           </router-link>
-        </span>
-        <span class="blog-badge blog-badge-reading-time">{{ post.readingTime }} min read</span>
-      </div>
+        </div>
+      </header>
 
-      <h1>{{ post.frontmatter.title }}</h1>
+      <div class="post-content" v-html="post.content"></div>
 
-      <div class="post-tags" v-if="post.frontmatter.tags">
-        <router-link v-for="tag in post.frontmatter.tags" :key="tag" :to="`/blog/tag/${tag}`" class="blog-tag tag-link">
-          {{ tag }}
-        </router-link>
-      </div>
-    </header>
-
-    <div class="post-content" v-html="post.content"></div>
-
-    <!-- Related Posts -->
-    <section v-if="relatedPosts.length > 0" class="related-posts">
-      <h3>Related Posts</h3>
-      <div class="related-grid">
-        <div v-for="relatedPost in relatedPosts" :key="relatedPost.slug" class="blog-card related-card"
-          @click="navigateToPost(relatedPost.slug)">
-          <h4>{{ relatedPost.frontmatter.title }}</h4>
-          <p>{{ relatedPost.frontmatter.excerpt }}</p>
-          <div class="related-meta">
-            <time>{{ formatDate(relatedPost.frontmatter.date) }}</time>
-            <span class="blog-badge blog-badge-reading-time">{{ relatedPost.readingTime }} min read</span>
+      <!-- Related Posts -->
+      <section v-if="relatedPosts.length > 0" class="related-posts">
+        <h3>Related Posts</h3>
+        <div class="related-grid">
+          <div v-for="relatedPost in relatedPosts" :key="relatedPost.slug" class="blog-card related-card"
+            @click="navigateToPost(relatedPost.slug)">
+            <h4>{{ relatedPost.frontmatter.title }}</h4>
+            <p>{{ relatedPost.frontmatter.excerpt }}</p>
+            <div class="related-meta">
+              <time>{{ formatDate(relatedPost.frontmatter.date) }}</time>
+              <span class="blog-badge blog-badge-reading-time">{{ relatedPost.readingTime }} min read</span>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <footer class="post-footer">
-      <div class="post-navigation">
-        <router-link v-if="previousPost" :to="`/blog/${previousPost.slug}`" class="nav-link prev">
-          <span class="nav-label">Previous</span>
-          <span class="nav-title">{{ previousPost.frontmatter.title }}</span>
-        </router-link>
+      <footer class="post-footer">
+        <div class="post-navigation">
+          <router-link v-if="previousPost" :to="`/blog/${previousPost.slug}`" class="nav-link prev">
+            <span class="nav-label">Previous</span>
+            <span class="nav-title">{{ previousPost.frontmatter.title }}</span>
+          </router-link>
 
-        <router-link v-if="nextPost" :to="`/blog/${nextPost.slug}`" class="nav-link next">
-          <span class="nav-label">Next</span>
-          <span class="nav-title">{{ nextPost.frontmatter.title }}</span>
-        </router-link>
-      </div>
-    </footer>
-  </article>
+          <router-link v-if="nextPost" :to="`/blog/${nextPost.slug}`" class="nav-link next">
+            <span class="nav-label">Next</span>
+            <span class="nav-title">{{ nextPost.frontmatter.title }}</span>
+          </router-link>
+        </div>
+      </footer>
+    </article>
 
-  <div v-else-if="!loading" class="not-found">
-    <h1>Post not found</h1>
-    <p>The post you're looking for doesn't exist or has been moved.</p>
-    <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
-  </div>
+    <div v-else-if="!postLoading && error" class="blog-error" key="error">
+      <h1>Error Loading Post</h1>
+      <p>{{ error }}</p>
+      <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
+    </div>
 
-  <div v-else class="blog-loading">Loading post...</div>
+    <div v-else-if="!postLoading" class="not-found" key="not-found">
+      <h1>Post not found</h1>
+      <p>The post you're looking for doesn't exist or has been moved.</p>
+      <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
+    </div>
+
+    <div v-else class="blog-loading" key="loading">Loading post...</div>
+  </Transition>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { useBlog } from "@/blog/composables/use-blog";
-import type { BlogPost } from "@/blog/types";
+import type { BlogPost, BlogPostMetadata } from "@/blog/types";
 
 interface Props {
   slug: string;
@@ -80,10 +88,13 @@ interface Props {
 const props = defineProps<Props>();
 const router = useRouter();
 
-const { posts, loading, getPost, getRelatedPostsForPost } = useBlog();
+const { posts, postLoading, error, getPost, getRelatedPostsForPost, loadPosts } = useBlog();
+
+// Synchronously set loading true before any rendering to prevent "not found" flash
+postLoading.value = true;
 
 const post = ref<BlogPost | undefined>(undefined);
-const relatedPosts = ref<BlogPost[]>([]);
+const relatedPosts = ref<BlogPostMetadata[]>([]);
 
 const allPosts = computed(() => posts.value);
 
@@ -92,12 +103,12 @@ const currentIndex = computed((): number => {
   return allPosts.value.findIndex((p) => p.slug === post.value?.slug);
 });
 
-const previousPost = computed((): BlogPost | undefined => {
+const previousPost = computed((): BlogPostMetadata | undefined => {
   const index = currentIndex.value;
   return index > 0 ? allPosts.value[index - 1] : undefined;
 });
 
-const nextPost = computed((): BlogPost | undefined => {
+const nextPost = computed((): BlogPostMetadata | undefined => {
   const index = currentIndex.value;
   return index >= 0 && index < allPosts.value.length - 1 ? allPosts.value[index + 1] : undefined;
 });
@@ -114,24 +125,50 @@ const navigateToPost = (slug: string): void => {
   router.push(`/blog/${slug}`);
 };
 
-const loadPost = (): void => {
-  const foundPost = getPost(props.slug);
-  if (foundPost) {
-    post.value = foundPost;
-    relatedPosts.value = getRelatedPostsForPost(foundPost);
+const postContainer = ref<HTMLElement | null>(null);
 
-    // Update page title
-    if (foundPost.frontmatter.title) {
-      document.title = `${foundPost.frontmatter.title} - Blog`;
+const loadPostData = async (): Promise<void> => {
+  postLoading.value = true;
+  post.value = undefined;
+  relatedPosts.value = [];
+
+  try {
+    // Ensure we have the post list for navigation and related posts
+    // Use preserveError=true so we don't clear an error if one already exists
+    if (allPosts.value.length === 0) {
+      loadPosts(true);
     }
+
+    const foundPost = await getPost(props.slug);
+    if (foundPost) {
+      post.value = foundPost;
+      relatedPosts.value = getRelatedPostsForPost(foundPost);
+
+      // Wait for the new post to be rendered before scrolling
+      await nextTick();
+      if (postContainer.value) {
+        postContainer.value.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // Update page title
+      if (foundPost.frontmatter.title) {
+        document.title = `${foundPost.frontmatter.title} - Blog`;
+      }
+    } else {
+      post.value = undefined;
+    }
+  } catch (err) {
+    console.error(`Error in loadPostData for ${props.slug}:`, err);
+  } finally {
+    postLoading.value = false;
   }
 };
 
 // Watch for slug changes (when navigating between posts)
-watch(() => props.slug, loadPost);
+watch(() => props.slug, loadPostData);
 
 onMounted(() => {
-  loadPost();
+  loadPostData();
 });
 </script>
 
@@ -464,5 +501,21 @@ onMounted(() => {
     flex-direction: column;
     gap: var(--blog-spacing-sm);
   }
+}
+
+/* Transition Animations */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 </style>
