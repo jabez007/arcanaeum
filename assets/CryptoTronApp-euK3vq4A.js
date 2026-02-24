@@ -1,0 +1,1 @@
+import{d as n,j as t,n as e,k as p,u as r,i as c,_ as s}from"./index-CJBnA0Xv.js";const a=n({__name:"CryptoTronApp",setup(_){const o=t(e.app);return(f,d)=>(c(),p(r(o),{class:"cryptotron-container"}))}}),m=s(a,[["__scopeId","data-v-3c041c33"]]);export{m as default};
