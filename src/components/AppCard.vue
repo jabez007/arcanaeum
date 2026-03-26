@@ -1,25 +1,25 @@
 <template>
-  <div class="app-card shard-shape" 
-       :class="`shard-${props.index % 3}`"
-       role="button" 
-       tabindex="0" 
-       @click="navigateTo" 
-       @keyup.enter="navigateTo">
+  <component
+    :is="isExternal ? 'a' : 'router-link'"
+    v-bind="linkProps"
+    class="app-card shard-shape"
+    :class="`shard-${props.index % 3}`"
+  >
     <div class="shard-glow"></div>
     <div class="mystical-glyph glyph-top-right"></div>
     <div class="mystical-glyph glyph-bottom-left"></div>
-    
+
     <div class="content-wrapper">
       <div class="app-icon">{{ props.icon }}</div>
       <h3 class="app-title">{{ props.title }}</h3>
       <p class="app-description">{{ props.description }}</p>
     </div>
-  </div>
+  </component>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import type { RouteLocationRaw } from "vue-router";
-import { useRouter } from "vue-router";
 
 const props = defineProps<{
   icon: string;
@@ -29,21 +29,24 @@ const props = defineProps<{
   index: number;
 }>();
 
-const router = useRouter();
+const isExternal = computed(() => typeof props.to === "string" && props.to.startsWith("http"));
 
-const navigateTo = () => {
-  if (props.to) {
-    if (typeof props.to === "string" && props.to.startsWith("http")) {
-      window.open(props.to, "_blank", "noopener,noreferrer")?.focus();
-    } else {
-      router.push(props.to);
-    }
+const linkProps = computed(() => {
+  if (isExternal.value) {
+    return {
+      href: props.to as string,
+      target: "_blank",
+      rel: "noopener noreferrer",
+    };
   }
-};
+  return { to: props.to };
+});
 </script>
 
 <style scoped>
 .app-card {
+  display: block;
+  text-decoration: none;
   background: rgba(100, 255, 218, 0.05);
   backdrop-filter: blur(12px);
   padding: 3rem 2rem;
@@ -55,6 +58,28 @@ const navigateTo = () => {
   border: none;
   animation: mysticalFloat 15s ease-in-out infinite;
   animation-delay: calc(var(--delay) * 1s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-card {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .app-card:hover,
+  .app-card:active {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .mystical-glyph,
+  .shard-glow,
+  .app-icon::after {
+    animation: none !important;
+    display: none !important;
+  }
 }
 
 .content-wrapper {

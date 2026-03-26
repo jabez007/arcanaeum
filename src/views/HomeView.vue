@@ -1,5 +1,25 @@
 <script setup lang="ts">
 import AppCard from "@/components/AppCard.vue";
+import { onMounted, onUnmounted, ref } from "vue";
+
+const prefersReducedMotion = ref(false);
+let mediaQuery: MediaQueryList | null = null;
+
+const handleMotionChange = (e: MediaQueryListEvent | MediaQueryList) => {
+  prefersReducedMotion.value = e.matches;
+};
+
+onMounted(() => {
+  mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  handleMotionChange(mediaQuery);
+  mediaQuery.addEventListener("change", handleMotionChange);
+});
+
+onUnmounted(() => {
+  if (mediaQuery) {
+    mediaQuery.removeEventListener("change", handleMotionChange);
+  }
+});
 </script>
 
 <template>
@@ -27,7 +47,8 @@ import AppCard from "@/components/AppCard.vue";
               fill="none" 
               stroke-dasharray="1000" 
               stroke-dashoffset="1000">
-          <animate attributeName="stroke-dashoffset" from="1000" to="0" dur="5s" fill="freeze" />
+          <animate v-if="!prefersReducedMotion" 
+                   attributeName="stroke-dashoffset" from="1000" to="0" dur="5s" fill="freeze" />
         </path>
         <circle cx="200" cy="200" r="3" fill="#64ffda" opacity="0.5" />
         <circle cx="600" cy="150" r="3" fill="#64ffda" opacity="0.5" />
