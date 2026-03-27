@@ -82,3 +82,10 @@
     transform: translateY(0px) translateX(0px) scale(1);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .orb {
+    animation: none !important;
+    opacity: 0.3;
+  }
+}

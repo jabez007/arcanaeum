@@ -1,51 +1,155 @@
 <template>
-  <div class="app-card" role="button" @click="navigateTo" @keyup.enter="navigateTo">
-    <div class="app-icon">{{ props.icon }}</div>
-    <h3 class="app-title">{{ props.title }}</h3>
-    <p class="app-description">{{ props.description }}</p>
-  </div>
+  <component
+    :is="isExternal ? 'a' : 'router-link'"
+    v-bind="linkProps"
+    class="app-card shard-shape"
+    :class="`shard-${props.index % 3}`"
+  >
+    <div class="shard-glow"></div>
+    <div class="mystical-glyph glyph-top-right"></div>
+    <div class="mystical-glyph glyph-bottom-left"></div>
+
+    <div class="content-wrapper">
+      <div class="app-icon">{{ props.icon }}</div>
+      <h3 class="app-title">{{ props.title }}</h3>
+      <p class="app-description">{{ props.description }}</p>
+    </div>
+  </component>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import type { RouteLocationRaw } from "vue-router";
-import { useRouter } from "vue-router";
 
 const props = defineProps<{
   icon: string;
   title: string;
   description: string;
   to: RouteLocationRaw;
+  index: number;
 }>();
 
-const router = useRouter();
+const isExternal = computed(() => typeof props.to === "string" && props.to.startsWith("http"));
 
-const navigateTo = () => {
-  if (props.to) {
-    if (typeof props.to === "string" && props.to.startsWith("http")) {
-      window.open(props.to, "_blank", "noopener,noreferrer")?.focus();
-    } else {
-      router.push(props.to);
-    }
+const linkProps = computed(() => {
+  if (isExternal.value) {
+    return {
+      href: props.to as string,
+      target: "_blank",
+      rel: "noopener noreferrer",
+    };
   }
-};
+  return { to: props.to };
+});
 </script>
 
 <style scoped>
 .app-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(100, 255, 218, 0.2);
-  border-radius: 20px;
-  padding: 2rem;
+  display: block;
+  text-decoration: none;
+  background: rgba(100, 255, 218, 0.05);
+  backdrop-filter: blur(12px);
+  padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
   overflow: hidden;
-  animation:
-    /* fadeInUp 1s ease-out, */
-    mysticalFloat 13s ease-in-out infinite;
-  animation-delay: calc(var(--delay) * 0.2s), calc(var(--delay) * 1s);
+  border: none;
+  animation: mysticalFloat 15s ease-in-out infinite;
+  animation-delay: calc(var(--delay) * 1s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-card {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .app-card:hover,
+  .app-card:active {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .mystical-glyph,
+  .shard-glow,
+  .app-icon::after {
+    animation: none !important;
+    display: none !important;
+  }
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 2;
+}
+
+/* Shard Shapes */
+.shard-0 { clip-path: polygon(5% 0%, 100% 10%, 90% 95%, 0% 100%); }
+.shard-1 { clip-path: polygon(0% 10%, 95% 0%, 100% 90%, 10% 100%); }
+.shard-2 { clip-path: polygon(10% 0%, 100% 5%, 95% 100%, 0% 90%); }
+
+.shard-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(100, 255, 218, 0.1), rgba(187, 134, 252, 0.1));
+  opacity: 0.5;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.app-card:hover .shard-glow {
+  opacity: 1;
+  background: linear-gradient(135deg, rgba(100, 255, 218, 0.2), rgba(187, 134, 252, 0.2));
+}
+
+/* Mystical Glyphs */
+.mystical-glyph {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgba(100, 255, 218, 0.1);
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.glyph-top-right {
+  top: -10px;
+  right: -10px;
+  border-radius: 5px;
+  transform: rotate(45deg);
+}
+
+.glyph-bottom-left {
+  bottom: -10px;
+  left: -10px;
+  border-radius: 5px;
+  transform: rotate(-30deg);
+}
+
+.app-card:hover .mystical-glyph {
+  opacity: 0.4;
+  border-color: rgba(100, 255, 218, 0.6);
+}
+
+.app-card:hover .glyph-top-right {
+  top: 15px;
+  right: 15px;
+  transform: rotate(135deg);
+}
+
+.app-card:hover .glyph-bottom-left {
+  bottom: 15px;
+  left: 15px;
+  transform: rotate(-120deg);
 }
 
 .app-card::before {
@@ -57,6 +161,7 @@ const navigateTo = () => {
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.1), transparent);
   transition: left 0.5s;
+  z-index: 1;
 }
 
 .app-card:hover::before {
@@ -64,13 +169,16 @@ const navigateTo = () => {
 }
 
 .app-card:hover {
-  transform: translateY(-15px) scale(1.05) !important;
-  border-color: rgba(100, 255, 218, 0.5);
-  box-shadow:
-    0 25px 50px rgba(100, 255, 218, 0.15),
-    0 0 40px rgba(100, 255, 218, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-20px) scale(1.03) rotate(1deg) !important;
+  box-shadow: 0 30px 60px rgba(100, 255, 218, 0.2);
   animation-play-state: paused;
+}
+
+/* Magical Surge Effect on Click */
+.app-card:active {
+  transform: translateY(-5px) scale(0.97) !important;
+  box-shadow: 0 0 80px rgba(100, 255, 218, 0.5);
+  transition: all 0.1s ease;
 }
 
 .app-icon {
@@ -120,41 +228,9 @@ const navigateTo = () => {
 }
 
 @keyframes mysticalFloat {
-  0% {
-    transform: translateY(0px) translateX(0px) rotate(0deg);
-  }
-
-  12.5% {
-    transform: translateY(-15px) translateX(8px) rotate(1deg);
-  }
-
-  25% {
-    transform: translateY(-8px) translateX(-12px) rotate(-0.8deg);
-  }
-
-  37.5% {
-    transform: translateY(-22px) translateX(5px) rotate(1.2deg);
-  }
-
-  50% {
-    transform: translateY(-12px) translateX(-8px) rotate(-0.5deg);
-  }
-
-  62.5% {
-    transform: translateY(-18px) translateX(10px) rotate(0.9deg);
-  }
-
-  75% {
-    transform: translateY(-6px) translateX(-15px) rotate(-1.1deg);
-  }
-
-  87.5% {
-    transform: translateY(-25px) translateX(3px) rotate(0.7deg);
-  }
-
-  100% {
-    transform: translateY(0px) translateX(0px) rotate(0deg);
-  }
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(10px, -15px) rotate(1deg); }
+  66% { transform: translate(-10px, -10px) rotate(-1deg); }
 }
 
 @keyframes rotate {
