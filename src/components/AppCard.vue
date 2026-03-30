@@ -60,28 +60,6 @@ const linkProps = computed(() => {
   animation-delay: calc(var(--delay) * 1s);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .app-card {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
-    backdrop-filter: none !important;
-  }
-
-  .app-card:hover,
-  .app-card:active {
-    transform: none !important;
-    box-shadow: none !important;
-  }
-
-  .mystical-glyph,
-  .shard-glow,
-  .app-icon::after {
-    animation: none !important;
-    display: none !important;
-  }
-}
-
 .content-wrapper {
   position: relative;
   z-index: 2;
@@ -240,6 +218,47 @@ const linkProps = computed(() => {
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Media Query Overrides */
+
+@media (max-width: 1100px) {
+  .app-card {
+    padding: 2.5rem 1.5rem;
+  }
+
+  /* Relax the shard shapes for mobile to prevent content clipping */
+  .shard-0 {
+    clip-path: polygon(1% 0%, 100% 2%, 99% 99%, 0% 100%);
+  }
+  .shard-1 {
+    clip-path: polygon(0% 2%, 99% 0%, 100% 98%, 1% 100%);
+  }
+  .shard-2 {
+    clip-path: polygon(2% 0%, 100% 1%, 98% 100%, 0% 99%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-card {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .app-card:hover,
+  .app-card:active {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .mystical-glyph,
+  .shard-glow,
+  .app-icon::after {
+    animation: none !important;
+    display: none !important;
   }
 }
 </style>

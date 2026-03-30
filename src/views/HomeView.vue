@@ -94,6 +94,12 @@ onUnmounted(() => {
   align-items: center;
 }
 
+@media only screen and (max-width: 900px) {
+  .constellation-container {
+    padding: 1.5rem 1rem;
+  }
+}
+
 .ether-lines {
   position: absolute;
   top: 10%;
@@ -186,28 +192,16 @@ header {
   grid-column: span 3;
 }
 
-@media only screen and (max-width: 1024px) {
-  .app-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .app-card {
-    grid-column: span 1 !important;
-  }
-  .app-card:nth-child(1),
-  .app-card:nth-child(4) {
-    grid-column: span 2 !important;
-  }
-}
-
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1100px) {
   .app-grid {
     grid-template-columns: 1fr;
     padding: 0;
+    width: 100%;
+    gap: 1.5rem;
   }
 
   .app-card {
     grid-column: span 1 !important;
-    margin-bottom: 1rem;
   }
 }
 
