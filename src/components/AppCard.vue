@@ -60,6 +60,17 @@ const linkProps = computed(() => {
   animation-delay: calc(var(--delay) * 1s);
 }
 
+@media (max-width: 1100px) {
+  .app-card {
+    padding: 2.5rem 1.5rem;
+  }
+  
+  /* Relax the shard shapes for mobile to prevent content clipping */
+  .shard-0 { clip-path: polygon(1% 0%, 100% 2%, 99% 99%, 0% 100%); }
+  .shard-1 { clip-path: polygon(0% 2%, 99% 0%, 100% 98%, 1% 100%); }
+  .shard-2 { clip-path: polygon(2% 0%, 100% 1%, 98% 100%, 0% 99%); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .app-card {
     animation: none !important;
