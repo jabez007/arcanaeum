@@ -10,7 +10,9 @@
     <div class="mystical-glyph glyph-bottom-left"></div>
 
     <div class="content-wrapper">
-      <div class="app-icon">{{ props.icon }}</div>
+      <div v-if="hasIcon" class="app-icon">
+        <slot name="icon"><span v-if="props.icon">{{ props.icon }}</span></slot>
+      </div>
       <h3 class="app-title">{{ props.title }}</h3>
       <p class="app-description">{{ props.description }}</p>
     </div>
@@ -18,16 +20,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, useSlots } from "vue";
 import type { RouteLocationRaw } from "vue-router";
 
 const props = defineProps<{
-  icon: string;
+  icon?: string;
   title: string;
   description: string;
   to: RouteLocationRaw;
   index: number;
 }>();
+
+const slots = useSlots();
+const hasIcon = computed(() => !!props.icon || !!slots.icon);
 
 const isExternal = computed(() => typeof props.to === "string" && props.to.startsWith("http"));
 
@@ -163,32 +168,41 @@ const linkProps = computed(() => {
   width: 80px;
   height: 80px;
   margin: 0 auto 1.5rem;
-  background: linear-gradient(135deg, #64ffda, #bb86fc);
+  background: rgba(10, 10, 35, 0.9);
+  border: 2px solid rgba(100, 255, 218, 0.3);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  transition: all 0.3s ease;
+  font-size: 2.2rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
+  box-shadow: inset 0 0 20px rgba(100, 255, 218, 0.1);
+  z-index: 5;
+}
+
+.app-card:hover .app-icon {
+  transform: scale(1.15);
+  border-color: #64ffda;
+  box-shadow: 0 0 30px rgba(100, 255, 218, 0.4), inset 0 0 15px rgba(100, 255, 218, 0.2);
 }
 
 .app-icon::after {
   content: "";
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
   background: linear-gradient(45deg, #64ffda, #bb86fc, #03dac6, #64ffda);
   border-radius: 50%;
   z-index: -1;
-  opacity: 0;
+  opacity: 0.2;
   transition: opacity 0.3s ease;
 }
 
 .app-card:hover .app-icon::after {
-  opacity: 1;
+  opacity: 0.6;
   animation: rotate 2s linear infinite;
 }
 
@@ -197,6 +211,13 @@ const linkProps = computed(() => {
   font-weight: 600;
   margin-bottom: 1rem;
   color: #fff;
+}
+
+.app-icon :deep(svg) {
+  width: 42px;
+  height: 42px;
+  color: #64ffda;
+  filter: drop-shadow(0 0 8px rgba(100, 255, 218, 0.6));
 }
 
 .app-description {
@@ -212,13 +233,8 @@ const linkProps = computed(() => {
 }
 
 @keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* Media Query Overrides */
@@ -228,16 +244,9 @@ const linkProps = computed(() => {
     padding: 2.5rem 1.5rem;
   }
 
-  /* Relax the shard shapes for mobile to prevent content clipping */
-  .shard-0 {
-    clip-path: polygon(1% 0%, 100% 2%, 99% 99%, 0% 100%);
-  }
-  .shard-1 {
-    clip-path: polygon(0% 2%, 99% 0%, 100% 98%, 1% 100%);
-  }
-  .shard-2 {
-    clip-path: polygon(2% 0%, 100% 1%, 98% 100%, 0% 99%);
-  }
+  .shard-0 { clip-path: polygon(1% 0%, 100% 2%, 99% 99%, 0% 100%); }
+  .shard-1 { clip-path: polygon(0% 2%, 99% 0%, 100% 98%, 1% 100%); }
+  .shard-2 { clip-path: polygon(2% 0%, 100% 1%, 98% 100%, 0% 99%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -249,15 +258,26 @@ const linkProps = computed(() => {
   }
 
   .app-card:hover,
-  .app-card:active {
+  .app-card:active,
+  .app-card:hover .app-icon {
     transform: none !important;
     box-shadow: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .app-icon,
+  .mystical-glyph,
+  .shard-glow,
+  .app-icon::after {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
   }
 
   .mystical-glyph,
   .shard-glow,
   .app-icon::after {
-    animation: none !important;
     display: none !important;
   }
 }

@@ -23,10 +23,10 @@ export function getBlogIndex(): BlogIndex {
 }
 
 // Lazy load all rendered JSON files
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 const renderedModules = import.meta.glob("../rendered/*.json", { import: "default" }) as Record<
   string,
-  () => Promise<any>
+  () => Promise<BlogPost>
 >;
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
