@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import ParticlesDiv from "@/components/ParticlesDiv.vue";
 import { RouterView } from "vue-router";
+
+const scrollToTop = () => {
+  window.scrollTo(0, 0);
+};
 </script>
 
 <template>
   <ParticlesDiv />
   <RouterView v-slot="{ Component, route }">
-    <transition name="scale-transition" mode="out-in">
+    <transition name="scale-transition" mode="out-in" @after-leave="scrollToTop">
       <div class="arcanaeum" :key="((route.name || '') as string).split('-')[0]">
         <component :is="Component" />
       </div>
