@@ -30,6 +30,7 @@ coverage
 
 *.tsbuildinfo
 
+src/blog/posts-index.json
+src/blog/rendered
 
 .aider*
-src/blog/rendered
