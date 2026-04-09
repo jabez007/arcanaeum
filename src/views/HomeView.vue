@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AppCard from "@/components/AppCard.vue";
+import ArcaneIcon from "@/components/icons/ArcaneIcon.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 
 const prefersReducedMotion = ref(false);
@@ -63,18 +64,24 @@ onUnmounted(() => {
       <p class="subtitle">Navigate the Crystalline Realms</p>
     </header>
     <div class="app-grid">
-      <AppCard icon="🔏" title="CryptoTron" :index="0"
+      <AppCard title="CryptoTron" :index="0"
         description="Interactive ciphers in a cyberpunk digital laboratory."
-        :to="{ name: 'cryptotron-home' }" />
+        :to="{ name: 'cryptotron-home' }">
+        <template #icon><ArcaneIcon name="cipher" /></template>
+      </AppCard>
       <AppCard icon="🫑" title="The Forgotten Pepper" :index="1"
         description="A bold culinary blog where ingredients meet design."
         to="https://theforgottenpepper.com" />
-      <AppCard icon="📓" title="Commits & Conjurations" :index="2"
+      <AppCard title="Commits & Conjurations" :index="2"
         description="Lab notes of a dev with a flair for the arcane."
-        :to="{ name: 'BlogList' }" />
-      <AppCard icon="🧙‍♂️ " title="Meet the Vice Magus" :index="3"
+        :to="{ name: 'BlogList' }">
+        <template #icon><ArcaneIcon name="tome" /></template>
+      </AppCard>
+      <AppCard title="Meet the Vice Magus" :index="3"
         description="Who's behind the glyphs? Learn more about the conjurer."
-        :to="{ name: 'about' }" />
+        :to="{ name: 'about' }">
+        <template #icon><ArcaneIcon name="magus" /></template>
+      </AppCard>
     </div>
   </div>
 </template>
