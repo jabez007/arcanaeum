@@ -258,15 +258,26 @@ const linkProps = computed(() => {
   }
 
   .app-card:hover,
-  .app-card:active {
+  .app-card:active,
+  .app-card:hover .app-icon {
     transform: none !important;
     box-shadow: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .app-icon,
+  .mystical-glyph,
+  .shard-glow,
+  .app-icon::after {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
   }
 
   .mystical-glyph,
   .shard-glow,
   .app-icon::after {
-    animation: none !important;
     display: none !important;
   }
 }
