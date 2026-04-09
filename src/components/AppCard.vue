@@ -10,7 +10,7 @@
     <div class="mystical-glyph glyph-bottom-left"></div>
 
     <div class="content-wrapper">
-      <div class="app-icon">
+      <div v-if="hasIcon" class="app-icon">
         <slot name="icon"><span v-if="props.icon">{{ props.icon }}</span></slot>
       </div>
       <h3 class="app-title">{{ props.title }}</h3>
@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, useSlots } from "vue";
 import type { RouteLocationRaw } from "vue-router";
 
 const props = defineProps<{
@@ -30,6 +30,9 @@ const props = defineProps<{
   to: RouteLocationRaw;
   index: number;
 }>();
+
+const slots = useSlots();
+const hasIcon = computed(() => !!props.icon || !!slots.icon);
 
 const isExternal = computed(() => typeof props.to === "string" && props.to.startsWith("http"));
 
