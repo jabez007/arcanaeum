@@ -37,8 +37,11 @@ h1, h2, h3, h4, .mystical-text {
   font-weight: normal;
 }
 
-:focus-visible {
+/* Only apply focus styles to elements NOT inside the cryptotron-container */
+:focus-visible:not(.cryptotron-container *):not(.cryptotron-container) {
   outline: 2px solid #64ffda;
   outline-offset: 4px;
   box-shadow: 0 0 15px rgba(100, 255, 218, 0.5);
 }
+
+
