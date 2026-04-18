@@ -79,12 +79,13 @@ PID_FILE="/tmp/dns_fix.pid"
 # Exit if an instance is already running
 if [ -f "$PID_FILE" ]; then
     PID=$(cat "$PID_FILE")
-    if [ -n "$PID" ] && kill -0 "$PID" 2>/dev/null; then
+    # Verify PID is numeric and the process is alive
+    if echo "$PID" | grep -qE "^[0-9]+$" && kill -0 "$PID" 2>/dev/null; then
         if grep -q "dns_daemon.sh" "/proc/$PID/cmdline" 2>/dev/null; then
             exit 0
         fi
     fi
-    # Stale PID file or wrong process
+    # Stale PID file, non-numeric, or wrong process
     rm -f "$PID_FILE"
 fi
 
