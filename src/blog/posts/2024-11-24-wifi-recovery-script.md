@@ -14,56 +14,30 @@ tags:
   - ssh
   - scripting
 excerpt: |
-  Ever had that moment when you SSH into your homelab server only to get... nothing? Dead silence.
-  Your trusty old laptop-turned-server has ghosted you again.
-  If you're running a homelab on repurposed hardware (guilty as charged), you've probably been there.
+  There's nothing more annoying than trying to SSH into a homelab server only to find it's dropped off the network. Here is a simple script to handle those annoying WiFi disconnects automatically.
 featured: false
 draft: false
 ---
 
-# How I Built a Self-Healing WiFi Script for My Flaky Homelab Server
+# A Simple WiFi Recovery Script for Flaky Homelab Servers
 
-Ever had that moment when you SSH into your homelab server only to get... nothing?
-Dead silence.
-Your trusty old laptop-turned-server has ghosted you again.
+There is nothing more annoying than trying to SSH into a homelab server only to find it's dropped off the network. If you're using an old laptop as a server (like I am), you've probably run into this.
 
-If you're running a homelab on repurposed hardware (guilty as charged), you've probably been there.
-My old ThinkPad running Bodhi Linux had one job: stay connected to WiFi so I could SSH in whenever I needed.
-But every time my router rebooted overnight for firmware updates, this stubborn machine would just... give up.
-NetworkManager would throw in the towel instead of reconnecting when the network came back up.
+My old ThinkPad running Bodhi Linux usually works great, but it has one annoying habit: whenever my router reboots overnight for firmware updates, the laptop loses its connection and stays disconnected. NetworkManager just gives up instead of trying again once the WiFi is back.
 
-Time for some automated revenge.
+I got tired of manually restarting things, so I wrote a quick script to handle it.
 
 ---
 
-## 🔍 The Real Problem
+## Identifying the Problem
 
-Here's what I discovered was happening:
+I eventually figured out that it was a simple failure mode: the router reboots overnight, the WiFi drops, and NetworkManager stays idle once it sees the interface is up but lacks an IP. It’s frustrating because a manual `sudo systemctl restart NetworkManager` always fixes it immediately.
 
-1. Router reboots overnight (thanks, auto-updates)
-2. WiFi network goes down temporarily
-3. When network comes back up, NetworkManager just sits there
-4. My laptop keeps the `wlp2s0` interface up but with no IP address
-5. I discover this hours later when SSH fails
+## The WiFi Recovery Script
 
-The kicker?
-A simple `sudo systemctl restart NetworkManager` always fixed it instantly.
-So why couldn't the system do this itself?
+The idea is to check for an IP address on the WiFi interface every few minutes. If it's missing, restart NetworkManager.
 
-> **Plot twist**:
-> It can.
-> We just have to teach it how.
-
----
-
-## 🛠️ The Solution: A Self-Healing Script
-
-The strategy is dead simple: check if the WiFi interface has an IP address every few minutes.
-No IP?
-Kick NetworkManager in the pants.
-
-Here's the script that saved my sanity.
-Save this to `/usr/local/bin/check_wifi.sh`:
+Here's the script I use. Save it as `/usr/local/bin/check_wifi.sh`:
 
 ```bash
 #!/bin/bash
@@ -116,153 +90,53 @@ Make it executable:
 sudo chmod +x /usr/local/bin/check_wifi.sh
 ```
 
-> **Pro tip**:
-> Test it manually first by temporarily disconnecting your WiFi to make sure it works before automating it.
+It's a good idea to test the script manually first by temporarily disconnecting your WiFi to ensure it handles the recovery as expected.
 
 ---
 
-## 🔐 The Sudo Setup (Do This Right)
+## Setting Up Passwordless Sudo
 
-We need the script to restart NetworkManager without asking for a password.
-Here's how to do it **securely**:
+Since the script needs to restart a system service, it needs to run as root or have sudo privileges. A secure way to do this is to only allow the user account to run that specific command without a password.
 
-1. Edit the sudoers file (never edit `/etc/sudoers` directly):
-
-   ```bash
-   sudo visudo
-   ```
-
-2. Add this line, replacing `jabez` with your actual username:
+1. Edit the sudoers file with `sudo visudo`. Don't edit the file directly in `/etc/sudoers`.
+2. Add this line at the end, replacing `jabez` with your username:
 
    ```
    jabez ALL = NOPASSWD: /usr/bin/systemctl restart NetworkManager
    ```
 
-3. Save and test:
-   ```bash
-   sudo /usr/bin/systemctl restart NetworkManager
-   ```
+Now you can test it with `sudo /usr/bin/systemctl restart NetworkManager` and it should run without prompting for your password.
 
-> **Security note**:
-> This only grants password-free access to restart NetworkManager specifically, not blanket sudo access.
+## Automating the Check
 
----
-
-## ⏰ Automation: Set It and Forget It
-
-Now for the magic - make it run automatically every 5 minutes:
-
-```bash
-crontab -e
-```
-
-Add this line:
+To make it actually "self-healing," you can set it to run via cron every few minutes. Open your crontab with `crontab -e` and add this line:
 
 ```
 */5 * * * * /usr/local/bin/check_wifi.sh
 ```
 
-> **Why 5 minutes?**
-> It's frequent enough to catch issues quickly but not so aggressive that it spams your logs.
-> Adjust to taste.
-
-Make sure cron is actually running:
+Running it every five minutes is frequent enough to catch most disconnects quickly without cluttering up the system logs too much. Make sure cron is enabled and running:
 
 ```bash
-sudo systemctl enable cron
-sudo systemctl start cron
+sudo systemctl enable --now cron
 ```
 
 ---
 
-## 📊 Monitoring Your WiFi Health
+## Monitoring the Script
 
-Watch your script in action:
-
-```bash
-# Live log monitoring
-tail -f /var/log/wifi_recovery.log
-
-# Check recent activity
-tail -20 /var/log/wifi_recovery.log
-```
-
-A healthy log looks like:
+You can check the script's logs with `tail -f /var/log/wifi_recovery.log`. A successful recovery will look like this:
 
 ```
-2024-06-27 14:30:01: ✓ WiFi healthy with IP: 192.168.1.100
-2024-06-27 14:35:01: ✓ WiFi healthy with IP: 192.168.1.100
-2024-06-27 14:40:01: 🚨 No IP address on wlp2s0. Attempting rescue...
-2024-06-27 14:40:02: ✅ NetworkManager restarted successfully
-2024-06-27 14:40:12: 🎉 WiFi recovered! New IP: 192.168.1.100
+2024-11-24 14:40:01: 🚨 No IP address on wlp2s0. Attempting rescue...
+2024-11-24 14:40:02: ✅ NetworkManager restarted successfully
+2024-11-24 14:40:12: 🎉 WiFi recovered! New IP: 192.168.1.100
 ```
 
----
+## Troubleshooting and Adapting
 
-## 🛡️ Troubleshooting & Edge Cases
+If the script doesn't seem to be running, verify that cron is active and the script is marked executable. If you have trouble writing to `/var/log`, you can change the `LOG_FILE` path in the script to something in your home directory.
 
-**Script not running?** Check if cron is active:
+This same pattern—**monitor, detect, and restart**—works for other unreliable services too. I've used it for restarting Docker containers or VPN tunnels that occasionally hang. It’s often faster than tracking down a weird, deep-seated config bug in NetworkManager.
 
-```bash
-systemctl status cron
-```
-
-**Permission issues with log file?** Change the log path in the script to your home directory:
-
-```bash
-LOG_FILE="$HOME/wifi_recovery.log"
-```
-
-**Need to find your WiFi interface name?**
-
-```bash
-ip link show | grep -E "wl|en"
-```
-
-**Want more aggressive monitoring?** Change the cron to run every minute:
-
-```bash
-* * * * * /usr/local/bin/check_wifi.sh
-```
-
----
-
-## 🎯 The Results
-
-Since implementing this script three months ago:
-
-- **Zero** manual WiFi interventions needed
-- My homelab server has maintained 99.9% SSH availability
-- Router reboots no longer mean lost connections
-- I can actually trust this machine for automated tasks
-
-The best part?
-The script has triggered exactly 23 times according to my logs - meaning it prevented 23 instances where I would have discovered a dead connection hours later.
-
----
-
-## 🚀 Beyond WiFi: The Bigger Picture
-
-This approach works for any flaky service that just needs a periodic kick.
-I've adapted similar scripts for:
-
-- Monitoring Docker containers that occasionally crash
-- Restarting SSH daemon when it gets hung up
-- Checking VPN connections on remote systems
-
-The pattern is always the same: **monitor → detect → fix → log**.
-
----
-
-## 💡 Final Thoughts
-
-Sometimes the simplest solutions are the most elegant.
-A 30-line Bash script solved what weeks of tweaking NetworkManager configs couldn't fix.
-
-Your homelab doesn't have to be enterprise-grade hardware to be reliable.
-Sometimes it just needs a little automation love.
-
-Now my old ThinkPad happily chugs along, automatically healing itself whenever my router decides to take a midnight reboot.
-And I can focus on more interesting problems than "why is SSH not working again?"
-
-**Happy homelabbing, and may your wifi always reconnect itself.**
+Sometimes a simple 30-line script is better than weeks of debugging. Now, instead of wondering why SSH is failing, I can trust my server will fix its own connection issues within a few minutes. If you're running a homelab on old hardware, it's a small bit of automation that makes a big difference.
