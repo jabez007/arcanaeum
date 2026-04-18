@@ -57,8 +57,8 @@ LOCAL_IP="192.168.1.1" # Change this if your router is on a different IP
 for f in $TARGETS; do
     if [ -f "$f" ]; then
         # Check if local IP is already the primary nameserver
-        if ! head -n 1 "$f" | grep -q "$LOCAL_IP"; then
-            sed -i "/nameserver $LOCAL_IP/d" "$f" # Remove existing entries
+        if ! head -n 1 "$f" | grep -qE "^nameserver[[:space:]]+$LOCAL_IP$"; then
+            sed -i "/^nameserver[[:space:]]\+$LOCAL_IP$/d" "$f" # Remove existing entries
             sed -i "1i nameserver $LOCAL_IP" "$f" # Add to the top of the list
         fi
     fi
@@ -77,8 +77,15 @@ The firmware frequently overwrites these resolver files whenever a VPN tunnel re
 PID_FILE="/tmp/dns_fix.pid"
 
 # Exit if an instance is already running
-if [ -f "$PID_FILE" ] && [ -d "/proc/$(cat $PID_FILE)" ]; then
-    exit 0
+if [ -f "$PID_FILE" ]; then
+    PID=$(cat "$PID_FILE")
+    if [ -n "$PID" ] && kill -0 "$PID" 2>/dev/null; then
+        if grep -q "dns_daemon.sh" "/proc/$PID/cmdline" 2>/dev/null; then
+            exit 0
+        fi
+    fi
+    # Stale PID file or wrong process
+    rm -f "$PID_FILE"
 fi
 
 echo $$ > "$PID_FILE"
