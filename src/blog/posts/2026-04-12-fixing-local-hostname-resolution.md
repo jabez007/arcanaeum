@@ -58,7 +58,7 @@ for f in $TARGETS; do
     if [ -f "$f" ]; then
         # Check if local IP is already the primary nameserver
         if ! head -n 1 "$f" | grep -qE "^nameserver[[:space:]]+$LOCAL_IP$"; then
-            sed -i "/^nameserver[[:space:]]\+$LOCAL_IP$/d" "$f" # Remove existing entries
+            sed -i "/^nameserver[[:space:]]\{1,\}$LOCAL_IP$/d" "$f" # Remove existing entries
             sed -i "1i nameserver $LOCAL_IP" "$f" # Add to the top of the list
         fi
     fi
