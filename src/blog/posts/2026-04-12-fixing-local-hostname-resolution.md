@@ -12,126 +12,118 @@ tags:
   - troubleshooting
   - homelab
 excerpt: |
-  Ever tried to SSH into a local machine by name only to be met with a cold NXDOMAIN? 
-  If you're running a VPN-enabled router, your "secure" setup might actually be 
-  hiding your own devices from you. Here is how I used a recursive DNS hijack 
-  to restore local discovery without breaking the tunnel.
+  If you're running a VPN on your router, local hostnames often stop working. 
+  ExpressVPN's firmware isolates DNS traffic so strictly that local resolution 
+  is sacrificed for privacy. Here is how I used a persistence script to 
+  force local resolution without leaking my external DNS traffic.
 featured: true
 draft: false
 ---
 
-# The DNS Ghost in the Machine: Fixing Local Hostname Resolution on VPN Routers
+# Fixing Local Hostname Resolution on VPN-Enabled Asus Routers
 
-Ever tried to SSH into your favorite dev machine by name, only to be met with a cold, hard `NXDOMAIN`? 
+If you're running a VPN on your router—specifically an Asus router with ExpressVPN firmware—you've probably realized that local hostnames stop working the moment a device joins a tunnel. You can ping the IP, but `ssh server.local` returns a cold `NXDOMAIN`.
 
-You know the machine is there. You can ping its IP address. But for some reason, your router—the very brain of your network—has developed a case of amnesia regarding your local hostnames. 
+The router hasn't forgotten the names; it's just being too "secure" for its own good. ExpressVPN’s firmware isolates DNS traffic so strictly that local resolution is sacrificed to prevent leaks. It's a trade-off that makes sense for privacy but breaks everything in a homelab.
 
-If you’re running specialized firmware like **ExpressVPN** on an Asus router, you’ve likely run into this. It’s a "hardened" setup designed to keep you safe, but sometimes that security comes at the cost of your sanity. 
+Here is how I forced the router to prioritize local resolution without leaking my external DNS traffic.
 
-Let's dive into how I performed a "Recursive DNS Hijack" to force my router to remember its neighbors without breaking the VPN.
+## The Culprit: Too Many `dnsmasq` Instances
 
-## 🔍 The Investigation: Why "Standard" DNS Fails
+Under normal conditions, a router's `dnsmasq` instance acts as both a DHCP server and a local DNS resolver. It records the hostnames of devices it hands IPs to and resolves them when asked.
 
-Usually, a router’s DNS service (**dnsmasq**) is a friendly librarian. It hands out IP addresses via DHCP and writes down everyone’s name so it can introduce them later. 
+On ExpressVPN firmware, this is replaced by **Policy-Based Routing (PBR)**. Instead of one global `dnsmasq` process, the router spawns multiple instances:
 
-But on a VPN-enabled router, things get complicated. After SSH-ing into my router and running a quick `ps | grep dnsmasq`, I found the "smoking gun." The router wasn't running just one DNS service—it was running **ten**.
+- **The Primary Instance**: This is the only one that knows your local device names, but it only responds to requests from the router itself.
+- **The Tunnel Instances**: Each VPN tunnel gets its own `dnsmasq` process. These handle traffic for any device assigned to that tunnel.
 
-### The Split-Brain Problem
-ExpressVPN firmware uses **Policy-Based Routing (PBR)**. It creates isolated "tunnels" for different device groups. 
-- **The Master Instance**: Knows all your local names but only talks to the router itself.
-- **The Tunnel Instances**: These handle your devices' traffic. They are launched with the `-n` (no-hosts) flag.
+The "smoking gun" is that these tunnel instances are launched with the `-n` (no-hosts) flag. This explicitly tells `dnsmasq` to ignore local hostnames. The moment you put a device behind a VPN tunnel, it's effectively told: "If you want to resolve a name, go ask the internet." Since the internet doesn't know what `proxmox-01` is, you get an `NXDOMAIN`.
 
-Because of that `-n` flag, the moment you put a device behind the VPN, the router effectively tells it: *"I'm not allowed to look at local names. If you want to find 'lab-laptop', go ask the internet."* Naturally, the internet has no idea who your laptop is.
+## Forcing a DNS Chain of Command
 
-## 🛠️ The Solution: A Layered DNS Hijack
+Since modifying the VPN binary's launch flags is difficult, the next best thing is to rewrite the configuration files on the fly. We need the tunnel instances to check with the router's primary IP before heading out to the public internet.
 
-We can’t easily change how the VPN binary spawns those processes, so we have to "trick" them. The goal is to create a **Chain of Trust**: we tell the tunnel instances to ask the Master instance for help before giving up.
-
-### Layer 1: The Payload Script
-First, we need a script that finds every tunnel's configuration and injects our local router as the primary nameserver. Save this to `/jffs/scripts/dns_chain.sh`:
+### 1. The Injector Script
+This script iterates through the temporary resolver files for every tunnel and prepends the router's local IP as the primary nameserver. Save this to `/jffs/scripts/dns_chain.sh`:
 
 ```bash
 #!/bin/sh
 # /jffs/scripts/dns_chain.sh
-# Prepend the local Master IP as the primary resolver for all tunnels
+# Prepend the router's IP as the primary resolver for all VPN tunnels
 
 TARGETS="/tmp/resolv.dnsmasq /tmp/resolv.*.conf"
-LOCAL_IP="192.168.1.1" # Use your router's actual local IP
+LOCAL_IP="192.168.1.1" # Change this if your router is on a different IP
 
 for f in $TARGETS; do
     if [ -f "$f" ]; then
-        # Only inject if local IP isn't already the first nameserver
+        # Check if local IP is already the primary nameserver
         if ! head -n 1 "$f" | grep -q "$LOCAL_IP"; then
-            sed -i "/nameserver $LOCAL_IP/d" "$f" # Clean existing to avoid duplicates
-            sed -i "1i nameserver $LOCAL_IP" "$f" # Prepend to line 1
+            sed -i "/nameserver $LOCAL_IP/d" "$f" # Remove existing entries
+            sed -i "1i nameserver $LOCAL_IP" "$f" # Add to the top of the list
         fi
     fi
 done
 
-# Reload dnsmasq to pick up the changes
+# Restart dnsmasq to reload configs
 killall -HUP dnsmasq
 ```
 
-### Layer 2: The "Safety" Daemon
-Since the firmware loves to overwrite these files whenever a tunnel reconnects, we need a watchdog. This script ensures only one instance runs and checks the files every two minutes. Save this to `/jffs/scripts/dns_daemon.sh`:
+### 2. The Persistence Daemon
+The firmware frequently overwrites these resolver files whenever a VPN tunnel restarts or reconnects. We need a background process that acts as a watchdog, reapplying the fix periodically. Save this to `/jffs/scripts/dns_daemon.sh`:
 
 ```bash
 #!/bin/sh
 # /jffs/scripts/dns_daemon.sh
 PID_FILE="/tmp/dns_fix.pid"
 
-# Prevent duplicate processes
+# Exit if an instance is already running
 if [ -f "$PID_FILE" ] && [ -d "/proc/$(cat $PID_FILE)" ]; then
     exit 0
 fi
 
 echo $$ > "$PID_FILE"
-logger "DNS Fix Daemon: Monitoring started."
+logger "DNS Fix: Monitoring script started."
 
 while [ -x "/jffs/scripts/dns_chain.sh" ]; do
     /jffs/scripts/dns_chain.sh
-    sleep 120
+    sleep 120 # Run every 2 minutes
 done
 ```
 
-Make them both executable:
+Make them executable:
 ```bash
 chmod +x /jffs/scripts/*.sh
 ```
 
-## ⏰ Step 3: Automation (The Ignition Switch)
+## Persistence and NVRAM
 
-To make this survive a reboot, we use **NVRAM**. This tells the router to start our daemon 20 seconds after it boots—giving the system enough time to initialize the JFFS partition and the network stack.
+To make this change survive a reboot, we need to add the script to the router’s startup sequence. We’ll use `nvram` to set a startup command that triggers the daemon after a 20-second delay—this gives the JFFS partition and the network stack enough time to fully initialize.
 
 ```bash
 nvram set rc_startup="sleep 20; [ -x /jffs/scripts/dns_daemon.sh ] && /jffs/scripts/dns_daemon.sh &"
 nvram commit
 ```
 
-## 📊 Why This is "Pro-Grade" Logic
+## How the DNS Request Now Flows
 
-This isn't just a "hack"—it's a recursive architecture. 
+This setup creates a fallback mechanism that prioritizes local names without sacrificing privacy:
 
-1. **The Request**: Your laptop asks for `lab-server-01`.
-2. **The Hijack**: The tunnel DNS sees your router's IP (`192.168.1.1`) at the top of its list and asks it first.
-3. **The Resolve**: The Master process sees the request, looks at its DHCP table, and says, *"Oh, that's at 192.168.1.50."*
-4. **The Security**: If you ask for `google.com`, the Master process fails, and the tunnel instance moves to the next nameserver in the list (the secure VPN DNS).
+1.  **Request**: A device in a VPN tunnel asks for `nas-01.local`.
+2.  **The Intercept**: The tunnel's `dnsmasq` instance sees the router's IP (`192.168.1.1`) at the top of its nameserver list and queries it.
+3.  **Local Resolution**: The router’s primary instance (which has access to the DHCP lease table) resolves the request.
+4.  **Privacy**: If you query `google.com`, the primary instance can't resolve it. The tunnel instance then moves to the next nameserver in the list—the secure, external VPN DNS.
 
-**You get local resolution speed without sacrificing a drop of VPN privacy.**
+## Final Results
 
-## 🎯 The Results
+Since I started running this script, local hostnames have been working perfectly across every device in the network. There's no more typing IPs for SSH, and I don't have to worry about the firmware overwriting my changes because the watchdog script catches it within a couple of minutes.
 
-Since implementing this "layered" approach:
-- **Zero** manual IP-typing for SSH.
-- **Local hostnames** work across every device in the house, regardless of which VPN tunnel they are in.
-- **System-wide persistence**: The watchdog catches any file overwrites within 120 seconds.
+It's one of those "set and forget" fixes that makes the whole homelab experience significantly less annoying. Now, if only I could figure out why I have three different versions of `docker-compose` on my main server...
 
-The best part? It's entirely hands-off. My network is now smart enough to resolve local names on its own, and I can go back to more interesting problems—like why I have three different `docker-compose` versions installed on the same machine.
+A few parting notes if you try this:
 
-**Happy networking, and may your `nslookup` always return an IP.**
+- **Check your logs**: If you suspect the daemon isn't running, `grep "DNS Fix" /tmp/var/log/messages` will show you if it started correctly.
+- **Static DHCP**: Even with this fix, you should still set a DHCP reservation for your critical servers in the router’s Web UI. It saves you from having to troubleshoot "ghost" resolution issues if a device's IP changes.
+- **Boot Time**: Remember that it takes 20 seconds for the script to kick in after a reboot. If you test local resolution the moment the router is up, it will probably fail. Just wait a minute.
 
-### 💡 Pro Tips for the Road
-- **Check your logs**: Run `grep "DNS_FIX" /tmp/var/log/messages` to verify the daemon is starting.
-- **Static IPs**: Even with this fix, always set a DHCP reservation for your servers in the router’s Web UI. 
-- **Wait for it**: After a reboot, give the script the full 20 seconds to kick in before testing resolution.
+Hopefully, this saves someone else the headache of manually typing IP addresses for their entire homelab.
 
