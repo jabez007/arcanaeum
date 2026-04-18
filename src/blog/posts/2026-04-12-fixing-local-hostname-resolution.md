@@ -109,10 +109,20 @@ chmod +x /jffs/scripts/*.sh
 
 ## Persistence and NVRAM
 
-To make this change survive a reboot, we need to add the script to the router’s startup sequence. We’ll use `nvram` to set a startup command that triggers the daemon after a 20-second delay—this gives the JFFS partition and the network stack enough time to fully initialize.
+To make this change survive a reboot, we need to add the script to the router’s startup sequence using `nvram`. 
 
+> [!WARNING]
+> Using `nvram set rc_startup` will overwrite any existing startup commands. Always run `nvram get rc_startup` first to see if you already have a script defined. If so, you must combine the existing value with our new command before running `nvram set rc_startup` and `nvram commit`.
+
+Check your current startup configuration:
 ```bash
-nvram set rc_startup="sleep 20; [ -x /jffs/scripts/dns_daemon.sh ] && /jffs/scripts/dns_daemon.sh &"
+nvram get rc_startup
+```
+
+If the value is empty, you can set it directly. If it's not, append the new command (separated by a semicolon) to the existing string:
+```bash
+# Example of appending to an existing rc_startup
+nvram set rc_startup="<existing_commands>; sleep 20; [ -x /jffs/scripts/dns_daemon.sh ] && /jffs/scripts/dns_daemon.sh &"
 nvram commit
 ```
 
