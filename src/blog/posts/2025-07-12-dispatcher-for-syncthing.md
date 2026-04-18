@@ -19,37 +19,30 @@ draft: false
 
 # Smart SyncThing: Auto-Start Only on Trusted Networks
 
-Picture this: You're on a business trip with your laptop, connected to hotel Wi-Fi, when SyncThing tries to sync with your home devices.
-Since your SyncThing setup only works on your local network (no internet relay), it just sits there spinning, wasting battery and bandwidth trying to connect to devices that aren't reachable.
+If you use SyncThing without global discovery or relays, you've probably seen it: the "spinning" icon on your laptop tray when you're away from home. It's trying to find your home server on a hotel Wi-Fi network that it'll never reach, chewing through your battery and CPU for no reason.
 
-Sound familiar?
-Many people run SyncThing exclusively on their home network—it's faster, more secure, and doesn't require complex firewall configurations.
-But that means SyncThing is useless (and resource-wasting) when you're traveling.
+Running SyncThing exclusively on a local network is a great move for security and speed. It keeps your data off the public internet and simplifies your firewall setup. But it makes the app a resource drain when you're traveling.
 
-Let's fix this by making SyncThing smart about when it runs—automatically starting only when you're connected to your trusted home network(s), even if you don't log in immediately after boot.
+We can solve this by making SyncThing "location-aware." We'll set up a script that automatically starts it when you're on a trusted network and shuts it down the moment you leave, even handling those edge cases where your laptop connects to Wi-Fi before you've even logged in.
 
-## Why Be Selective About When SyncThing Runs?
+## The Problem with Local-Only Syncing
 
-Running SyncThing 24/7 might seem convenient, but there are compelling reasons to be more strategic, especially if you're running a local-only setup:
+Running SyncThing 24/7 is fine for a server, but for a laptop, it's often overkill—especially if you've disabled global discovery and relays for better privacy.
 
-- **Local network dependency**: If your SyncThing devices only communicate locally (no internet relay), running it outside your home network is pointless
-- **Resource waste**: SyncThing will continuously try to connect to unreachable devices, draining battery and CPU
-- **Security**: Keep your sync traffic off untrusted public networks
-- **Data usage**: Avoid connection attempts over mobile data
-- **Clean separation**: Travel laptop stays lean, home network stays synchronized
+When you're at a coffee shop or a hotel:
+- **It's a battery hog:** SyncThing keeps polling for devices it can't see.
+- **It's noisy:** It keeps trying to probe the network, which is unnecessary on public Wi-Fi.
+- **It's useless:** If your "source" devices are all back home on a private LAN, SyncThing has nothing to do.
 
-The solution?
-A NetworkManager dispatcher script combined with a login handler that automatically starts and stops SyncThing based on your trusted network connections—even handling scenarios where your laptop connects to WiFi before you log in.
+The solution is a NetworkManager dispatcher script. This is a small script that runs whenever your network status changes. Combined with a simple login handler, we can ensure SyncThing only fires up when it actually has a chance of working.
 
-## What We're Building
+## The Goal
 
-By the end of this guide, you'll have:
-
-- SyncThing running as a user service (more secure than system-wide)
-- Automatic start/stop based on your home Wi-Fi SSID
-- Desktop notifications so you know when SyncThing is active
-- A solution that works whether you log in immediately or come back to your laptop later
-- Smart handling of boot scenarios where network connects before user login
+We're going to set up a system that:
+- Runs SyncThing as a **user service** (the right way to do it on Linux).
+- Starts/stops automatically based on **trusted SSIDs or MAC addresses**.
+- Sends a **desktop notification** so you know when it's active.
+- Handles **boot-time connections** (when the Wi-Fi connects before you've even typed your password).
 
 ## Prerequisites
 
@@ -127,16 +120,17 @@ nmcli -f GENERAL.CONNECTION,IP4.GATEWAY dev show | grep -A1 "GENERAL.CONNECTION"
 **Pro tip**: Document multiple trusted networks (home, office, etc.) with their SSIDs and MAC addresses.
 We'll handle multiple networks in our script.
 
-## Step 3: Create the Smart Detection Script
+## Step 3: Create the Detection Script
 
-Now for the main event.
-We'll create a NetworkManager dispatcher script that supports multiple trusted networks with both SSID and MAC address verification, plus intelligent handling of login scenarios:
+We'll use a NetworkManager dispatcher script to handle the heavy lifting. This script supports multiple networks and uses both SSID and MAC address verification to make sure it's not being fooled by a spoofed network name.
+
+Create the script:
 
 ```bash
 sudo nano /etc/NetworkManager/dispatcher.d/99-syncthing
 ```
 
-Here's the enhanced script with login-aware network detection:
+Paste in this logic:
 
 ```bash
 #!/bin/bash
@@ -403,57 +397,34 @@ X-GNOME-Autostart-Delay=10
 
 This will run the login handler 10 seconds after you log in, giving your desktop session time to fully initialize.
 
-## Step 6: Test Your Complete Setup
+## Step 6: Testing the Setup
 
-Time to see the magic in action with both immediate and delayed login scenarios:
+You can test this by toggling your Wi-Fi or switching between networks.
 
 ### Test 1: Immediate Login
+1. Stop SyncThing manually: `systemctl --user stop syncthing`
+2. Connect to your home Wi-Fi. SyncThing should start immediately and send a notification.
 
-1. **Start with SyncThing stopped**: `systemctl --user stop syncthing`
-2. **Connect to a trusted network while logged in**: SyncThing should start immediately with a notification
+### Test 2: The "Boot and Wait" scenario
+1. Reboot.
+2. Let the laptop connect to Wi-Fi at the login screen.
+3. Wait a minute, then log in.
+4. The login handler should see the "pending" flag created by the dispatcher and start SyncThing.
 
-### Test 2: Boot and Login Immediately
+## How it Works
 
-1. **Reboot your laptop**
-2. **Let it connect to a trusted network and log in right away**: SyncThing should start via the dispatcher script
+The system handles two different states:
 
-### Test 3: Boot and Login Later (New Scenario)
+1. **Immediate Handling:** If you're already logged in, the dispatcher script starts/stops the service as soon as the network changes.
+2. **Deferred Handling:** If the network connects before you log in, the dispatcher can't talk to your user session yet. It leaves a "pending" flag in `/tmp`. When you eventually log in, the login handler sees that flag and finishes the job.
 
-1. **Reboot your laptop and let it connect to a trusted network**
-2. **Don't log in immediately - wait a few minutes**
-3. **Then log into your desktop session**: The login handler should detect the pending flag and start SyncThing
-
-### Test 4: Network Changes
-
-1. **Connect to an untrusted network**: SyncThing should stop immediately (and remove any pending flags)
-2. **Switch back to trusted network**: SyncThing should start (if logged in) or create a pending flag (if not logged in)
-
-Check the service status anytime with:
-
-```bash
-systemctl --user status syncthing
-```
-
-## How the Login Handling Works
-
-The system uses a two-pronged approach:
-
-1. **Immediate handling**: When you're logged in and connect to a network, the dispatcher script acts immediately
-2. **Deferred handling**: When the network connects but you're not logged in yet, the dispatcher script creates a flag file
-3. **Login catchup**: When you log in, the login handler checks for pending flags and starts SyncThing if needed
-
-This ensures SyncThing starts correctly in these scenarios:
-
-- ✅ Boot laptop, immediately log in, connect to WiFi
-- ✅ Boot laptop, connect to WiFi, then log in later
-- ✅ Already logged in, switch between networks
-- ✅ Disconnect and reconnect to networks
+This covers every common scenario: switching networks while working, booting up at a cafe, or coming home and opening your laptop.
 
 ## Troubleshooting & Debugging
 
 ### Not working as expected?
 
-Add comprehensive logging to your dispatcher script by adding this line after the `DBUS_SESSION=` line:
+Add detailed logging to your dispatcher script by adding this line after the `DBUS_SESSION=` line:
 
 ```bash
 LOG_FILE="/tmp/syncthing-dispatch.log"
@@ -526,7 +497,7 @@ declare -A TRUSTED_NETWORKS=(
 
 ### Enhanced logging for debugging
 
-Add more comprehensive logging to track the login handling flow:
+Add more detailed logging to track the login handling flow:
 
 ```bash
 # Add to both scripts
@@ -536,49 +507,18 @@ log_message() {
 }
 ```
 
-## The Result: Perfect for Local SyncThing Setups
+## Why This Matters for Local Setups
 
-This enhanced setup is ideal for the common scenario where SyncThing runs purely on your local network.
-Your travel laptop now:
+This setup effectively makes SyncThing "quiet" when it's not useful. Your travel laptop stops fruitlessly searching for your home server while you're at a hotel, which saves battery and stops cluttering your logs with connection errors.
 
-- **Stays quiet when traveling**: No pointless connection attempts to unreachable home devices
-- **Preserves battery**: No background sync activity when it can't accomplish anything
-- **Handles any login timing**: Works whether you log in immediately or come back later
-- **Maintains security**: MAC address verification prevents connection to spoofed networks
-- **Handles multiple locations**: Works seamlessly across home, office, and other trusted networks
-- **Provides clear feedback**: Desktop notifications keep you informed of SyncThing's status
+The best part is that it's set-and-forget. Whether you log in immediately or come back to your laptop an hour after booting, the sync will start exactly when it should. When you get back home, your files just start appearing without you having to touch a single setting.
 
-When you return home, SyncThing springs to life automatically, syncing all your travel files with your home setup—regardless of whether you're already logged in or just booting up.
-It's the perfect balance of automation, intelligence, and reliability.
+## A Note on Security
 
-## Security Notes
-
-This setup enhances security in several ways:
-
-- **Local network isolation**: Perfect for SyncThing setups that don't use internet relays
-- **MAC address verification**: Prevents connection to networks with spoofed SSIDs
-- **User service isolation**: SyncThing runs as your user, not as root
-- **Selective activation**: Reduces attack surface by only running when needed
-- **Smart flag handling**: Prevents SyncThing from starting on networks you've disconnected from
-
-**Important**: While MAC addresses are harder to spoof than SSIDs, they're not impossible to fake.
-For maximum security, combine this with other measures like:
-
-- Strong Wi-Fi passwords (WPA3 if available)
-- VPN usage on untrusted networks
-- Regular SyncThing device ID rotation
+Using MAC address verification adds a nice layer of protection against SSID spoofing, but remember that MAC addresses can be faked too. This setup is a great way to reduce your attack surface (by not running the service on public Wi-Fi), but it shouldn't be your *only* security measure. Always use strong Wi-Fi passwords and keep your SyncThing device IDs private.
 
 ## Wrapping Up
 
-This enhanced smart SyncThing setup solves the real-world problem of login timing that many automated solutions miss.
-No more watching your travel laptop waste battery trying to connect to unreachable home devices.
-No more wondering why SyncThing didn't start when you expected it to.
-No more worrying about connecting to spoofed networks.
+Managing SyncThing manually is a pain, and letting it run 24/7 on a laptop is wasteful. By offloading the "thinking" to a dispatcher script, you get the best of both worlds: a secure, local-only sync setup that only consumes resources when it's actually capable of syncing.
 
-Your SyncThing network becomes truly intelligent—active when it can be productive, dormant when it can't, and smart enough to handle the complexities of real-world laptop usage patterns.
-Whether you're at home, the office, visiting family, or just booting up your laptop at different times, it knows exactly when to sync and when to stay quiet.
-
-The best part? Once it's set up, you'll forget it's there.
-Your files just magically appear when you're on trusted networks—whether you logged in immediately or came back to your laptop later—and your laptop stays lean and efficient everywhere else.
-
-_Perfect sync when you need it, peace of mind when you don't._ 🔁
+It’s a simple fix that solves a common annoyance for Linux road warriors. Once it’s running, you can stop worrying about your battery or your bandwidth and just let the scripts handle the logistics.
