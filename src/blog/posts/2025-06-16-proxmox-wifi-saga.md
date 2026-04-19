@@ -95,8 +95,30 @@ ping -c 3 google.com
 ```
 
 Success!
-My phone was now serving as a gateway to the internet.
-Time to install those Wi-Fi tools.
+My phone was now serving as a gateway to the internet. Time to install those Wi-Fi tools.
+
+### Interlude: The "No Subscription" Cure
+
+Before I could actually download anything, I had to deal with Proxmox's default behavior. By default, it looks for an enterprise repository that requires a paid license. Without it, `apt update` throws a wall of 401 Unauthorized errors.
+
+Since this is a homelab, I needed to swap over to the community-supported repositories. I ran these commands to "cure" the subscription nag and get the updates flowing:
+
+```bash
+# Comment out the enterprise repositories
+sed '/^[^#]/ s/^/# /' -i /etc/apt/sources.list.d/pve-enterprise.list
+sed '/^[^#]/ s/^/# /' -i /etc/apt/sources.list.d/ceph.list
+sed '/^[^#]/ s/^/# /' -i /etc/apt/sources.list.d/pve-enterprise.list.dpkg-dist
+sed '/^[^#]/ s/^/# /' -i /etc/apt/sources.list.d/pve-enterprise.sources
+
+# Add the community repositories
+echo -e '\n# Proxmox community package repository' >> /etc/apt/sources.list
+echo "deb http://download.proxmox.com/debian/pve $(grep CODENAME /etc/os-release | cut -d '=' -f 2) pve-no-subscription" >> /etc/apt/sources.list
+
+# Refresh the package lists
+apt update
+```
+
+With the repositories fixed and the internet flowing through my phone, I was ready to move on.
 
 ## Chapter 2: The Wi-Fi Configuration Dance
 
