@@ -1,6 +1,6 @@
 ---
 title: ProxMox Laptop Install
-date: 2025-06-15
+date: 2025-06-13
 author: jabez007
 tags:
   - proxmox
@@ -204,6 +204,29 @@ Use a **completely different subnet** for dummy settings:
 > **Pro Workaround:**
 > If you have a **USB-to-Ethernet adapter** lying around, use it during installation.
 > It'll make your life infinitely easier.
+
+---
+
+## Step 6: The Moment of Truth (First Login)
+
+The installation is finished, the USB drive is pulled out, and you've rebooted. Instead of a desktop, you're greeted by a stark, black-and-white Linux login prompt.
+
+**Congratulations! Your server is officially alive.**
+
+But we don't do our work at the physical console. We do it from the comfort of another machine:
+
+1.  **The URL**: Open a browser on your main computer and navigate to `https://your-proxmox-ip:8006`. (Make sure you include the `https` and the `:8006` port!)
+2.  **The "Scary" Warning**: Your browser will scream that the connection is not private. This is because Proxmox uses a self-signed SSL certificate. Click "Advanced" and "Proceed" — it's perfectly safe on your local network.
+3.  **The Login**: Use the username `root` and the password you created during Step 4.
+4.  **The "No Subscription" Nag**: Immediately after logging in, you'll see a warning about not having a valid subscription. Don't worry, Proxmox isn't broken. It's just reminding you that you're using the free version.
+
+**Wait, where are the updates?**
+Normally, the very next step is to swap the enterprise repositories for the community ones and run a full system update (`apt update && apt upgrade`). However, because we're on a laptop without an Ethernet port, we have a bigger problem: **we aren't even online yet.**
+
+We'll tackle the "No Subscription" fix and the system updates in the next post, once we've performed some networking surgery to get this laptop on Wi-Fi.
+
+> [!WARNING] > **The Laptop Trap:**
+> Whatever you do, **do not close the lid yet.** By default, Proxmox will treat a lid-close as a command to go to sleep, which will kill your network connection and make the Web UI unreachable. Check out my "Laptop Lid Interlude" post to fix this before you put your server in its permanent home.
 
 ---
 
