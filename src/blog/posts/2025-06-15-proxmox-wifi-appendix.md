@@ -33,6 +33,8 @@ When these things happen out of order, you get a "successful" boot with no inter
 
 ## ⚠️ Step 0: The "ifupdown" Cleanse
 
+If you followed the manual steps in the **ProxMox Wi-Fi Saga** post, you likely have entries like `auto wlo1` and `iface wlo1 inet dhcp` in your `/etc/network/interfaces` file. To move to this more reliable systemd method, you must first migrate away from the traditional `ifupdown` tool.
+
 First, we have to stop the fighting. If `wlo1` is marked `auto` in `/etc/network/interfaces`, the system will try to configure it during early boot using `ifupdown`.
 
 If you are moving to the systemd approach below, **remove or comment out the `auto wlo1` and `iface wlo1` lines** for your Wi-Fi interface.
@@ -81,8 +83,7 @@ After=wpa_supplicant@%i.service
 
 [Service]
 ExecStart=/sbin/dhclient %i
-Type=oneshot
-RemainAfterExit=true
+Type=forking
 
 [Install]
 WantedBy=multi-user.target
