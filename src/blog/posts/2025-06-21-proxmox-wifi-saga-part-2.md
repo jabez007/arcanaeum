@@ -1,5 +1,4 @@
 ---
-
 title: ProxMox Wi-Fi Saga, Part 2 — The Bridge That Wasn’t
 date: 2025-06-21
 author: jabez007
@@ -19,18 +18,22 @@ excerpt: |
   Welcome to the part where Wi-Fi reminds you it’s not Ethernet.
 featured: false
 draft: false
-
 ---
 
 # Proxmox Wi-Fi Saga, Part 2 — The Bridge That Wasn’t
 
-*Or: Why your VMs are offline even though your host is living its best life*
+_Or: Why your VMs are offline even though your host is living its best life_
 
 So you followed along with Part 1.
 
-* Wi-Fi works ✅
-* DNS works ✅
-* `apt update` works ✅
+- Wi-Fi works ✅
+- DNS works ✅
+- `apt update` works ✅
+
+> **Wait—is your host actually stable?**
+> If you're finding that you have to manually run `dhclient` every time you reboot your Proxmox host, your VMs won't have a prayer.
+> Make sure your host networking is rock-solid first.
+> See the **ProxMox Wifi Appendix** if you're battling boot-time connection issues.
 
 You spin up a VM, ready to conquer the world…
 
@@ -49,14 +52,14 @@ At first glance, everything looks fine.
 
 Your Proxmox host:
 
-* Has an IP address
-* Can reach the internet
-* Resolves DNS
+- Has an IP address
+- Can reach the internet
+- Resolves DNS
 
 Your VM:
 
-* Gets an IP (if you configured one)
-* Can see the gateway
+- Gets an IP (if you configured one)
+- Can see the gateway
 
 But:
 
@@ -71,7 +74,7 @@ No routing. No internet. No joy.
 
 ## Chapter 6: The Fatal Assumption
 
-Here’s the configuration that *seems* correct:
+Here’s the configuration that _seems_ correct:
 
 ```
 auto vmbr0
@@ -112,9 +115,9 @@ Why?
 
 Because most Wi-Fi networks:
 
-* Only allow **one MAC address per client**
-* Drop frames from unknown MACs
-* Do not support true layer-2 bridging
+- Only allow **one MAC address per client**
+- Drop frames from unknown MACs
+- Do not support true layer-2 bridging
 
 Your Proxmox host is allowed on the network.
 
@@ -126,7 +129,7 @@ They might as well not exist.
 
 ## Chapter 8: What’s Actually Happening (and why it fails)
 
-Sometimes networking clicks faster when you can *see* it.
+Sometimes networking clicks faster when you can _see_ it.
 
 ### ❌ The Broken Setup (Wi-Fi Bridging Attempt)
 
@@ -190,9 +193,9 @@ Now `vmbr0` is just an **internal network** for your VMs. It no longer tries to 
 
 ### Step 2: Enable IP Forwarding
 
-Routing requires the kernel to actually allow packets to move between interfaces. 
+Routing requires the kernel to actually allow packets to move between interfaces.
 
-You *could* do this manually (`echo 1 > /proc/sys/net/ipv4/ip_forward`), but as you'll see in the next step, it's much better to let the network interface handle this automatically when it starts up.
+You _could_ do this manually (`echo 1 > /proc/sys/net/ipv4/ip_forward`), but as you'll see in the next step, it's much better to let the network interface handle this automatically when it starts up.
 
 ### Step 3: Add NAT (The Important Bit)
 
@@ -378,16 +381,16 @@ With NAT:
 
 ### ✅ Pros
 
-* Works reliably on Wi-Fi
-* No driver hacks
-* No weird bridge behavior
-* Predictable
+- Works reliably on Wi-Fi
+- No driver hacks
+- No weird bridge behavior
+- Predictable
 
 ### ❌ Cons
 
-* VMs are **not directly visible on your LAN**
-* Incoming connections require port forwarding
-* Slightly more setup
+- VMs are **not directly visible on your LAN**
+- Incoming connections require port forwarding
+- Slightly more setup
 
 ---
 
@@ -405,9 +408,9 @@ It doesn’t. And Proxmox doesn’t warn you—it just lets you fall into the tr
 
 With NAT in place:
 
-* VMs have internet ✅
-* Host networking remains clean ✅
-* No more silent packet drops ✅
+- VMs have internet ✅
+- Host networking remains clean ✅
+- No more silent packet drops ✅
 
 Your Proxmox laptop is now:
 
@@ -419,12 +422,12 @@ Your Proxmox laptop is now:
 
 In the next post, I’ll probably:
 
-* Add DHCP with `dnsmasq`
-* Clean up VM provisioning
-* Maybe make this setup actually pleasant to use
+- Add DHCP with `dnsmasq`
+- Clean up VM provisioning
+- Maybe make this setup actually pleasant to use
 
 But for now? You’ve solved the hardest part.
 
 ---
 
-*And all it took was learning that Wi-Fi has trust issues.*
+_And all it took was learning that Wi-Fi has trust issues._

@@ -1,6 +1,6 @@
 ---
 title: Deploying Your First LXC – Ubuntu on Proxmox
-date: 2025-06-18
+date: 2025-06-20
 author: jabez007
 tags:
   - proxmox
@@ -54,6 +54,7 @@ This tells the Proxmox Entity Appliance Manager to refresh its list. It's the "a
 ## Step 2: Grabbing the Template
 
 Now, let's go shopping.
+
 1. In the side panel, click on your **local** storage (under your node name).
 2. Select **CT Templates**.
 3. Click the **Templates** button at the top.
@@ -109,7 +110,7 @@ Pick the Ubuntu image you just downloaded from the `local` storage.
 
 ### 3. Disks
 
-If you check the [official Ubuntu requirements](https://help.ubuntu.com/community/Installation/SystemRequirements), they recommend **25GB** for a full desktop install, or at least **8.6GB** for a minimal install. 
+If you check the [official Ubuntu requirements](https://help.ubuntu.com/community/Installation/SystemRequirements), they recommend **25GB** for a full desktop install, or at least **8.6GB** for a minimal install.
 
 Since we're running a headless LXC container, **8GB or 10GB** is the perfect starting point. It's enough to hold the OS and a few apps without wasting space.
 Remember: You can always grow a disk later in Proxmox, but shrinking one is a nightmare you don't want to live through.
@@ -119,8 +120,8 @@ Remember: You can always grow a disk later in Proxmox, but shrinking one is a ni
 Ubuntu Desktop officially asks for a **2 GHz dual-core processor** and **2048 MiB (2 GB) of RAM** for virtualized installs. But because we're skipping the overhead of a full virtual machine:
 
 - **CPU:** **1 Core** is usually plenty for most homelab utility scripts and light servers.
-- **Memory:** **512MB RAM / 512MB Swap** is the "Goldilocks" zone for a headless Ubuntu container. 
-It's enough to run comfortably without starving your laptop of its precious RAM. 
+- **Memory:** **512MB RAM / 512MB Swap** is the "Goldilocks" zone for a headless Ubuntu container.
+  It's enough to run comfortably without starving your laptop of its precious RAM.
 
 This is the beauty of LXC—you're running an "official" OS with a fraction of the hardware requirements.
 
@@ -158,6 +159,7 @@ Once it says "TASK OK," right-click your new container (ID 100) and hit **Start*
 Click **Console**, and you should see a login prompt.
 
 **Default Login:**
+
 - **User:** `root`
 - **Password:** Whatever you set in Step 1.
 
@@ -177,6 +179,7 @@ You are now running a virtualized Linux environment that's taking up less than 5
 ## Final Thoughts: Don't Be a Hero
 
 You've just built your first container. Now, before you go and install 50 different things and break it:
+
 1. **Take a Snapshot:** Go to the container's "Snapshots" tab and create one named "Fresh Install." If you mess up a config file later, you can teleport back to this exact moment in seconds.
 2. **Back it up:** Set up a simple backup job. A container you can't restore is just a tragedy waiting to happen.
 

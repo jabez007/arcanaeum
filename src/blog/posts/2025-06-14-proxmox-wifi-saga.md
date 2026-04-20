@@ -1,6 +1,6 @@
 ---
 title: ProxMox Wi-Fi Saga
-date: 2025-06-16
+date: 2025-06-14
 author: jabez007
 tags:
   - proxmox
@@ -231,66 +231,6 @@ After a reboot, everything clicked into place:
 - DNS resolved without any hacks
 - `apt update` worked flawlessly
 
----
-
-### A Subtle Detail I Missed at the Time
-
-At this point, I *thought* I had everything wired up correctly.
-
-* `wpa_supplicant.conf` was in place
-* `/etc/network/interfaces` looked right
-* I had a clean, declarative setup
-
-Very “this is how it’s supposed to work.”
-
-But here’s the thing I didn’t realize until much later:
-
-```bash
-systemctl status wpa_supplicant@wlo1
-```
-
-```bash
-/usr/sbin/wpa_supplicant -i wlo1 -c /etc/wpa_supplicant/wpa_supplicant.conf
-```
-
-That service was already running. And had been the whole time.
-
-Meaning:
-
-* Wi-Fi authentication was being handled by `wpa_supplicant@wlo1` (via systemd)
-* My manual `dhclient wlo1` was grabbing an IP
-* And `/etc/network/interfaces`… wasn’t actually in control of the interface lifecycle
-
-In other words:
-
-> I didn’t successfully *configure* Wi-Fi—I just didn’t break the thing that was already making it work.
-
-Linux networking, in its infinite flexibility, will happily let multiple systems overlap just enough to give you the illusion that everything is clean and intentional.
-
-It wasn’t. But it worked.
-
-And honestly? At that point in the journey, I was more interested in “working” than “pure.”
-
----
-
-### Why This Matters (But Didn’t—Yet)
-
-This detail didn’t immediately cause problems. In fact, it quietly smoothed over a few rough edges while I was still getting everything online.
-
-But it *did* mean my system was in a kind of… hybrid state:
-
-* systemd managing Wi-Fi
-* ifupdown managing bridges
-* me manually poking DHCP when needed
-
-A little chaotic. A little fragile. But functional.
-
-And as I’d soon discover:
-
-> Just because the host has internet… doesn’t mean your VMs will.
-
-That realization deserves its own chapter.
-
 ## The Lessons Learned
 
 This journey taught me several valuable lessons:
@@ -315,3 +255,11 @@ If you're setting up Proxmox on Wi-Fi-only hardware, hopefully this guide saves 
 
 Now, time to actually start using this thing for what it was meant for: running virtual machines and containers.
 The real fun begins!
+
+---
+
+## What's Next?
+
+Getting the host online is only half the battle. In **Part 2: The Bridge That Wasn’t**, I dive into why your VMs are still offline even when your host is connected, and how to fix it with NAT.
+
+**Note on Stability**: If you find that your Wi-Fi doesn't automatically reconnect after a reboot, or you have to manually run `dhclient` every time you log in, check out the **Appendix: Boot-Time Wi-Fi and DHCP with systemd** for a more permanent fix using systemd services.

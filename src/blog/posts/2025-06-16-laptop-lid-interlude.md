@@ -1,6 +1,6 @@
 ---
 title: Laptop Lid Interlude
-date: 2025-06-17
+date: 2025-06-16
 author: jabez007
 tags:
   - proxmox
