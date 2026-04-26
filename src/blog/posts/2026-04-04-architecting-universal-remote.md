@@ -42,11 +42,19 @@ As the Sniffer Log came to life, we encountered a puzzling new bug: the Flipper 
 
 By analyzing the binary representation of these numbers, we uncovered the final nuance of the protocol. Because the "wire order" was reversed over the air, the high and low bytes of the 16-bit IDs were being swapped in our circular buffer relative to their position in the MicroPython memory. `16128` (Hex `0x3F00`) was actually `0x003F`—ID 63 (an "Extreme" badge).
 
+### The Endianness Trap
+
+This was a classic collision between architecture and protocol. The RP2040 is natively **Little-Endian**, meaning it stores the low byte of a 16-bit integer first. While the conference protocol header was designed to be Big-Endian, the badge firmware often packed the ID field in the RP2040's native order: `[11:Low, 12:High]`.
+
+When the badge transmitted the packet in reverse (`46 -> 0`), the **High Byte (Index 12)** was actually sent over the air **before** the Low Byte (Index 11). Consequently, in our Flipper's circular buffer, the byte that arrived earlier (and thus sat "further back" from the Syncword) was the High Byte. 
+
 ```c
-// CORRECTED BYTE ORDER: Index 12 is Lo, 11 is Hi in the reversed wire stream
+// CORRECTED BYTE ORDER: Index 12 is Hi, 11 is Lo in the reversed wire stream
 uint16_t id = (pkt_circ[(p_idx + 47 - 12) % 47] << 8) | 
                pkt_circ[(p_idx + 47 - 11) % 47];
 ```
+
+Solving this required a "detective" mindset—realizing that 16128 wasn't just a random number, but a bit-perfect swap of the ID we were expecting.
 
 ## The Ghost in the Thread: Background RX
 
