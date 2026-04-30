@@ -521,6 +521,11 @@ onMounted(() => {
 
   .post-navigation {
     grid-template-columns: 1fr;
+    grid-template-areas: "prev" "next";
+  }
+
+  .nav-link.next {
+    text-align: left;
   }
 
   .related-grid {

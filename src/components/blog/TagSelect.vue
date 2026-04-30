@@ -3,19 +3,36 @@
     <div 
       class="tag-select-trigger" 
       :class="{ 'is-active': isOpen }"
+      tabindex="0"
+      role="button"
+      aria-haspopup="listbox"
+      :aria-expanded="isOpen"
       @click="toggleDropdown"
+      @keydown.enter.prevent="toggleDropdown"
+      @keydown.space.prevent="toggleDropdown"
+      @keydown.down.prevent="openAndFocusFirst"
     >
       <div class="selected-tags-display">
         <span v-if="selectedTags.length === 0" class="placeholder">Filter by Tags...</span>
         <div v-else class="tag-chips">
           <span v-for="tag in selectedTags" :key="tag" class="tag-chip">
             {{ tag }}
-            <button @click.stop="removeTag(tag)" class="remove-tag">✕</button>
+            <button 
+              @click.stop="removeTag(tag)" 
+              class="remove-tag"
+              :aria-label="`Remove tag: ${tag}`"
+            >✕</button>
           </span>
         </div>
       </div>
       <div class="trigger-icons">
-        <button v-if="selectedTags.length > 0" @click.stop="clearAll" class="clear-all" title="Clear All">✕</button>
+        <button 
+          v-if="selectedTags.length > 0" 
+          @click.stop="clearAll" 
+          class="clear-all" 
+          title="Clear All"
+          aria-label="Clear all selected tags"
+        >✕</button>
         <span class="chevron" :class="{ 'is-rotated': isOpen }">▼</span>
       </div>
     </div>
@@ -29,17 +46,26 @@
             placeholder="Search tags..." 
             ref="searchInputRef"
             @keydown.esc="closeDropdown"
+            @keydown.down.prevent="focusFirstOption"
             class="tag-search-input"
           />
         </div>
         
-        <div class="tag-options">
+        <div class="tag-options" role="listbox" aria-multiselectable="true">
           <div 
-            v-for="tag in filteredTags" 
+            v-for="(tag, index) in filteredTags" 
             :key="tag" 
             class="tag-option"
             :class="{ 'is-selected': selectedTags.includes(tag) }"
+            tabindex="0"
+            role="option"
+            :aria-selected="selectedTags.includes(tag)"
+            :ref="el => { if (el) optionRefs[index] = el as HTMLElement }"
             @click="toggleTag(tag)"
+            @keydown.enter.prevent="toggleTag(tag)"
+            @keydown.space.prevent="toggleTag(tag)"
+            @keydown.down.prevent="focusNextOption(index)"
+            @keydown.up.prevent="focusPrevOption(index)"
           >
             <span class="tag-name">{{ tag }}</span>
             <span class="tag-count">({{ getTagCount(tag) }})</span>
@@ -71,6 +97,7 @@ const isOpen = ref(false);
 const searchQuery = ref('');
 const containerRef = ref<HTMLElement | null>(null);
 const searchInputRef = ref<HTMLInputElement | null>(null);
+const optionRefs = ref<HTMLElement[]>([]);
 
 const filteredTags = computed(() => {
   if (!searchQuery.value) return props.allTags;
@@ -84,6 +111,34 @@ const toggleDropdown = () => {
     nextTick(() => {
       searchInputRef.value?.focus();
     });
+  }
+};
+
+const openAndFocusFirst = () => {
+  if (!isOpen.value) {
+    toggleDropdown();
+  } else {
+    focusFirstOption();
+  }
+};
+
+const focusFirstOption = () => {
+  if (optionRefs.value.length > 0) {
+    optionRefs.value[0].focus();
+  }
+};
+
+const focusNextOption = (index: number) => {
+  if (index < optionRefs.value.length - 1) {
+    optionRefs.value[index + 1].focus();
+  }
+};
+
+const focusPrevOption = (index: number) => {
+  if (index > 0) {
+    optionRefs.value[index - 1].focus();
+  } else {
+    searchInputRef.value?.focus();
   }
 };
 

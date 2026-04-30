@@ -59,15 +59,23 @@
         {{ error }}
       </div>
 
-      <!-- Posts Grid -->
       <TransitionGroup 
         name="posts-fade" 
         tag="div" 
         class="posts-grid" 
         v-if="!postsLoading && !error && filteredPosts.length > 0"
       >
-        <article v-for="post in paginatedPosts" :key="post.slug" class="blog-card post-card"
-          @click="navigateToPost(post.slug)">
+        <article 
+          v-for="post in paginatedPosts" 
+          :key="post.slug" 
+          class="blog-card post-card"
+          tabindex="0"
+          role="button"
+          :aria-label="`Read post: ${post.frontmatter.title}`"
+          @click="navigateToPost(post.slug)"
+          @keydown.enter="navigateToPost(post.slug)"
+          @keydown.space.prevent="navigateToPost(post.slug)"
+        >
           <div class="post-meta">
             <time>{{ formatDate(post.frontmatter.date) }}</time>
             <span v-if="post.frontmatter.featured" class="blog-badge blog-badge-featured">
@@ -82,8 +90,17 @@
 
           <div class="post-footer">
             <div class="post-tags">
-              <span v-for="tag in post.frontmatter.tags?.slice(0, 3)" :key="tag" class="blog-tag tag"
-                @click.stop="selectTag(tag)">
+              <span 
+                v-for="tag in post.frontmatter.tags?.slice(0, 3)" 
+                :key="tag" 
+                class="blog-tag tag"
+                tabindex="0"
+                role="button"
+                :aria-label="`Filter by tag: ${tag}`"
+                @click.stop="selectTag(tag)"
+                @keydown.enter.stop="selectTag(tag)"
+                @keydown.space.stop.prevent="selectTag(tag)"
+              >
                 {{ tag }}
               </span>
               <span v-if="post.frontmatter.tags && post.frontmatter.tags.length > 3" class="tag-more">
@@ -92,7 +109,14 @@
             </div>
 
             <div class="post-author" v-if="post.frontmatter.author">
-              <span @click.stop="selectAuthor(post.frontmatter.author!)">
+              <span 
+                tabindex="0"
+                role="button"
+                :aria-label="`Filter by author: ${post.frontmatter.author}`"
+                @click.stop="selectAuthor(post.frontmatter.author!)"
+                @keydown.enter.stop="selectAuthor(post.frontmatter.author!)"
+                @keydown.space.stop.prevent="selectAuthor(post.frontmatter.author!)"
+              >
                 by {{ post.frontmatter.author }}
               </span>
             </div>
@@ -190,7 +214,12 @@ const clearSearch = (): void => {
 };
 
 const selectTag = (tag: string): void => {
-  selectedTags.value = [tag];
+  const index = selectedTags.value.indexOf(tag);
+  if (index === -1) {
+    selectedTags.value.push(tag);
+  } else {
+    selectedTags.value.splice(index, 1);
+  }
   currentPage.value = 1;
 };
 
