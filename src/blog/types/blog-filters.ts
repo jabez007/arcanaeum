@@ -1,5 +1,5 @@
 export interface BlogFilters {
-  tag?: string;
+  tags?: string[];
   author?: string;
   featured?: boolean;
   search?: string;

@@ -1,5 +1,11 @@
 <template>
   <div class="blog-container">
+    <nav class="blog-nav">
+      <router-link to="/" class="back-link">
+        <span class="arrow">←</span> Return to Sanctum
+      </router-link>
+    </nav>
+
     <header class="blog-header">
       <h1>{{ blogTitle }}</h1>
       <p>Crafting code, weaving algorithms, and brewing solutions in the realm of technology</p>
@@ -14,6 +20,12 @@
       </div>
 
       <div class="filters-container">
+        <TagSelect 
+          :all-tags="allTags" 
+          v-model:selected-tags="selectedTags" 
+          :get-tag-count="getTagCount"
+        />
+
         <select v-model="selectedAuthor" class="blog-input filter-select">
           <option value="">All Authors</option>
           <option v-for="author in allAuthors" :key="author" :value="author">
@@ -23,20 +35,9 @@
 
         <button @click="showFeaturedOnly = !showFeaturedOnly" :class="{ active: showFeaturedOnly }"
           class="blog-btn blog-btn-secondary featured-toggle">
-          Featured Only
+          Featured
         </button>
       </div>
-    </div>
-
-    <!-- Tags Filter -->
-    <div class="blog-tags">
-      <button @click="selectedTag = ''" :class="{ active: !selectedTag }" class="blog-tag tag-btn">
-        All Posts ({{ filteredPosts.length }})
-      </button>
-      <button v-for="tag in allTags" :key="tag" @click="selectedTag = tag" :class="{ active: selectedTag === tag }"
-        class="blog-tag tag-btn">
-        {{ tag }} ({{ getTagCount(tag) }})
-      </button>
     </div>
 
     <!-- Search Results Info -->
@@ -48,57 +49,67 @@
       </p>
     </div>
 
-    <!-- Loading State -->
-    <div v-if="postsLoading" class="blog-loading">Loading posts...</div>
+    <!-- Posts Area -->
+    <div class="posts-area">
+      <!-- Loading State -->
+      <div v-if="postsLoading" class="blog-loading">Loading posts...</div>
 
-    <!-- Error State -->
-    <div v-if="error" class="blog-error">
-      {{ error }}
-    </div>
+      <!-- Error State -->
+      <div v-if="error" class="blog-error">
+        {{ error }}
+      </div>
 
-    <!-- Posts Grid -->
-    <div class="posts-grid" v-if="!postsLoading && !error">
-      <article v-for="post in paginatedPosts" :key="post.slug" class="blog-card post-card"
-        @click="navigateToPost(post.slug)">
-        <div class="post-meta">
-          <time>{{ formatDate(post.frontmatter.date) }}</time>
-          <span v-if="post.frontmatter.featured" class="blog-badge blog-badge-featured">
-            Featured
-          </span>
-          <span class="blog-badge blog-badge-reading-time">{{ post.readingTime }} min read</span>
-        </div>
-
-        <h2>{{ post.frontmatter.title }}</h2>
-
-        <p class="excerpt">{{ post.frontmatter.excerpt }}</p>
-
-        <div class="post-footer">
-          <div class="post-tags">
-            <span v-for="tag in post.frontmatter.tags?.slice(0, 3)" :key="tag" class="blog-tag tag"
-              @click.stop="selectTag(tag)">
-              {{ tag }}
+      <!-- Posts Grid -->
+      <TransitionGroup 
+        name="posts-fade" 
+        tag="div" 
+        class="posts-grid" 
+        v-if="!postsLoading && !error && filteredPosts.length > 0"
+      >
+        <article v-for="post in paginatedPosts" :key="post.slug" class="blog-card post-card"
+          @click="navigateToPost(post.slug)">
+          <div class="post-meta">
+            <time>{{ formatDate(post.frontmatter.date) }}</time>
+            <span v-if="post.frontmatter.featured" class="blog-badge blog-badge-featured">
+              Featured
             </span>
-            <span v-if="post.frontmatter.tags && post.frontmatter.tags.length > 3" class="tag-more">
-              +{{ post.frontmatter.tags.length - 3 }}
-            </span>
+            <span class="blog-badge blog-badge-reading-time">{{ post.readingTime }} min read</span>
           </div>
 
-          <div class="post-author" v-if="post.frontmatter.author">
-            <span @click.stop="selectAuthor(post.frontmatter.author!)">
-              by {{ post.frontmatter.author }}
-            </span>
+          <h2>{{ post.frontmatter.title }}</h2>
+
+          <p class="excerpt">{{ post.frontmatter.excerpt }}</p>
+
+          <div class="post-footer">
+            <div class="post-tags">
+              <span v-for="tag in post.frontmatter.tags?.slice(0, 3)" :key="tag" class="blog-tag tag"
+                @click.stop="selectTag(tag)">
+                {{ tag }}
+              </span>
+              <span v-if="post.frontmatter.tags && post.frontmatter.tags.length > 3" class="tag-more">
+                +{{ post.frontmatter.tags.length - 3 }}
+              </span>
+            </div>
+
+            <div class="post-author" v-if="post.frontmatter.author">
+              <span @click.stop="selectAuthor(post.frontmatter.author!)">
+                by {{ post.frontmatter.author }}
+              </span>
+            </div>
           </div>
+
+          <div class="read-more">Read more →</div>
+        </article>
+      </TransitionGroup>
+
+      <!-- Empty State -->
+      <Transition name="fade">
+        <div v-if="!postsLoading && !error && filteredPosts.length === 0" class="empty-state">
+          <h3>No posts found</h3>
+          <p>Try adjusting your search or filter criteria.</p>
+          <button @click="clearAllFilters" class="blog-btn blog-btn-primary">Clear All Filters</button>
         </div>
-
-        <div class="read-more">Read more →</div>
-      </article>
-    </div>
-
-    <!-- Empty State -->
-    <div v-if="!postsLoading && !error && filteredPosts.length === 0" class="empty-state">
-      <h3>No posts found</h3>
-      <p>Try adjusting your search or filter criteria.</p>
-      <button @click="clearAllFilters" class="blog-btn blog-btn-primary">Clear All Filters</button>
+      </Transition>
     </div>
 
     <!-- Pagination -->
@@ -120,6 +131,7 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useBlog } from "@/blog/composables/use-blog";
+import TagSelect from "./TagSelect.vue";
 import type { BlogPostMetadata, BlogFilters } from "@/blog/types";
 
 const blogTitle = "Commits & Conjurations";
@@ -128,7 +140,7 @@ const router = useRouter();
 const { posts, postsLoading, error, allTags, allAuthors, loadPosts, filterPostsByFilters } = useBlog();
 
 const searchQuery = ref("");
-const selectedTag = ref("");
+const selectedTags = ref<string[]>([]);
 const selectedAuthor = ref("");
 const showFeaturedOnly = ref(false);
 const currentPage = ref(1);
@@ -137,7 +149,7 @@ const postsPerPage = 9;
 const filters = computed(
   (): BlogFilters => ({
     search: searchQuery.value,
-    tag: selectedTag.value || undefined,
+    tags: selectedTags.value.length > 0 ? selectedTags.value : undefined,
     author: selectedAuthor.value || undefined,
     featured: showFeaturedOnly.value || undefined,
   }),
@@ -178,7 +190,7 @@ const clearSearch = (): void => {
 };
 
 const selectTag = (tag: string): void => {
-  selectedTag.value = tag;
+  selectedTags.value = [tag];
   currentPage.value = 1;
 };
 
@@ -189,7 +201,7 @@ const selectAuthor = (author: string): void => {
 
 const clearAllFilters = (): void => {
   searchQuery.value = "";
-  selectedTag.value = "";
+  selectedTags.value = [];
   selectedAuthor.value = "";
   showFeaturedOnly.value = false;
   currentPage.value = 1;
@@ -217,9 +229,45 @@ onMounted(() => {
 
 <style scoped>
 .blog-container {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--blog-spacing-xl);
+}
+
+.blog-nav {
+  margin-bottom: var(--blog-spacing-lg);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--blog-spacing-xs);
+  color: var(--blog-text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all var(--blog-transition-base);
+  padding: var(--blog-spacing-xs) var(--blog-spacing-sm);
+  border-radius: var(--blog-radius-md);
+  border: 1px solid transparent;
+}
+
+.back-link:hover {
+  color: var(--blog-primary-light);
+  background: var(--blog-background-elevated);
+  border-color: var(--blog-border-mystical);
+  transform: translateX(-4px);
+}
+
+.back-link .arrow {
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: transform var(--blog-transition-base);
+}
+
+.back-link:hover .arrow {
+  transform: translateX(-2px);
 }
 
 .blog-header {
@@ -395,22 +443,61 @@ onMounted(() => {
 
 .empty-state {
   text-align: center;
-  padding: var(--blog-spacing-2xl);
+  padding: var(--blog-spacing-3xl) var(--blog-spacing-xl);
   color: var(--blog-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--blog-spacing-md);
 }
 
-@media (max-width: 768px) {
-  .blog-controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
+.empty-state button {
+  margin-top: var(--blog-spacing-lg);
+}
 
-  .search-container {
-    min-width: auto;
-  }
+.posts-area {
+  min-height: 600px;
+  position: relative;
+  margin-top: var(--blog-spacing-xl);
+}
 
-  .posts-grid {
-    grid-template-columns: 1fr;
-  }
+/* Post filtering transitions */
+.posts-fade-move {
+  transition: transform 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.posts-fade-enter-active {
+  transition: all 0.5s ease-out;
+  transition-delay: 0.1s;
+}
+
+.posts-fade-leave-active {
+  transition: all 0.4s ease-in;
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  max-width: 380px;
+}
+
+.posts-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.9) translateY(30px);
+}
+
+.posts-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.9) translateY(-30px);
+}
+
+/* Simple fade for empty state */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -46,8 +46,10 @@ export function filterPosts(filters: BlogFilters): BlogPostMetadata[] {
     posts = searchResults.map((result) => result.post);
   }
 
-  if (filters.tag) {
-    posts = posts.filter((post) => post.frontmatter.tags?.includes(filters.tag!));
+  if (filters.tags && filters.tags.length > 0) {
+    posts = posts.filter((post) =>
+      filters.tags!.every((tag) => post.frontmatter.tags?.includes(tag)),
+    );
   }
 
   if (filters.author) {
