@@ -506,7 +506,6 @@ onMounted(() => {
   z-index: 0;
   pointer-events: none;
   width: 100%;
-  max-width: 380px;
 }
 
 .posts-fade-enter-from {

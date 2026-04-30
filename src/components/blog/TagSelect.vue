@@ -66,6 +66,7 @@
             @keydown.space.prevent="toggleTag(tag)"
             @keydown.down.prevent="focusNextOption(index)"
             @keydown.up.prevent="focusPrevOption(index)"
+            @keydown.esc.stop="closeDropdown"
           >
             <span class="tag-name">{{ tag }}</span>
             <span class="tag-count">({{ getTagCount(tag) }})</span>
@@ -82,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch, nextTick, onBeforeUpdate } from 'vue';
 
 interface Props {
   allTags: string[];
@@ -98,6 +99,10 @@ const searchQuery = ref('');
 const containerRef = ref<HTMLElement | null>(null);
 const searchInputRef = ref<HTMLInputElement | null>(null);
 const optionRefs = ref<HTMLElement[]>([]);
+
+onBeforeUpdate(() => {
+  optionRefs.value = [];
+});
 
 const filteredTags = computed(() => {
   if (!searchQuery.value) return props.allTags;
@@ -186,7 +191,9 @@ onUnmounted(() => {
 
 // Reset search when dropdown closes
 watch(isOpen, (newVal) => {
-  if (!newVal) searchQuery.value = '';
+  if (newVal) {
+    // Dropdown opened, focus management is handled in toggleDropdown/openAndFocusFirst
+  }
 });
 </script>
 
