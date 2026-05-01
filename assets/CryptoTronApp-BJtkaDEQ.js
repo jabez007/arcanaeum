@@ -1,0 +1,1 @@
+import{d as n,j as t,n as e,k as p,u as r,h as c,_ as s}from"./index-B3Ai-OvT.js";const a=n({__name:"CryptoTronApp",setup(_){const o=t(e.app);return(f,d)=>(c(),p(r(o),{class:"cryptotron-container"}))}}),u=s(a,[["__scopeId","data-v-3c041c33"]]);export{u as default};
