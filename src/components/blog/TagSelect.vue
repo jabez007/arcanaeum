@@ -7,10 +7,11 @@
       role="button"
       aria-haspopup="listbox"
       :aria-expanded="isOpen"
+      ref="triggerRef"
       @click="toggleDropdown"
-      @keydown.enter.prevent="toggleDropdown"
-      @keydown.space.prevent="toggleDropdown"
-      @keydown.down.prevent="openAndFocusFirst"
+      @keydown.enter.self.prevent="toggleDropdown"
+      @keydown.space.self.prevent="toggleDropdown"
+      @keydown.down.self.prevent="openAndFocusFirst"
     >
       <div class="selected-tags-display">
         <span v-if="selectedTags.length === 0" class="placeholder">Filter by Tags...</span>
@@ -45,7 +46,7 @@
             type="text" 
             placeholder="Search tags..." 
             ref="searchInputRef"
-            @keydown.esc="closeDropdown"
+            @keydown.esc="closeDropdown(true)"
             @keydown.down.prevent="focusFirstOption"
             class="tag-search-input"
           />
@@ -66,7 +67,7 @@
             @keydown.space.prevent="toggleTag(tag)"
             @keydown.down.prevent="focusNextOption(index)"
             @keydown.up.prevent="focusPrevOption(index)"
-            @keydown.esc.stop="closeDropdown"
+            @keydown.esc.stop="closeDropdown(true)"
           >
             <span class="tag-name">{{ tag }}</span>
             <span class="tag-count">({{ getTagCount(tag) }})</span>
@@ -97,6 +98,7 @@ const emit = defineEmits(['update:selectedTags']);
 const isOpen = ref(false);
 const searchQuery = ref('');
 const containerRef = ref<HTMLElement | null>(null);
+const triggerRef = ref<HTMLElement | null>(null);
 const searchInputRef = ref<HTMLInputElement | null>(null);
 const optionRefs = ref<HTMLElement[]>([]);
 
@@ -149,9 +151,14 @@ const focusPrevOption = (index: number) => {
   }
 };
 
-const closeDropdown = () => {
+const closeDropdown = (restoreFocus = false) => {
   isOpen.value = false;
   searchQuery.value = '';
+  if (restoreFocus) {
+    nextTick(() => {
+      triggerRef.value?.focus();
+    });
+  }
 };
 
 const toggleTag = (tag: string) => {
