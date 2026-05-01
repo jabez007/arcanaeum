@@ -111,8 +111,10 @@ const filteredTags = computed(() => {
 });
 
 const toggleDropdown = () => {
-  isOpen.value = !isOpen.value;
   if (isOpen.value) {
+    closeDropdown();
+  } else {
+    isOpen.value = true;
     nextTick(() => {
       searchInputRef.value?.focus();
     });
