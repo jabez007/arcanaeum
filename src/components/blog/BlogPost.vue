@@ -3,7 +3,9 @@
     <article class="blog-post" v-if="post" :key="post.slug" ref="postContainer">
       <header class="post-header">
         <nav class="breadcrumb">
-          <router-link to="/blog">← Back to Blog</router-link>
+          <router-link to="/blog" class="back-link">
+            <span class="arrow">←</span> Back to Blog
+          </router-link>
         </nav>
 
         <div class="post-meta">
@@ -46,14 +48,14 @@
 
       <footer class="post-footer">
         <div class="post-navigation">
-          <router-link v-if="previousPost" :to="`/blog/${previousPost.slug}`" class="nav-link prev">
-            <span class="nav-label">Previous</span>
-            <span class="nav-title">{{ previousPost.frontmatter.title }}</span>
+          <router-link v-if="olderPost" :to="`/blog/${olderPost.slug}`" class="nav-link prev">
+            <span class="nav-label">Previous Post</span>
+            <span class="nav-title">{{ olderPost.frontmatter.title }}</span>
           </router-link>
 
-          <router-link v-if="nextPost" :to="`/blog/${nextPost.slug}`" class="nav-link next">
-            <span class="nav-label">Next</span>
-            <span class="nav-title">{{ nextPost.frontmatter.title }}</span>
+          <router-link v-if="newerPost" :to="`/blog/${newerPost.slug}`" class="nav-link next">
+            <span class="nav-label">Next Post</span>
+            <span class="nav-title">{{ newerPost.frontmatter.title }}</span>
           </router-link>
         </div>
       </footer>
@@ -103,14 +105,14 @@ const currentIndex = computed((): number => {
   return allPosts.value.findIndex((p) => p.slug === post.value?.slug);
 });
 
-const previousPost = computed((): BlogPostMetadata | undefined => {
-  const index = currentIndex.value;
-  return index > 0 ? allPosts.value[index - 1] : undefined;
-});
-
-const nextPost = computed((): BlogPostMetadata | undefined => {
+const olderPost = computed((): BlogPostMetadata | undefined => {
   const index = currentIndex.value;
   return index >= 0 && index < allPosts.value.length - 1 ? allPosts.value[index + 1] : undefined;
+});
+
+const newerPost = computed((): BlogPostMetadata | undefined => {
+  const index = currentIndex.value;
+  return index > 0 ? allPosts.value[index - 1] : undefined;
 });
 
 const formatDate = (dateString: string): string => {
@@ -191,16 +193,38 @@ onMounted(() => {
 
 .breadcrumb {
   margin-bottom: var(--blog-spacing-xl);
+  text-align: left;
 }
 
-.breadcrumb-link {
-  color: var(--blog-primary);
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--blog-spacing-xs);
+  color: var(--blog-text-muted);
   text-decoration: none;
-  transition: color var(--blog-transition-base);
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all var(--blog-transition-base);
+  padding: var(--blog-spacing-xs) var(--blog-spacing-sm);
+  border-radius: var(--blog-radius-md);
+  border: 1px solid transparent;
 }
 
-.breadcrumb-link:hover {
-  color: var(--blog-primary-dark);
+.back-link:hover {
+  color: var(--blog-primary-light);
+  background: var(--blog-background-elevated);
+  border-color: var(--blog-border-mystical);
+  transform: translateX(-4px);
+}
+
+.back-link .arrow {
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: transform var(--blog-transition-base);
+}
+
+.back-link:hover .arrow {
+  transform: translateX(-2px);
 }
 
 .post-header {
@@ -426,7 +450,17 @@ onMounted(() => {
 .post-navigation {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-areas: "prev next";
   gap: var(--blog-spacing-xl);
+}
+
+.nav-link.prev {
+  grid-area: prev;
+}
+
+.nav-link.next {
+  grid-area: next;
+  text-align: right;
 }
 
 .nav-link {
@@ -444,10 +478,6 @@ onMounted(() => {
   background: var(--blog-background-lighter);
   transform: translateY(-2px);
   box-shadow: var(--blog-shadow-sm);
-}
-
-.nav-link.next {
-  text-align: right;
 }
 
 .nav-label {
@@ -491,6 +521,11 @@ onMounted(() => {
 
   .post-navigation {
     grid-template-columns: 1fr;
+    grid-template-areas: "prev" "next";
+  }
+
+  .nav-link.next {
+    text-align: left;
   }
 
   .related-grid {

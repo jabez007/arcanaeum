@@ -23,8 +23,8 @@ const scrollToTop = () => {
   min-height: 100vh;
   min-width: 100vw;
   display: flex;
-  align-items: center;
-  justify-items: center;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 $transition-duration-root: 0.3s !default;
