@@ -11,7 +11,9 @@
 
     <div class="content-wrapper">
       <div v-if="hasIcon" class="app-icon">
-        <slot name="icon"><span v-if="props.icon">{{ props.icon }}</span></slot>
+        <slot name="icon"
+          ><span v-if="props.icon">{{ props.icon }}</span></slot
+        >
       </div>
       <h3 class="app-title">{{ props.title }}</h3>
       <p class="app-description">{{ props.description }}</p>
@@ -71,9 +73,15 @@ const linkProps = computed(() => {
 }
 
 /* Shard Shapes */
-.shard-0 { clip-path: polygon(5% 0%, 100% 10%, 90% 95%, 0% 100%); }
-.shard-1 { clip-path: polygon(0% 10%, 95% 0%, 100% 90%, 10% 100%); }
-.shard-2 { clip-path: polygon(10% 0%, 100% 5%, 95% 100%, 0% 90%); }
+.shard-0 {
+  clip-path: polygon(5% 0%, 100% 10%, 90% 95%, 0% 100%);
+}
+.shard-1 {
+  clip-path: polygon(0% 10%, 95% 0%, 100% 90%, 10% 100%);
+}
+.shard-2 {
+  clip-path: polygon(10% 0%, 100% 5%, 95% 100%, 0% 90%);
+}
 
 .shard-glow {
   position: absolute;
@@ -184,7 +192,9 @@ const linkProps = computed(() => {
 .app-card:hover .app-icon {
   transform: scale(1.15);
   border-color: #64ffda;
-  box-shadow: 0 0 30px rgba(100, 255, 218, 0.4), inset 0 0 15px rgba(100, 255, 218, 0.2);
+  box-shadow:
+    0 0 30px rgba(100, 255, 218, 0.4),
+    inset 0 0 15px rgba(100, 255, 218, 0.2);
 }
 
 .app-icon::after {
@@ -227,14 +237,25 @@ const linkProps = computed(() => {
 }
 
 @keyframes mysticalFloat {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  33% { transform: translate(10px, -15px) rotate(1deg); }
-  66% { transform: translate(-10px, -10px) rotate(-1deg); }
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(10px, -15px) rotate(1deg);
+  }
+  66% {
+    transform: translate(-10px, -10px) rotate(-1deg);
+  }
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Media Query Overrides */
@@ -244,9 +265,15 @@ const linkProps = computed(() => {
     padding: 2.5rem 1.5rem;
   }
 
-  .shard-0 { clip-path: polygon(1% 0%, 100% 2%, 99% 99%, 0% 100%); }
-  .shard-1 { clip-path: polygon(0% 2%, 99% 0%, 100% 98%, 1% 100%); }
-  .shard-2 { clip-path: polygon(2% 0%, 100% 1%, 98% 100%, 0% 99%); }
+  .shard-0 {
+    clip-path: polygon(1% 0%, 100% 2%, 99% 99%, 0% 100%);
+  }
+  .shard-1 {
+    clip-path: polygon(0% 2%, 99% 0%, 100% 98%, 1% 100%);
+  }
+  .shard-2 {
+    clip-path: polygon(2% 0%, 100% 1%, 98% 100%, 0% 99%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

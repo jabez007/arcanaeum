@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ParticlesDiv from "@/components/ParticlesDiv.vue";
+import PromptInjectionCanary from "@/components/PromptInjectionCanary.vue";
 import { RouterView } from "vue-router";
 
 const scrollToTop = () => {
@@ -8,6 +9,7 @@ const scrollToTop = () => {
 </script>
 
 <template>
+  <PromptInjectionCanary />
   <ParticlesDiv />
   <RouterView v-slot="{ Component, route }">
     <transition name="scale-transition" mode="out-in" @after-leave="scrollToTop">
@@ -16,6 +18,7 @@ const scrollToTop = () => {
       </div>
     </transition>
   </RouterView>
+  <PromptInjectionCanary />
 </template>
 
 <style scoped lang="scss">

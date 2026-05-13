@@ -3,8 +3,15 @@
     <header class="search-header">
       <h1>Search Blog</h1>
       <div class="search-container">
-        <input v-model="searchQuery" type="text" placeholder="Search posts, tags, or content..."
-          class="blog-input search-input" @input="handleSearch" @keyup.enter="handleSearch" ref="searchInput" />
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search posts, tags, or content..."
+          class="blog-input search-input"
+          @input="handleSearch"
+          @keyup.enter="handleSearch"
+          ref="searchInput"
+        />
         <button @click="handleSearch" class="blog-btn blog-btn-primary search-btn">Search</button>
       </div>
     </header>
@@ -19,11 +26,17 @@
       </div>
 
       <div class="results-grid">
-        <article v-for="result in paginatedResults" :key="result.post.slug" class="blog-card result-card"
-          @click="navigateToPost(result.post.slug)">
+        <article
+          v-for="result in paginatedResults"
+          :key="result.post.slug"
+          class="blog-card result-card"
+          @click="navigateToPost(result.post.slug)"
+        >
           <div class="result-meta">
             <time>{{ formatDate(result.post.frontmatter.date) }}</time>
-            <span class="blog-badge relevance-score">{{ Math.round((1 - result.score) * 100) }}% match</span>
+            <span class="blog-badge relevance-score"
+              >{{ Math.round((1 - result.score) * 100) }}% match</span
+            >
           </div>
 
           <h2>{{ result.post.frontmatter.title }}</h2>
@@ -39,7 +52,11 @@
           </div>
 
           <div class="result-tags" v-if="result.post.frontmatter.tags">
-            <span v-for="tag in result.post.frontmatter.tags.slice(0, 3)" :key="tag" class="blog-tag">
+            <span
+              v-for="tag in result.post.frontmatter.tags.slice(0, 3)"
+              :key="tag"
+              class="blog-tag"
+            >
               {{ tag }}
             </span>
           </div>
@@ -81,7 +98,12 @@
       <div class="popular-tags">
         <h4>Popular tags:</h4>
         <div class="tag-cloud">
-          <router-link v-for="tag in popularTags" :key="tag" :to="`/blog/tag/${tag}`" class="blog-tag tag-link">
+          <router-link
+            v-for="tag in popularTags"
+            :key="tag"
+            :to="`/blog/tag/${tag}`"
+            class="blog-tag tag-link"
+          >
             {{ tag }}
           </router-link>
         </div>

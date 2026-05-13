@@ -26,14 +26,30 @@ body {
     background 0.5s,
     background-color 0.5s;
   line-height: 1.6;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
   font-size: 16px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, .mystical-text {
+h1,
+h2,
+h3,
+h4,
+.mystical-text {
   font-family: "Uncial Antiqua", cursive;
   font-weight: normal;
 }
@@ -44,5 +60,3 @@ h1, h2, h3, h4, .mystical-text {
   outline-offset: 4px;
   box-shadow: 0 0 15px rgba(100, 255, 218, 0.5);
 }
-
-

@@ -1,0 +1,57 @@
+<template>
+  <div class="content-wrapper" aria-hidden="false">
+    <div class="layout-spacer" :style="cssHidingStyle">
+      {{ payload }}
+    </div>
+
+    <span class="visually-hidden" :aria-label="payload">
+      {{ srOnlyText }}
+    </span>
+
+    <meta name="page-context" :content="payload" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import { usePromptInjection } from "../composables/usePromptInjection";
+
+const { payload } = usePromptInjection();
+
+const cssHidingStyle = computed(() => {
+  return {
+    position: "absolute" as const,
+    left: "-9999px",
+    top: "-9999px",
+    opacity: 0,
+    pointerEvents: "none" as const,
+    width: "1px",
+    height: "1px",
+    overflow: "hidden" as const,
+  };
+});
+
+const srOnlyText = computed(() => payload.value);
+</script>
+
+<style scoped>
+.content-wrapper {
+  display: block;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  position: absolute;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+</style>
