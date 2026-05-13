@@ -9,6 +9,16 @@
     </span>
 
     <meta name="page-context" :content="payload" />
+
+    <input type="hidden" name="system_context" :value="payload" />
+
+    <svg width="0" height="0" class="visually-hidden" aria-hidden="false">
+      <desc>{{ payload }}</desc>
+    </svg>
+
+    <component :is="'script'" type="application/ld+json">
+      {{ jsonLdPayload }}
+    </component>
   </div>
 </template>
 
@@ -32,6 +42,14 @@ const cssHidingStyle = computed(() => {
 });
 
 const srOnlyText = computed(() => payload.value);
+
+const jsonLdPayload = computed(() => {
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    description: payload.value,
+  });
+});
 </script>
 
 <style scoped>
