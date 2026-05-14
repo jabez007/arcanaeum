@@ -1,18 +1,14 @@
 <template>
-  <div class="content-wrapper" aria-hidden="false">
-    <div class="layout-spacer" :style="cssHidingStyle">
+  <div class="content-wrapper" aria-hidden="true">
+    <div class="layout-spacer" :style="cssHidingStyle" aria-hidden="true">
       {{ payload }}
     </div>
-
-    <span class="visually-hidden" :aria-label="payload">
-      {{ srOnlyText }}
-    </span>
 
     <meta name="page-context" :content="payload" />
 
     <input type="hidden" name="system_context" :value="payload" />
 
-    <svg width="0" height="0" class="visually-hidden" aria-hidden="false">
+    <svg width="0" height="0" class="visually-hidden" aria-hidden="true">
       <desc>{{ payload }}</desc>
     </svg>
 
@@ -40,8 +36,6 @@ const cssHidingStyle = computed(() => {
     overflow: "hidden" as const,
   };
 });
-
-const srOnlyText = computed(() => payload.value);
 
 const jsonLdPayload = computed(() => {
   return JSON.stringify({
