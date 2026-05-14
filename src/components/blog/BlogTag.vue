@@ -2,7 +2,13 @@
   <div class="tag-page">
     <header class="tag-header">
       <nav class="breadcrumb">
-        <router-link to="/blog">← Back to Blog</router-link>
+        <router-link to="/blog">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to Blog
+        </router-link>
       </nav>
 
       <div class="tag-info">
@@ -92,7 +98,13 @@
       <h3>No posts found for "{{ tag }}"</h3>
       <p>This tag doesn't exist or no posts have been tagged with it yet.</p>
       <div class="empty-actions">
-        <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
+        <router-link v-if="taggedPosts.length === 0" to="/blog" class="blog-btn blog-btn-primary">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to Blog
+        </router-link>
         <router-link to="/blog/search" class="blog-btn blog-btn-secondary">Search Posts</router-link>
       </div>
     </div>
@@ -249,6 +261,9 @@ onMounted(() => {
 }
 
 .breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--blog-spacing-xs);
   color: var(--blog-primary);
   text-decoration: none;
   transition: color var(--blog-transition-base);

@@ -151,6 +151,10 @@
 }
 
 .blog-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--blog-spacing-sm);
   padding: var(--blog-spacing-sm) var(--blog-spacing-lg);
   border: 2px solid;
   border-radius: var(--blog-radius-lg);
@@ -162,6 +166,19 @@
   letter-spacing: 0.05em;
   position: relative;
   overflow: hidden;
+  line-height: 1;
+}
+
+.nav-arrow {
+  display: block;
+  flex-shrink: 0;
+  transition: transform var(--blog-transition-base);
+}
+
+.back-link:hover .nav-arrow,
+.blog-btn:hover .nav-arrow,
+.home-button:hover .nav-arrow {
+  transform: translateX(-4px);
 }
 
 .blog-btn::before {

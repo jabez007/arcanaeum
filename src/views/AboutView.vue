@@ -76,7 +76,13 @@
       </div>
       <br />
       <div class="back-home">
-        <router-link to="/" class="home-button">🏠 Return to Sanctum</router-link>
+        <router-link to="/" class="home-button">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Return to Sanctum
+        </router-link>
       </div>
     </div>
   </section>
@@ -261,7 +267,9 @@ onBeforeUnmount(() => {
 }
 
 .home-button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.5rem 1.25rem;
   margin-right: 4rem;
   background: #64ffda30;
@@ -269,6 +277,7 @@ onBeforeUnmount(() => {
   color: #64ffda;
   text-decoration: none;
   transition: background 0.2s ease;
+  line-height: 1;
 }
 
 .home-button:hover {

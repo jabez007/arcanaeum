@@ -25,6 +25,7 @@ const scrollToTop = () => {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  justify-content: center;
 }
 
 $transition-duration-root: 0.3s !default;
