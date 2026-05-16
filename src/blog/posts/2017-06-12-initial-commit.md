@@ -1,0 +1,21 @@
+---
+title: "Initial Commit"
+date: 2017-06-12
+author: jabez007
+tags:
+  - introduction
+  - about
+  - purpose
+excerpt: |
+  Good morning! Yes, it is morning somewhere in the world.
+featured: false
+draft: false
+---
+
+# Initial Commit
+
+Good morning! Yes, it is morning somewhere in the world.
+
+Welcome to my journey advancing my understanding of a Linux environment through tinkering on various Raspberry Pi setups. I find that trying to explain or teach a concept to another person helps me understand it better myself. I am in no way an expert on Linux or Raspberry Pi, so you might take my instructions with some caution. In fact, my only official expertise is in Mathematics (with some training in secondary education). My process will try to break down each project all the way to the individual commands if necessary while attempting to explain what each of those commands are doing. I think that part is what I've missed in many of projects that I've done already, explaining why I have to use one command vs another. To do this, I'm going to be working through the project as I'm writing each blog post. If (more when) I run into an issue trying to get a project working, I'm going to keep my troubleshooting notes in the post along with the explanation of how it all eventually worked. I hope I learn a lot from this exercise, but I hope more that I'll be able to help someone else learn something new.
+
+Thank you for visiting, now lets have some fun.
