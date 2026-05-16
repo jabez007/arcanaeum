@@ -112,6 +112,12 @@ A home directory is full of garbage you do _not_ want to back up.
 My final exclude list (`~/.config/rclone/excludes.txt`) looked like this:
 
 ```text
+# Security: Exclude private keys and credentials
+.ssh/**
+.gnupg/**
+.config/rclone/**
+
+# Junk: Exclude rebuildable cache and dependencies
 **/.cache/**
 .npm/_cacache/**
 .npm/_npx/**
@@ -120,6 +126,8 @@ My final exclude list (`~/.config/rclone/excludes.txt`) looked like this:
 .local/share/Trash/**
 *.log
 ```
+
+It is critical to exclude directories like `.ssh`, `.gnupg`, and your rclone config files; these contain private keys and credentials that should never be uploaded to cloud storage without robust, client-side encryption.
 
 Used via:
 
