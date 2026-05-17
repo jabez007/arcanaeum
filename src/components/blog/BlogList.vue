@@ -2,7 +2,11 @@
   <div class="blog-container">
     <nav class="blog-nav">
       <router-link to="/" class="back-link">
-        <span class="arrow">←</span> Return to Sanctum
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Return to Sanctum
       </router-link>
     </nav>
 
@@ -280,6 +284,7 @@ onMounted(() => {
   padding: var(--blog-spacing-xs) var(--blog-spacing-sm);
   border-radius: var(--blog-radius-md);
   border: 1px solid transparent;
+  line-height: 1;
 }
 
 .back-link:hover {
@@ -287,16 +292,6 @@ onMounted(() => {
   background: var(--blog-background-elevated);
   border-color: var(--blog-border-mystical);
   transform: translateX(-4px);
-}
-
-.back-link .arrow {
-  font-size: 1.2rem;
-  line-height: 1;
-  transition: transform var(--blog-transition-base);
-}
-
-.back-link:hover .arrow {
-  transform: translateX(-2px);
 }
 
 .blog-header {

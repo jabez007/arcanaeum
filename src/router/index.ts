@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import("../views/CryptoTronApp.vue"),
       children: [],
     },
+    {
+      path: "/heur-aegis-dex",
+      name: "heur-aegis-dex",
+      component: () => import("../views/HeurAegisDexApp.vue"),
+    },
     ...blogRoutes,
   ],
 });
