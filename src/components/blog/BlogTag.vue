@@ -98,7 +98,7 @@
       <h3>No posts found for "{{ tag }}"</h3>
       <p>This tag doesn't exist or no posts have been tagged with it yet.</p>
       <div class="empty-actions">
-        <router-link v-if="taggedPosts.length === 0" to="/blog" class="blog-btn blog-btn-primary">
+        <router-link to="/blog" class="blog-btn blog-btn-primary">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>

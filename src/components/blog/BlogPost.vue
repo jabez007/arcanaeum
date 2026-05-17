@@ -258,15 +258,6 @@ onMounted(() => {
   transform: translateX(-4px);
 }
 
-.back-link .arrow {
-  font-size: 1.2rem;
-  transition: transform var(--blog-transition-base);
-}
-
-.back-link:hover .arrow {
-  transform: translateX(-2px);
-}
-
 .post-header {
   margin-bottom: var(--blog-spacing-2xl);
   text-align: center;
