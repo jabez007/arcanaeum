@@ -69,15 +69,20 @@ onUnmounted(() => {
         :to="{ name: 'cryptotron-home' }">
         <template #icon><ArcaneIcon name="cipher" /></template>
       </AppCard>
-      <AppCard icon="🫑" title="The Forgotten Pepper" :index="1"
+      <AppCard title="Heur Aegis DEX" :index="1"
+        description="Advanced Pokémon meta-analysis and team workbench."
+        :to="{ name: 'heur-aegis-dex' }">
+        <template #icon><ArcaneIcon name="aegis" /></template>
+      </AppCard>
+      <AppCard icon="🫑" title="The Forgotten Pepper" :index="2"
         description="A bold culinary blog where ingredients meet design."
         to="https://theforgottenpepper.com" />
-      <AppCard title="Commits & Conjurations" :index="2"
+      <AppCard title="Commits & Conjurations" :index="3"
         description="Lab notes of a dev with a flair for the arcane."
         :to="{ name: 'BlogList' }">
         <template #icon><ArcaneIcon name="tome" /></template>
       </AppCard>
-      <AppCard title="Meet the Vice Magus" :index="3"
+      <AppCard title="Meet the Vice Magus" :index="4"
         description="Who's behind the glyphs? Learn more about the conjurer."
         :to="{ name: 'about' }">
         <template #icon><ArcaneIcon name="magus" /></template>
@@ -185,18 +190,15 @@ header {
 }
 
 /* Broken Grid: Feature cards span more space */
-.app-card:nth-child(1) {
-  grid-column: 1 / span 4;
-}
-
-.app-card:nth-child(4) {
-  grid-column: 3 / span 4;
-}
-
-/* Middle row spans the full 6 columns together */
-.app-card:nth-child(2),
-.app-card:nth-child(3) {
+.app-card:nth-child(1),
+.app-card:nth-child(2) {
   grid-column: span 3;
+}
+
+.app-card:nth-child(3),
+.app-card:nth-child(4),
+.app-card:nth-child(5) {
+  grid-column: span 2;
 }
 
 @media only screen and (max-width: 1100px) {
@@ -229,22 +231,22 @@ header {
 }
 
 :deep(.app-card:nth-child(2)) {
-  --delay: 11;
+  --delay: 5;
 }
 
 :deep(.app-card:nth-child(3)) {
-  --delay: 7;
+  --delay: 11;
 }
 
 :deep(.app-card:nth-child(4)) {
-  --delay: 13;
+  --delay: 7;
 }
 
 :deep(.app-card:nth-child(5)) {
-  --delay: 3;
+  --delay: 13;
 }
 
 :deep(.app-card:nth-child(6)) {
-  --delay: 11;
+  --delay: 3;
 }
 </style>

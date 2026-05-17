@@ -6,6 +6,7 @@ import App from "./App.vue";
 import router from "./router";
 //@ts-expect-error still working on exporting type declarations
 import CryptoTronPlugin from "@jabez007/cryptotron.vue";
+import HeurAegisDex from "@jabez007/heur-aegis-dex";
 
 const app = createApp(App);
 
@@ -13,6 +14,8 @@ app.use(CryptoTronPlugin, {
   router,
   parentRouteName: "cryptotron",
 });
+
+app.use(HeurAegisDex);
 
 console.debug(router.getRoutes());
 
