@@ -102,7 +102,7 @@
       </div>
       <br />
       <div class="back-home">
-        <router-link to="/" class="home-button">
+        <router-link to="/" class="home-button" aria-label="Return to Sanctum">
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -113,6 +113,8 @@
             stroke-linecap="round"
             stroke-linejoin="round"
             class="nav-arrow"
+            aria-hidden="true"
+            focusable="false"
           >
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
@@ -316,7 +318,9 @@ onBeforeUnmount(() => {
   line-height: 1;
 }
 
-.home-button:hover {
+.home-button:hover,
+.home-button:focus-visible {
   background: #64ffda60;
+  outline: none;
 }
 </style>

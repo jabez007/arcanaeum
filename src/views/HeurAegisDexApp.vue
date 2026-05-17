@@ -5,8 +5,8 @@ import { HeurAegisDexMain } from "@jabez007/heur-aegis-dex";
 
 <template>
   <div class="heur-aegis-dex-view">
-    <router-link :to="{ name: 'home' }" class="home-button" title="Return to Arcanaeum">
-      <ArcaneIcon name="home" :size="24" />
+    <router-link :to="{ name: 'home' }" class="home-button" title="Return to Arcanaeum" aria-label="Return to Arcanaeum">
+      <ArcaneIcon name="home" :size="24" aria-hidden="true" />
       <span class="home-text">Return to Arcanaeum</span>
     </router-link>
     <div class="heur-aegis-dex-container heur-aegis-dex">
@@ -53,11 +53,13 @@ import { HeurAegisDexMain } from "@jabez007/heur-aegis-dex";
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-.home-button:hover {
+.home-button:hover,
+.home-button:focus-visible {
   background: rgba(100, 255, 218, 0.1);
   border-color: #64ffda;
   transform: translateY(-2px);
   box-shadow: 0 6px 25px rgba(100, 255, 218, 0.2);
+  outline: none;
 }
 
 .home-text {
@@ -68,7 +70,8 @@ import { HeurAegisDexMain } from "@jabez007/heur-aegis-dex";
   opacity: 0;
 }
 
-.home-button:hover .home-text {
+.home-button:hover .home-text,
+.home-button:focus-visible .home-text {
   max-width: 200px;
   opacity: 1;
 }
