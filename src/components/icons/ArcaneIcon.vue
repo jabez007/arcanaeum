@@ -2,7 +2,7 @@
 import { computed } from "vue";
 
 const props = defineProps<{
-  name: "cipher" | "pepper" | "tome" | "magus";
+  name: "cipher" | "pepper" | "tome" | "magus" | "aegis" | "home";
   size?: number | string;
 }>();
 
@@ -40,6 +40,18 @@ const icons = {
     path: `M12 3l-8 18h16L12 3z
            M12 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4z
            M2 19h2 M20 19h2 M12 21v2`,
+  },
+  aegis: {
+    // A shield with a centered diamond (Arcane Gem)
+    viewBox: "0 0 24 24",
+    path: `M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z
+           M12 8l4 4-4 4-4-4z`,
+  },
+  home: {
+    // A simple house with arcane sharp edges
+    viewBox: "0 0 24 24",
+    path: `M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z
+           M9 22V12h6v10`,
   },
 };
 

@@ -7,64 +7,90 @@
       <blockquote>
         "All we have to decide is what to do with the code that is given us."
         <br />
-        <span style="float: right">– a totally real Gandalf quote (probably)</span>
+        <cite style="display: block; text-align: right; margin-top: 0.5rem;">– a totally real Gandalf quote (probably)</cite>
       </blockquote>
+
       <p>
         In the far reaches of cyberspace, where forgotten APIs whisper through deprecated endpoints
         and servers flicker like dying stars, one software sorcerer emerged — cloaked in sarcasm,
         armed with enchanted source scrolls, and sustained by black-code rituals brewed beside the
         terminal's glow.
       </p>
-      <br />
+
       <p>
         I’m <strong>Jimmy</strong>, but across the code-realms I’m known as
-        <strong>jabez007</strong> — conjurer of cloud logic, summoner of RESTful spirits, and
-        wielder of tools both ancient (<code>.NET</code>) and modern (<code>Go</code>,
-        <code>Node.js</code>, <code>Python</code>).
+        <strong>jabez007</strong> — Backend Architect, conjurer of cloud logic, and summoner of
+        RESTful spirits. My usual spellbook includes <code>TypeScript</code>, <code>Node.js</code>,
+        <code>Python</code>, <code>Go</code>, <code>.NET</code>, <code>Vue</code>,
+        <code>Docker</code>, <code>Kubernetes</code>, and <code>Terraform</code>.
       </p>
 
       <h2>Domains of Mastery</h2>
       <ul>
         <li>
-          <strong>Backend Alchemy:</strong> Architecting resilient services in Node.js, Go, C#, and
-          Python.
+          <strong>Backend Alchemy:</strong> Architecting resilient, observable APIs and services in
+          Go, Python, C#, and TypeScript—integrating systems that were never meant to speak.
         </li>
         <li>
-          <strong>Frontend Incantations:</strong> Vue.js spells for rendering arcane interfaces.
+          <strong>Cloud & DevOps Rituals:</strong> Summoning infrastructure from the ether with
+          Terraform, Docker, and Kubernetes, bound by CI/CD runes in GitHub Actions.
         </li>
         <li>
-          <strong>DevOps Rituals:</strong> Docker, CI/CD, and scripting to bind the tech realm
-          together.
+          <strong>Automated Familiars:</strong> Researching and developing modular AI agent systems
+          and developer tooling to automate the mundane and conquer tech entropy.
+        </li>
+        <li>
+          <strong>Cyber Warding:</strong> Applying ethical hacking and reconnaissance techniques to
+          harden infrastructure and protect the sanctum against the dark arts.
+        </li>
+        <li>
+          <strong>Frontend Incantations:</strong> Crafting practical Vue interfaces that make
+          complex backend systems usable by actual humans.
+        </li>
+        <li>
+          <strong>Terminal Sorcery:</strong> Navigating the ether efficiently via Neovim, tmux, and
+          decoupled git worktrees.
         </li>
       </ul>
 
+      <h2>Guild Leadership & Mentorship</h2>
+      <p>
+        While I still enjoy delving deep into the code-mines, my journey has evolved into guiding
+        parties of developers. I prioritize technical mentorship and architectural strategy,
+        crafting onboarding grimoires to pass knowledge to apprentice developers and ensuring our
+        collective codebase remains resilient and free of curses.
+      </p>
+
       <h2>Alignment: Chaotic Helpful</h2>
       <p>
-        Cursed with realism and sarcasm, yet ever ready to help in moments of darkness — like
-        Gandalf with fewer fireworks and more <code>git rebase</code>.
+        I’m realistic enough to know every system has skeletons in the repo, sarcastic enough to
+        name them properly, and helpful enough to document the exorcism afterward. Like Gandalf,
+        but with fewer fireworks and more <code>git rebase</code>.
       </p>
 
       <h2>A Lore-Rich Past</h2>
       <p>
         Through countless quests across enterprise realms, I’ve woven secure integrations with the
-        arcane vaults of banking platforms, summoned infrastructure from the ether using
-        incantations of Terraform, and stabilized Kubernetes nodes within enchanted cloud forests.
-        I’ve etched CI/CD runes in GitHub Actions, maintained the dusty tomes of legacy .NET
-        systems, and crafted onboarding grimoires to pass knowledge to apprentice developers.
+        arcane vaults of banking platforms, stabilized Kubernetes nodes within enchanted cloud
+        forests, and maintained the dusty tomes of legacy .NET systems.
+      </p>
+      <p>
         Whether deciphering the cryptic glyphs of undocumented APIs or exorcising haunted
-        containers, I do not merely survive the chaos — I catalog its runes and publish the scrolls.
+        containers, I do not merely survive the chaos — I catalog its runes. When I solve a problem,
+        I leave behind more than code: I leave documentation, templates, and scripts so the next
+        poor soul has a map through the dungeon.
       </p>
 
       <h2>The Path Forward</h2>
       <p>
-        I build meaningful tools, fight tech entropy, and push pixels with purpose — all while
-        keeping my sarcasm compiler at full throttle.
+        I build meaningful tools, fight tech entropy, and make software systems less cursed than I
+        found them — all while keeping the sarcasm compiler at full throttle.
       </p>
 
       <h2>Need a Spell Cast?</h2>
       <p>
-        Whether you're looking for a backend conjurer, a full-stack glyphwright, or someone to
-        grumble with about vendor lock-in — I’m your wizard.
+        Looking for someone who can design backend systems, untangle integrations, automate
+        deployments, or grumble productively about vendor lock-in? I may be your wizard.
       </p>
 
       <div class="contact-links">
@@ -93,7 +119,25 @@
       <br />
       <PromptInjectionCanary />
       <div class="back-home">
-        <router-link to="/" class="home-button">🏠 Return to Sanctum</router-link>
+        <router-link to="/" class="home-button" aria-label="Return to Sanctum">
+          <svg
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="nav-arrow"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Return to Sanctum
+        </router-link>
       </div>
     </div>
   </section>
@@ -278,7 +322,9 @@ onBeforeUnmount(() => {
 }
 
 .home-button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.5rem 1.25rem;
   margin-right: 4rem;
   background: #64ffda30;
@@ -286,9 +332,12 @@ onBeforeUnmount(() => {
   color: #64ffda;
   text-decoration: none;
   transition: background 0.2s ease;
+  line-height: 1;
 }
 
-.home-button:hover {
+.home-button:hover,
+.home-button:focus-visible {
   background: #64ffda60;
+  outline: none;
 }
 </style>

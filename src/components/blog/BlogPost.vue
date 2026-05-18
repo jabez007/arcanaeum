@@ -1,10 +1,14 @@
 <template>
   <Transition name="fade-slide" mode="out-in">
-    <article class="blog-post" v-if="post" :key="post.slug" ref="postContainer">
+    <article class="blog-post" v-if="post" :key="post.slug" ref="postContainer" @scroll="handleScroll">
       <header class="post-header">
         <nav class="breadcrumb">
           <router-link to="/blog" class="back-link">
-            <span class="arrow">←</span> Back to Blog
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Blog
           </router-link>
         </nav>
 
@@ -70,18 +74,40 @@
           </router-link>
         </div>
       </footer>
-    </article>
+
+      <!-- Back to Top Button -->
+      <Transition name="fade">
+        <button v-if="showBackToTop" @click="scrollToTop" class="blog-btn-scroll-top" aria-label="Back to top">
+          <svg viewBox="0 0 24 24" class="scroll-arrow" width="24" height="24">
+            <path d="M12 4l-8 8h6v8h4v-8h6l-8-8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M7 11l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </Transition>
+      </article>
 
     <div v-else-if="!postLoading && error" class="blog-error" key="error">
       <h1>Error Loading Post</h1>
       <p>{{ error }}</p>
-      <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
+      <router-link to="/blog" class="blog-btn blog-btn-primary">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Blog
+      </router-link>
     </div>
 
     <div v-else-if="!postLoading" class="not-found" key="not-found">
       <h1>Post not found</h1>
       <p>The post you're looking for doesn't exist or has been moved.</p>
-      <router-link to="/blog" class="blog-btn blog-btn-primary">← Back to Blog</router-link>
+      <router-link to="/blog" class="blog-btn blog-btn-primary">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Blog
+      </router-link>
     </div>
 
     <div v-else class="blog-loading" key="loading">Loading post...</div>
@@ -139,11 +165,25 @@ const navigateToPost = (slug: string): void => {
 };
 
 const postContainer = ref<HTMLElement | null>(null);
+const showBackToTop = ref(false);
+
+const handleScroll = () => {
+  if (postContainer.value) {
+    showBackToTop.value = postContainer.value.scrollTop > 500;
+  }
+};
+
+const scrollToTop = () => {
+  if (postContainer.value) {
+    postContainer.value.scrollTo({ top: 0, behavior: "smooth" });
+  }
+};
 
 const loadPostData = async (): Promise<void> => {
   postLoading.value = true;
   post.value = undefined;
   relatedPosts.value = [];
+  showBackToTop.value = false;
 
   try {
     // Ensure we have the post list for navigation and related posts
@@ -192,7 +232,7 @@ onMounted(() => {
 
 <style scoped>
 .blog-post {
-  max-width: 900px;
+  max-width: 1200px;
   height: 100vh;
   overflow: auto;
   margin: 0 auto;
@@ -219,6 +259,7 @@ onMounted(() => {
   padding: var(--blog-spacing-xs) var(--blog-spacing-sm);
   border-radius: var(--blog-radius-md);
   border: 1px solid transparent;
+  line-height: 1;
 }
 
 .back-link:hover {
@@ -226,16 +267,6 @@ onMounted(() => {
   background: var(--blog-background-elevated);
   border-color: var(--blog-border-mystical);
   transform: translateX(-4px);
-}
-
-.back-link .arrow {
-  font-size: 1.2rem;
-  line-height: 1;
-  transition: transform var(--blog-transition-base);
-}
-
-.back-link:hover .arrow {
-  transform: translateX(-2px);
 }
 
 .post-header {
@@ -563,5 +594,61 @@ onMounted(() => {
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateY(-20px);
+}
+
+.blog-btn-scroll-top {
+  position: fixed;
+  bottom: var(--blog-spacing-xl);
+  right: calc(50% - 580px); /* Position relative to the 1200px container */
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--blog-gradient-mystical);
+  border: 2px solid var(--blog-border-mystical);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--blog-shadow-lg);
+  transition: all var(--blog-transition-base);
+  z-index: 100;
+}
+
+.blog-btn-scroll-top:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.6);
+  border-color: var(--blog-primary-light);
+}
+
+.blog-btn-scroll-top .scroll-arrow {
+  color: white;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+  transition: transform var(--blog-transition-base);
+}
+
+.blog-btn-scroll-top:hover .scroll-arrow {
+  animation: arrow-float 1.5s ease-in-out infinite;
+}
+
+@keyframes arrow-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+@media (max-width: 1250px) {
+  .blog-btn-scroll-top {
+    right: var(--blog-spacing-lg);
+  }
 }
 </style>
