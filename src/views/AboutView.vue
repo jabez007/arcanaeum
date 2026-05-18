@@ -94,13 +94,30 @@
       </p>
 
       <div class="contact-links">
-        <a href="https://github.com/jabez007" target="_blank" rel="noopener noreferrer">🧙‍♂️ GitHub</a>
-        <a href="https://linkedin.com/in/crafted-by-mccann" target="_blank" rel="noopener noreferrer">🦉 LinkedIn</a>
-        <a href="https://discord.com/users/308182638425014273" target="_blank" rel="noopener noreferrer">🔮 Discord</a>
-        <a href="https://www.npmjs.com/~jabez007" target="_blank" rel="noopener noreferrer">📦 npm</a>
-        <a href="https://pypi.org/user/jabez007/" target="_blank" rel="noopener noreferrer">🐍 PyPI</a>
+        <a href="https://github.com/jabez007" target="_blank" rel="noopener noreferrer"
+          >🧙‍♂️ GitHub</a
+        >
+        <a
+          href="https://linkedin.com/in/crafted-by-mccann"
+          target="_blank"
+          rel="noopener noreferrer"
+          >🦉 LinkedIn</a
+        >
+        <a
+          href="https://discord.com/users/308182638425014273"
+          target="_blank"
+          rel="noopener noreferrer"
+          >🔮 Discord</a
+        >
+        <a href="https://www.npmjs.com/~jabez007" target="_blank" rel="noopener noreferrer"
+          >📦 npm</a
+        >
+        <a href="https://pypi.org/user/jabez007/" target="_blank" rel="noopener noreferrer"
+          >🐍 PyPI</a
+        >
       </div>
       <br />
+      <PromptInjectionCanary />
       <div class="back-home">
         <router-link to="/" class="home-button" aria-label="Return to Sanctum">
           <svg
@@ -127,6 +144,7 @@
 </template>
 
 <script setup lang="ts">
+import PromptInjectionCanary from "@/components/PromptInjectionCanary.vue";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
 const parallaxBg = ref<HTMLElement | null>(null);
@@ -216,7 +234,6 @@ onBeforeUnmount(() => {
 }
 
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0px);

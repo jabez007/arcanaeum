@@ -26,7 +26,12 @@
         <h1>{{ post.frontmatter.title }}</h1>
 
         <div class="post-tags" v-if="post.frontmatter.tags">
-          <router-link v-for="tag in post.frontmatter.tags" :key="tag" :to="`/blog/tag/${tag}`" class="blog-tag tag-link">
+          <router-link
+            v-for="tag in post.frontmatter.tags"
+            :key="tag"
+            :to="`/blog/tag/${tag}`"
+            class="blog-tag tag-link"
+          >
             {{ tag }}
           </router-link>
         </div>
@@ -38,13 +43,19 @@
       <section v-if="relatedPosts.length > 0" class="related-posts">
         <h3>Related Posts</h3>
         <div class="related-grid">
-          <div v-for="relatedPost in relatedPosts" :key="relatedPost.slug" class="blog-card related-card"
-            @click="navigateToPost(relatedPost.slug)">
+          <div
+            v-for="relatedPost in relatedPosts"
+            :key="relatedPost.slug"
+            class="blog-card related-card"
+            @click="navigateToPost(relatedPost.slug)"
+          >
             <h4>{{ relatedPost.frontmatter.title }}</h4>
             <p>{{ relatedPost.frontmatter.excerpt }}</p>
             <div class="related-meta">
               <time>{{ formatDate(relatedPost.frontmatter.date) }}</time>
-              <span class="blog-badge blog-badge-reading-time">{{ relatedPost.readingTime }} min read</span>
+              <span class="blog-badge blog-badge-reading-time"
+                >{{ relatedPost.readingTime }} min read</span
+              >
             </div>
           </div>
         </div>

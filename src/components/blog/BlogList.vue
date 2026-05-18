@@ -18,15 +18,20 @@
     <!-- Search and Filters -->
     <div class="blog-controls">
       <div class="search-container">
-        <input v-model="searchQuery" type="text" placeholder="Search posts..." class="blog-input search-input"
-          @input="handleSearch" />
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search posts..."
+          class="blog-input search-input"
+          @input="handleSearch"
+        />
         <button v-if="searchQuery" @click="clearSearch" class="clear-search">✕</button>
       </div>
 
       <div class="filters-container">
-        <TagSelect 
-          :all-tags="allTags" 
-          v-model:selected-tags="selectedTags" 
+        <TagSelect
+          :all-tags="allTags"
+          v-model:selected-tags="selectedTags"
           :get-tag-count="getTagCount"
         />
 
@@ -37,8 +42,11 @@
           </option>
         </select>
 
-        <button @click="showFeaturedOnly = !showFeaturedOnly" :class="{ active: showFeaturedOnly }"
-          class="blog-btn blog-btn-secondary featured-toggle">
+        <button
+          @click="showFeaturedOnly = !showFeaturedOnly"
+          :class="{ active: showFeaturedOnly }"
+          class="blog-btn blog-btn-secondary featured-toggle"
+        >
           Featured
         </button>
       </div>
@@ -63,15 +71,15 @@
         {{ error }}
       </div>
 
-      <TransitionGroup 
-        name="posts-fade" 
-        tag="div" 
-        class="posts-grid" 
+      <TransitionGroup
+        name="posts-fade"
+        tag="div"
+        class="posts-grid"
         v-if="!postsLoading && !error && filteredPosts.length > 0"
       >
-        <article 
-          v-for="post in paginatedPosts" 
-          :key="post.slug" 
+        <article
+          v-for="post in paginatedPosts"
+          :key="post.slug"
           class="blog-card post-card"
           tabindex="0"
           role="button"
@@ -94,9 +102,9 @@
 
           <div class="post-footer">
             <div class="post-tags">
-              <span 
-                v-for="tag in post.frontmatter.tags?.slice(0, 3)" 
-                :key="tag" 
+              <span
+                v-for="tag in post.frontmatter.tags?.slice(0, 3)"
+                :key="tag"
                 class="blog-tag tag"
                 tabindex="0"
                 role="button"
@@ -107,13 +115,16 @@
               >
                 {{ tag }}
               </span>
-              <span v-if="post.frontmatter.tags && post.frontmatter.tags.length > 3" class="tag-more">
+              <span
+                v-if="post.frontmatter.tags && post.frontmatter.tags.length > 3"
+                class="tag-more"
+              >
                 +{{ post.frontmatter.tags.length - 3 }}
               </span>
             </div>
 
             <div class="post-author" v-if="post.frontmatter.author">
-              <span 
+              <span
                 tabindex="0"
                 role="button"
                 :aria-label="`Filter by author: ${post.frontmatter.author}`"
@@ -135,7 +146,9 @@
         <div v-if="!postsLoading && !error && filteredPosts.length === 0" class="empty-state">
           <h3>No posts found</h3>
           <p>Try adjusting your search or filter criteria.</p>
-          <button @click="clearAllFilters" class="blog-btn blog-btn-primary">Clear All Filters</button>
+          <button @click="clearAllFilters" class="blog-btn blog-btn-primary">
+            Clear All Filters
+          </button>
         </div>
       </Transition>
     </div>
@@ -165,7 +178,8 @@ import type { BlogPostMetadata, BlogFilters } from "@/blog/types";
 const blogTitle = "Commits & Conjurations";
 
 const router = useRouter();
-const { posts, postsLoading, error, allTags, allAuthors, loadPosts, filterPostsByFilters } = useBlog();
+const { posts, postsLoading, error, allTags, allAuthors, loadPosts, filterPostsByFilters } =
+  useBlog();
 
 const searchQuery = ref("");
 const selectedTags = ref<string[]>([]);

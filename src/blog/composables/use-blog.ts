@@ -26,7 +26,10 @@ export function useBlog() {
     }
   };
 
-  const getPost = async (slug: string, preserveError: boolean = false): Promise<BlogPost | undefined> => {
+  const getPost = async (
+    slug: string,
+    preserveError: boolean = false,
+  ): Promise<BlogPost | undefined> => {
     try {
       if (!preserveError) error.value = null;
       return await getPostBySlug(slug);

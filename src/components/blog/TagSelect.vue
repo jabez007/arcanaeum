@@ -1,7 +1,7 @@
 <template>
   <div class="tag-select-container" ref="containerRef">
-    <div 
-      class="tag-select-trigger" 
+    <div
+      class="tag-select-trigger"
       :class="{ 'is-active': isOpen }"
       tabindex="0"
       role="button"
@@ -18,22 +18,26 @@
         <div v-else class="tag-chips">
           <span v-for="tag in selectedTags" :key="tag" class="tag-chip">
             {{ tag }}
-            <button 
-              @click.stop="removeTag(tag)" 
+            <button
+              @click.stop="removeTag(tag)"
               class="remove-tag"
               :aria-label="`Remove tag: ${tag}`"
-            >✕</button>
+            >
+              ✕
+            </button>
           </span>
         </div>
       </div>
       <div class="trigger-icons">
-        <button 
-          v-if="selectedTags.length > 0" 
-          @click.stop="clearAll" 
-          class="clear-all" 
+        <button
+          v-if="selectedTags.length > 0"
+          @click.stop="clearAll"
+          class="clear-all"
           title="Clear All"
           aria-label="Clear all selected tags"
-        >✕</button>
+        >
+          ✕
+        </button>
         <span class="chevron" :class="{ 'is-rotated': isOpen }">▼</span>
       </div>
     </div>
@@ -41,27 +45,31 @@
     <Transition name="fade-slide">
       <div v-if="isOpen" class="tag-dropdown">
         <div class="search-box">
-          <input 
-            v-model="searchQuery" 
-            type="text" 
-            placeholder="Search tags..." 
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search tags..."
             ref="searchInputRef"
             @keydown.esc="closeDropdown(true)"
             @keydown.down.prevent="focusFirstOption"
             class="tag-search-input"
           />
         </div>
-        
+
         <div class="tag-options" role="listbox" aria-multiselectable="true">
-          <div 
-            v-for="(tag, index) in filteredTags" 
-            :key="tag" 
+          <div
+            v-for="(tag, index) in filteredTags"
+            :key="tag"
             class="tag-option"
             :class="{ 'is-selected': selectedTags.includes(tag) }"
             tabindex="0"
             role="option"
             :aria-selected="selectedTags.includes(tag)"
-            :ref="el => { if (el) optionRefs[index] = el as HTMLElement }"
+            :ref="
+              (el) => {
+                if (el) optionRefs[index] = el as HTMLElement;
+              }
+            "
             @click="toggleTag(tag)"
             @keydown.enter.prevent="toggleTag(tag)"
             @keydown.space.prevent="toggleTag(tag)"
@@ -73,10 +81,8 @@
             <span class="tag-count">({{ getTagCount(tag) }})</span>
             <span v-if="selectedTags.includes(tag)" class="check-icon">✓</span>
           </div>
-          
-          <div v-if="filteredTags.length === 0" class="no-tags">
-            No matching tags found
-          </div>
+
+          <div v-if="filteredTags.length === 0" class="no-tags">No matching tags found</div>
         </div>
       </div>
     </Transition>
@@ -84,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick, onBeforeUpdate } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch, nextTick, onBeforeUpdate } from "vue";
 
 interface Props {
   allTags: string[];
@@ -93,10 +99,10 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(['update:selectedTags']);
+const emit = defineEmits(["update:selectedTags"]);
 
 const isOpen = ref(false);
-const searchQuery = ref('');
+const searchQuery = ref("");
 const containerRef = ref<HTMLElement | null>(null);
 const triggerRef = ref<HTMLElement | null>(null);
 const searchInputRef = ref<HTMLInputElement | null>(null);
@@ -109,7 +115,7 @@ onBeforeUpdate(() => {
 const filteredTags = computed(() => {
   if (!searchQuery.value) return props.allTags;
   const query = searchQuery.value.toLowerCase();
-  return props.allTags.filter(tag => tag.toLowerCase().includes(query));
+  return props.allTags.filter((tag) => tag.toLowerCase().includes(query));
 });
 
 const toggleDropdown = () => {
@@ -153,7 +159,7 @@ const focusPrevOption = (index: number) => {
 
 const closeDropdown = (restoreFocus = false) => {
   isOpen.value = false;
-  searchQuery.value = '';
+  searchQuery.value = "";
   if (restoreFocus) {
     nextTick(() => {
       triggerRef.value?.focus();
@@ -164,23 +170,23 @@ const closeDropdown = (restoreFocus = false) => {
 const toggleTag = (tag: string) => {
   const newSelected = [...props.selectedTags];
   const index = newSelected.indexOf(tag);
-  
+
   if (index === -1) {
     newSelected.push(tag);
   } else {
     newSelected.splice(index, 1);
   }
-  
-  emit('update:selectedTags', newSelected);
+
+  emit("update:selectedTags", newSelected);
 };
 
 const removeTag = (tag: string) => {
-  const newSelected = props.selectedTags.filter(t => t !== tag);
-  emit('update:selectedTags', newSelected);
+  const newSelected = props.selectedTags.filter((t) => t !== tag);
+  emit("update:selectedTags", newSelected);
 };
 
 const clearAll = () => {
-  emit('update:selectedTags', []);
+  emit("update:selectedTags", []);
 };
 
 // Handle clicks outside
@@ -191,19 +197,13 @@ const handleClickOutside = (event: MouseEvent) => {
 };
 
 onMounted(() => {
-  document.addEventListener('mousedown', handleClickOutside);
+  document.addEventListener("mousedown", handleClickOutside);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('mousedown', handleClickOutside);
+  document.removeEventListener("mousedown", handleClickOutside);
 });
 
-// Reset search when dropdown closes
-watch(isOpen, (newVal) => {
-  if (newVal) {
-    // Dropdown opened, focus management is handled in toggleDropdown/openAndFocusFirst
-  }
-});
 </script>
 
 <style scoped>
@@ -227,7 +227,8 @@ watch(isOpen, (newVal) => {
   min-height: 42px;
 }
 
-.tag-select-trigger:hover, .tag-select-trigger.is-active {
+.tag-select-trigger:hover,
+.tag-select-trigger.is-active {
   border-color: var(--blog-primary);
   box-shadow: var(--blog-shadow-mystical);
   background: var(--blog-background-lighter);

@@ -64,7 +64,10 @@ export function filterPosts(filters: BlogFilters): BlogPostMetadata[] {
 }
 
 // Get related posts based on tags
-export function getRelatedPosts(currentPost: BlogPostMetadata, count: number = 3): BlogPostMetadata[] {
+export function getRelatedPosts(
+  currentPost: BlogPostMetadata,
+  count: number = 3,
+): BlogPostMetadata[] {
   if (!currentPost.frontmatter.tags) return [];
 
   const allPosts = getAllPosts().filter((post) => post.slug !== currentPost.slug);
