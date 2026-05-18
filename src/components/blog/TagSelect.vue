@@ -204,12 +204,6 @@ onUnmounted(() => {
   document.removeEventListener("mousedown", handleClickOutside);
 });
 
-// Reset search when dropdown closes
-watch(isOpen, (newVal) => {
-  if (newVal) {
-    // Dropdown opened, focus management is handled in toggleDropdown/openAndFocusFirst
-  }
-});
 </script>
 
 <style scoped>
