@@ -71,7 +71,7 @@ onUnmounted(() => {
 
     <header>
       <h1 class="title">Archons' Arcanaeum</h1>
-      <p class="subtitle">Navigate the Crystalline Realms</p>
+      <p class="subtitle">Stabilizing the Spire's Most Volatile Arcana</p>
     </header>
     <div class="app-grid">
       <AppCard
