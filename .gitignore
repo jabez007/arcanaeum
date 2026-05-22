@@ -32,5 +32,6 @@ coverage
 
 src/blog/posts-index.json
 src/blog/rendered
+public/rss.xml
 
 .aider*
