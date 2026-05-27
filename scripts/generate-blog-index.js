@@ -174,7 +174,10 @@ function generateIndex() {
     totalPosts: postsMetadata.length,
   };
 
+  fs.mkdirSync(path.dirname(INDEX_FILE), { recursive: true });
   fs.writeFileSync(INDEX_FILE, JSON.stringify(index, null, 2));
+
+  fs.mkdirSync(path.dirname(RSS_FILE), { recursive: true });
   fs.writeFileSync(RSS_FILE, generateRssFeed(postsMetadata));
   console.log(`Successfully generated blog index, RSS feed, and rendered ${postsMetadata.length} posts.`);
 }
