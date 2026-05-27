@@ -5,6 +5,16 @@ import vue from "@vitejs/plugin-vue";
 import vueDevTools from "vite-plugin-vue-devtools";
 import { VitePWA } from "vite-plugin-pwa";
 
+const promptCanaryEnabled = process.env.VITE_ENABLE_PROMPT_CANARY === "true";
+const promptCanaryComponentAlias = fileURLToPath(
+  new URL(
+    promptCanaryEnabled
+      ? "./src/components/PromptInjectionCanary.vue"
+      : "./src/components/PromptInjectionCanary.disabled.vue",
+    import.meta.url,
+  ),
+);
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -64,8 +74,15 @@ export default defineConfig({
   ],
   assetsInclude: ["**/*.md"],
   resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-    },
+    alias: [
+      {
+        find: "@/components/PromptInjectionCanary.vue",
+        replacement: promptCanaryComponentAlias,
+      },
+      {
+        find: "@",
+        replacement: fileURLToPath(new URL("./src", import.meta.url)),
+      },
+    ],
   },
 });

@@ -16,7 +16,7 @@
 
 **User Stories:**
 - As a security demonstrator, I want to embed an invisible prompt injection within a standard corporate-looking Vue application so that the audience cannot visually detect the trap before the AI triggers it.
-- As a security demonstrator, I want the component to utilize varied concealment strategies simultaneously so that the injection succeeds regardless of whether the AI relies on visual rendering approximations, accessibility trees, or raw raw text extraction.
+- As a security demonstrator, I want the component to utilize varied concealment strategies simultaneously so that the injection succeeds regardless of whether the AI relies on visual rendering approximations, accessibility trees, or raw text extraction.
 - As a security demonstrator, I want to use multiple linguistic variations of the injection prompt (e.g., authoritative, emotional, structural) across different parts of the page to maximize the chance of bypassing the AI's semantic guardrails.
 
 **Acceptance Criteria:**
