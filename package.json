@@ -16,8 +16,8 @@
     "deploy": "push-dir --dir=dist --branch=master --cleanup"
   },
   "dependencies": {
-    "@jabez007/cryptotron.vue": "^0.2.3",
-    "@jabez007/heur-aegis-dex": "^0.1.2",
+    "@jabez007/cryptotron.vue": "^0.4.1",
+    "@jabez007/heur-aegis-dex": "^0.2.0",
     "fuse.js": "^7.1.0",
     "vue": "^3.5.13",
     "vue-gtag": "^3.5.1",

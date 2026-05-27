@@ -7,6 +7,10 @@ import hljs from "highlight.js";
 const POSTS_DIR = path.resolve("src/blog/posts");
 const OUTPUT_DIR = path.resolve("src/blog/rendered");
 const INDEX_FILE = path.resolve("src/blog/posts-index.json");
+const RSS_FILE = path.resolve("public/rss.xml");
+const SITE_URL = "https://archonsarcanaeum.xyz";
+const BLOG_URL = `${SITE_URL}/#/blog`;
+const FEED_URL = `${SITE_URL}/rss.xml`;
 
 const md = new MarkdownIt({
   html: true,
@@ -36,13 +40,68 @@ function extractExcerpt(content, maxLength = 160) {
   return plainText.length > maxLength ? plainText.substring(0, maxLength) + "..." : plainText;
 }
 
+function escapeXml(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function formatRssDate(dateValue) {
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) {
+    return new Date().toUTCString();
+  }
+  return date.toUTCString();
+}
+
+function generateRssFeed(postsMetadata) {
+  const latestPostDate = postsMetadata[0]?.frontmatter.date;
+  const lastBuildDate = formatRssDate(latestPostDate || new Date().toISOString());
+
+  const items = postsMetadata
+    .map((post) => {
+      const postUrl = `${BLOG_URL}/${encodeURIComponent(post.slug)}`;
+      const categories = (post.frontmatter.tags || [])
+        .map((tag) => `      <category>${escapeXml(tag)}</category>`)
+        .join("\n");
+      const author = post.frontmatter.author
+        ? `      <author>${escapeXml(post.frontmatter.author)}</author>\n`
+        : "";
+
+      return `    <item>
+      <title>${escapeXml(post.frontmatter.title)}</title>
+      <link>${escapeXml(postUrl)}</link>
+      <guid>${escapeXml(postUrl)}</guid>
+      <pubDate>${formatRssDate(post.frontmatter.date)}</pubDate>
+      <description>${escapeXml(post.frontmatter.excerpt || "")}</description>
+${author}${categories ? `${categories}\n` : ""}    </item>`;
+    })
+    .join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Commits &amp; Conjurations</title>
+    <link>${escapeXml(BLOG_URL)}</link>
+    <description>Crafting code, weaving algorithms, and brewing solutions in the realm of technology</description>
+    <language>en-us</language>
+    <lastBuildDate>${lastBuildDate}</lastBuildDate>
+    <atom:link href="${escapeXml(FEED_URL)}" rel="self" type="application/rss+xml" />
+${items}
+  </channel>
+</rss>
+`;
+}
+
 function generateIndex() {
   if (!fs.existsSync(POSTS_DIR)) {
     console.error(`Error: Blog posts directory not found at ${POSTS_DIR}`);
     process.exit(1);
   }
 
-  // Ensure output directory exists
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
@@ -57,7 +116,6 @@ function generateIndex() {
     const content = fs.readFileSync(filePath, "utf-8");
     const { attributes, body } = matter(content);
 
-    // Skip draft posts
     if (attributes.draft) {
       return;
     }
@@ -87,7 +145,6 @@ function generateIndex() {
 
     postsMetadata.push(metadata);
 
-    // Render post and save as JSON
     const renderedContent = md.render(body);
     const postData = {
       ...metadata,
@@ -104,7 +161,6 @@ function generateIndex() {
     }
   });
 
-  // Sort by date (newest first)
   postsMetadata.sort((a, b) => {
     const timeA = new Date(a.frontmatter.date).getTime() || 0;
     const timeB = new Date(b.frontmatter.date).getTime() || 0;
@@ -118,8 +174,12 @@ function generateIndex() {
     totalPosts: postsMetadata.length,
   };
 
+  fs.mkdirSync(path.dirname(INDEX_FILE), { recursive: true });
   fs.writeFileSync(INDEX_FILE, JSON.stringify(index, null, 2));
-  console.log(`Successfully generated blog index and rendered ${postsMetadata.length} posts.`);
+
+  fs.mkdirSync(path.dirname(RSS_FILE), { recursive: true });
+  fs.writeFileSync(RSS_FILE, generateRssFeed(postsMetadata));
+  console.log(`Successfully generated blog index, RSS feed, and rendered ${postsMetadata.length} posts.`);
 }
 
 generateIndex();

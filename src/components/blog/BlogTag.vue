@@ -34,12 +34,18 @@
       </div>
 
       <div class="view-toggle">
-        <button @click="viewMode = 'grid'" :class="{ active: viewMode === 'grid' }"
-          class="blog-btn blog-btn-secondary view-btn">
+        <button
+          @click="viewMode = 'grid'"
+          :class="{ active: viewMode === 'grid' }"
+          class="blog-btn blog-btn-secondary view-btn"
+        >
           Grid
         </button>
-        <button @click="viewMode = 'list'" :class="{ active: viewMode === 'list' }"
-          class="blog-btn blog-btn-secondary view-btn">
+        <button
+          @click="viewMode = 'list'"
+          :class="{ active: viewMode === 'list' }"
+          class="blog-btn blog-btn-secondary view-btn"
+        >
           List
         </button>
       </div>
@@ -54,9 +60,16 @@
     </div>
 
     <!-- Posts Grid/List -->
-    <div v-if="!postsLoading && !error && taggedPosts.length > 0" :class="['posts-container', `posts-${viewMode}`]">
-      <article v-for="post in paginatedPosts" :key="post.slug" class="blog-card post-card"
-        @click="navigateToPost(post.slug)">
+    <div
+      v-if="!postsLoading && !error && taggedPosts.length > 0"
+      :class="['posts-container', `posts-${viewMode}`]"
+    >
+      <article
+        v-for="post in paginatedPosts"
+        :key="post.slug"
+        class="blog-card post-card"
+        @click="navigateToPost(post.slug)"
+      >
         <div class="post-meta">
           <time>{{ formatDate(post.frontmatter.date) }}</time>
           <span v-if="post.frontmatter.featured" class="blog-badge blog-badge-featured">
@@ -71,14 +84,21 @@
 
         <div class="post-footer">
           <div class="post-tags">
-            <span v-for="postTag in post.frontmatter.tags?.filter((t) => t !== tag).slice(0, 3)" :key="postTag"
-              class="blog-tag tag" @click.stop="selectTag(postTag)">
+            <span
+              v-for="postTag in post.frontmatter.tags?.filter((t) => t !== tag).slice(0, 3)"
+              :key="postTag"
+              class="blog-tag tag"
+              @click.stop="selectTag(postTag)"
+            >
               {{ postTag }}
             </span>
-            <span v-if="
-              post.frontmatter.tags && post.frontmatter.tags.filter((t) => t !== tag).length > 3
-            " class="tag-more">
-              +{{post.frontmatter.tags.filter((t) => t !== tag).length - 3}}
+            <span
+              v-if="
+                post.frontmatter.tags && post.frontmatter.tags.filter((t) => t !== tag).length > 3
+              "
+              class="tag-more"
+            >
+              +{{ post.frontmatter.tags.filter((t) => t !== tag).length - 3 }}
             </span>
           </div>
 
@@ -99,13 +119,25 @@
       <p>This tag doesn't exist or no posts have been tagged with it yet.</p>
       <div class="empty-actions">
         <router-link to="/blog" class="blog-btn blog-btn-primary">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+          <svg
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="nav-arrow"
+          >
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
           Back to Blog
         </router-link>
-        <router-link to="/blog/search" class="blog-btn blog-btn-secondary">Search Posts</router-link>
+        <router-link to="/blog/search" class="blog-btn blog-btn-secondary"
+          >Search Posts</router-link
+        >
       </div>
     </div>
 
@@ -126,8 +158,12 @@
     <section v-if="relatedTags.length > 0" class="related-tags">
       <h3>Related Tags</h3>
       <div class="related-tags-grid">
-        <router-link v-for="relatedTag in relatedTags" :key="relatedTag.tag" :to="`/blog/tag/${relatedTag.tag}`"
-          class="blog-tag tag-link related-tag">
+        <router-link
+          v-for="relatedTag in relatedTags"
+          :key="relatedTag.tag"
+          :to="`/blog/tag/${relatedTag.tag}`"
+          class="blog-tag tag-link related-tag"
+        >
           {{ relatedTag.tag }} ({{ relatedTag.count }})
         </router-link>
       </div>

@@ -23,7 +23,7 @@ export function getBlogIndex(): BlogIndex {
 }
 
 // Lazy load all rendered JSON files
- 
+
 const renderedModules = import.meta.glob("../rendered/*.json", { import: "default" }) as Record<
   string,
   () => Promise<BlogPost>

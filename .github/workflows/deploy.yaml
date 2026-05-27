@@ -5,6 +5,13 @@ on:
     branches: # Triggers on pushes to vue or vue3 branches
       - vue
       - vue3
+  workflow_dispatch:
+    inputs:
+      deploy_prompt_canary:
+        description: "Build and deploy the prompt injection canary"
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   build-and-deploy:
@@ -13,9 +20,17 @@ jobs:
     permissions:
       contents: write # Needed to push to the repository
 
+    env:
+      VITE_ENABLE_PROMPT_CANARY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_prompt_canary == 'true' && 'true' || 'false' }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Confirm canary gating
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Prompt canary enabled: ${VITE_ENABLE_PROMPT_CANARY}"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

@@ -93,15 +93,21 @@
   --blog-transition-mystical: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Gradients */
-  --blog-gradient-mystical: linear-gradient(135deg,
-      var(--blog-primary) 0%,
-      var(--blog-secondary) 100%);
-  --blog-gradient-golden: linear-gradient(135deg,
-      var(--blog-accent) 0%,
-      var(--blog-accent-dark) 100%);
-  --blog-gradient-dark: linear-gradient(135deg,
-      var(--blog-background-light) 0%,
-      var(--blog-background-lighter) 100%);
+  --blog-gradient-mystical: linear-gradient(
+    135deg,
+    var(--blog-primary) 0%,
+    var(--blog-secondary) 100%
+  );
+  --blog-gradient-golden: linear-gradient(
+    135deg,
+    var(--blog-accent) 0%,
+    var(--blog-accent-dark) 100%
+  );
+  --blog-gradient-dark: linear-gradient(
+    135deg,
+    var(--blog-background-light) 0%,
+    var(--blog-background-lighter) 100%
+  );
 }
 
 /* Enhanced utility classes with mystical tech aesthetics */
