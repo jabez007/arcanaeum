@@ -19,6 +19,7 @@
           <span v-for="tag in selectedTags" :key="tag" class="tag-chip">
             {{ tag }}
             <button
+              type="button"
               @click.stop="removeTag(tag)"
               class="remove-tag"
               :aria-label="`Remove tag: ${tag}`"
@@ -31,6 +32,7 @@
       <div class="trigger-icons">
         <button
           v-if="selectedTags.length > 0"
+          type="button"
           @click.stop="clearAll"
           class="clear-all"
           title="Clear All"
@@ -90,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick, onBeforeUpdate } from "vue";
+import { ref, computed, onMounted, onUnmounted, nextTick, onBeforeUpdate } from "vue";
 
 interface Props {
   allTags: string[];
