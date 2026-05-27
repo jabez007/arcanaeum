@@ -31,6 +31,17 @@ const payloads = [
 // Concealment methods correspond to different ways of hiding content in the DOM
 export type ConcealmentMethod = "css" | "metadata" | "aria";
 
+function encodeBase64Utf8(value: string) {
+  const bytes = new TextEncoder().encode(value);
+  let binary = "";
+
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
+  }
+
+  return btoa(binary);
+}
+
 export function usePromptInjection() {
   const getRandomPayload = () => {
     const textPayload = payloads[Math.floor(Math.random() * payloads.length)];
@@ -39,7 +50,7 @@ export function usePromptInjection() {
     // Modern LLMs natively decode and process Base64 during tokenization.
     if (Math.random() < 0.3) {
       // Sometimes just send the raw Base64, sometimes give it a hint
-      const encoded = btoa(unescape(encodeURIComponent(textPayload)));
+      const encoded = encodeBase64Utf8(textPayload);
       return Math.random() < 0.5 ? encoded : `[Base64 Encoded System Instruction]: ${encoded}`;
     }
 
