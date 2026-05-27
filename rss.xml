@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Commits &amp; Conjurations</title>
+    <link>https://archonsarcanaeum.xyz/#/blog</link>
+    <description>Crafting code, weaving algorithms, and brewing solutions in the realm of technology</description>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 17 May 2026 00:00:00 GMT</lastBuildDate>
+    <atom:link href="https://archonsarcanaeum.xyz/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tailscale Serve and the Pursuit of Private Access</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/exposing-openclaw-tailscale-serve</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/exposing-openclaw-tailscale-serve</guid>
+      <pubDate>Sun, 17 May 2026 00:00:00 GMT</pubDate>
+      <description>Getting Tailscale running in an LXC was the hard part. But once the tunnel is stable, you&apos;re left with a choice: do you expose your gateway to the public internet, or do you keep it strictly for the family? I chose Tailscale Serve.
+</description>
+      <author>jabez007</author>
+      <category>tailscale</category>
+      <category>openclaw</category>
+      <category>networking</category>
+      <category>homelab</category>
+      <category>serve</category>
+      <category>vpn</category>
+      <category>linux</category>
+      <category>troubleshooting</category>
+    </item>
+    <item>
+      <title>Tailscale, OpenClaw, and the Missing Tunnel Device</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/tailscale-openclaw-proxmox-lxc</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/tailscale-openclaw-proxmox-lxc</guid>
+      <pubDate>Sat, 16 May 2026 00:00:00 GMT</pubDate>
+      <description>I wanted private remote access to my OpenClaw box without exposing the gateway to the internet. Tailscale looked like the obvious answer. Then my Proxmox LXC reminded me that containers and networking devices have opinions.
+</description>
+      <author>jabez007</author>
+      <category>tailscale</category>
+      <category>openclaw</category>
+      <category>proxmox</category>
+      <category>lxc</category>
+      <category>homelab</category>
+      <category>vpn</category>
+      <category>networking</category>
+      <category>troubleshooting</category>
+      <category>linux</category>
+    </item>
+    <item>
+      <title>From rsync to rclone: Building a Safe, Headless Google Drive Backup Pipeline in an LXC</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/headless-gdrive-sync-lxc</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/headless-gdrive-sync-lxc</guid>
+      <pubDate>Sat, 02 May 2026 00:00:00 GMT</pubDate>
+      <description>Syncing a home directory to Google Drive sounds simple until you remember Google Drive isn&apos;t a filesystem. Learn how to build a safe, automated, headless backup pipeline using rclone inside a Proxmox LXC container.
+</description>
+      <author>jabez007</author>
+      <category>proxmox</category>
+      <category>lxc</category>
+      <category>backups</category>
+      <category>rclone</category>
+      <category>gdrive</category>
+      <category>automation</category>
+      <category>homelab</category>
+    </item>
+    <item>
+      <title>Taming OpenClaw in a Proxmox LXC: When `systemctl --user` Betrays You</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/taming-openclaw-proxmox-lxc</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/taming-openclaw-proxmox-lxc</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>When &quot;modern developer tooling&quot; meets &quot;minimal Linux environments,&quot; things get messy. 
+Learn how to fix OpenClaw&apos;s systemd service issues inside a Proxmox LXC container by moving from user-level to system-level daemons.
+</description>
+      <author>jabez007</author>
+      <category>proxmox</category>
+      <category>openclaw</category>
+      <category>lxc</category>
+      <category>systemd</category>
+      <category>troubleshooting</category>
+      <category>homelab</category>
+      <category>linux</category>
+    </item>
+    <item>
+      <title>DNS Hijacking for Local Hostname Resolution</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/fixing-local-hostname-resolution</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/fixing-local-hostname-resolution</guid>
+      <pubDate>Sun, 12 Apr 2026 00:00:00 GMT</pubDate>
+      <description>If you&apos;re running a VPN on your router, local hostnames often stop working. 
+ExpressVPN&apos;s firmware isolates DNS traffic so strictly that local resolution 
+is sacrificed for privacy. Here is how I used a persistence script to 
+force local resolution without leaking my external DNS traffic.
+</description>
+      <author>jabez007</author>
+      <category>dns</category>
+      <category>networking</category>
+      <category>expressvpn</category>
+      <category>asus-router</category>
+      <category>dnsmasq</category>
+      <category>bash-scripting</category>
+      <category>troubleshooting</category>
+      <category>homelab</category>
+    </item>
+    <item>
+      <title>The Ghost in the Circular Buffer: Architecting a Universal Remote</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/architecting-universal-remote</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/architecting-universal-remote</guid>
+      <pubDate>Sat, 04 Apr 2026 00:00:00 GMT</pubDate>
+      <description>With the core IR protocol verified, the challenge shifted from a single script to a comprehensive system. A &quot;Universal Remote&quot; requires state, concurrency, and persistence. It also requires the ability to fail gracefully—a lesson the Flipper Zero taught us multiple times.
+</description>
+      <author>jabez007</author>
+      <category>flipperzero</category>
+      <category>cyphercon9</category>
+      <category>embedded-systems</category>
+      <category>mvc</category>
+      <category>software-architecture</category>
+      <category>c-programming</category>
+      <category>unit-testing</category>
+    </item>
+    <item>
+      <title>Resonating with the Machine: Decoding the Cyphercon 9 Infrared Protocol</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/decoding-cyphercon9-ir-protocol</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/decoding-cyphercon9-ir-protocol</guid>
+      <pubDate>Thu, 02 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Electronic badges at security conferences are more than just jewelry; they are miniature ecosystems of code, light, and hidden signals designed to be explored. Our journey into the Cyphercon 9 ecosystem began with a forensic analysis of the MicroPython firmware `blue-badge.py`.
+</description>
+      <author>jabez007</author>
+      <category>flipperzero</category>
+      <category>cyphercon9</category>
+      <category>embedded-systems</category>
+      <category>infrared</category>
+      <category>reverse-engineering</category>
+      <category>c-programming</category>
+      <category>rp2040</category>
+    </item>
+    <item>
+      <title>Dispatcher for SyncThing</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/dispatcher-for-syncthing</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/dispatcher-for-syncthing</guid>
+      <pubDate>Sat, 12 Jul 2025 00:00:00 GMT</pubDate>
+      <description>Stop wasting battery on pointless sync attempts.
+Learn how to automatically start SyncThing only on trusted networks using NetworkManager scripts with MAC address verification and multi-network support—perfect for local-only setups and travel laptops.
+</description>
+      <author>jabez007</author>
+      <category>syncthing</category>
+      <category>linux</category>
+      <category>NetworkManager</category>
+      <category>debian</category>
+      <category>wifi-security</category>
+      <category>bash-scripting</category>
+      <category>network-dispatcher</category>
+    </item>
+    <item>
+      <title>ProxMox Wi-Fi Saga, Part 2 — The Bridge That Wasn’t</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/proxmox-wifi-saga-part-2</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/proxmox-wifi-saga-part-2</guid>
+      <pubDate>Sat, 21 Jun 2025 00:00:00 GMT</pubDate>
+      <description>So your Proxmox host finally has Wi-Fi. Victory, right?
+You spin up your first VM… and it has no internet.
+Welcome to the part where Wi-Fi reminds you it’s not Ethernet.
+</description>
+      <author>jabez007</author>
+      <category>proxmox</category>
+      <category>wifi-setup</category>
+      <category>networking</category>
+      <category>troubleshooting</category>
+      <category>homelab</category>
+      <category>linux</category>
+      <category>nat</category>
+      <category>iptables</category>
+      <category>bridging</category>
+    </item>
+    <item>
+      <title>Deploying Your First LXC – Ubuntu on Proxmox</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/proxmox-lxc-ubuntu-template</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/proxmox-lxc-ubuntu-template</guid>
+      <pubDate>Fri, 20 Jun 2025 00:00:00 GMT</pubDate>
+      <description>Now that Proxmox is installed and (mostly) behaving, it&apos;s time to actually build something.
+We&apos;re skipping the heavy VMs and diving straight into **LXC containers**—the lightweight, high-performance secret weapon of the homelab world.
+Learn how to grab an Ubuntu template and spin up your first container in minutes.
+</description>
+      <author>jabez007</author>
+      <category>proxmox</category>
+      <category>homelab</category>
+      <category>lxc</category>
+      <category>ubuntu</category>
+      <category>tutorial</category>
+      <category>virtualization</category>
+    </item>
+    <item>
+      <title>Laptop Lid Interlude</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/laptop-lid-interlude</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/laptop-lid-interlude</guid>
+      <pubDate>Mon, 16 Jun 2025 00:00:00 GMT</pubDate>
+      <description>So you&apos;ve got Proxmox humming along on your repurposed laptop — WiFi configured, VMs ready to spin up, and everything looking great.
+Then you close the lid to tuck it away in its new home as a headless server, and... _poof_ 💤
+</description>
+      <author>jabez007</author>
+      <category>proxmox</category>
+      <category>homelab</category>
+      <category>laptop-server</category>
+      <category>linux-power-management</category>
+      <category>logind</category>
+    </item>
+    <item>
+      <title>Appendix: Boot-Time Wi-Fi and DHCP with systemd</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/proxmox-wifi-appendix</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/proxmox-wifi-appendix</guid>
+      <pubDate>Sun, 15 Jun 2025 00:00:00 GMT</pubDate>
+      <description>Even after resolving the DNS and routing issues, I noticed that my Wi-Fi interface wasn’t getting a DHCP lease automatically on reboot. 
+This is a common issue on server systems where wpa_supplicant and dhclient aren&apos;t properly sequenced at boot.
+</description>
+      <author>jabez007</author>
+      <category>proxmox</category>
+      <category>wifi</category>
+      <category>systemd</category>
+      <category>dhcp</category>
+      <category>networking</category>
+      <category>linux</category>
+    </item>
+    <item>
+      <title>ProxMox Wi-Fi Saga</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/proxmox-wifi-saga</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/proxmox-wifi-saga</guid>
+      <pubDate>Sat, 14 Jun 2025 00:00:00 GMT</pubDate>
+      <description>Picture this: You&apos;ve just installed Proxmox VE on an old laptop, ready to dive into virtualization glory.
+You boot up, eager to start pulling container images and VM ISOs.
+Then reality hits—your &quot;server&quot; has no Ethernet port, and Proxmox looks at Wi-Fi like it&apos;s some alien technology from the future.
+</description>
+      <author>jabez007</author>
+      <category>proxmox</category>
+      <category>wifi-setup</category>
+      <category>usb-tethering</category>
+      <category>networking</category>
+      <category>troubleshooting</category>
+      <category>homelab</category>
+      <category>linux</category>
+      <category>wpa_supplicant</category>
+      <category>network-interfaces</category>
+      <category>dhcp</category>
+    </item>
+    <item>
+      <title>ProxMox Laptop Install</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/proxmox-laptop-install</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/proxmox-laptop-install</guid>
+      <pubDate>Fri, 13 Jun 2025 00:00:00 GMT</pubDate>
+      <description>This post chronicles my **complete installation journey**, including the BIOS rabbit holes I fell into, the partitioning decisions that actually matter, and the **networking mistake that nearly drove me to throw the laptop out the window** (spoiler: I figured it out, and you won&apos;t make the same error).
+</description>
+      <author>jabez007</author>
+      <category>proxmox</category>
+      <category>homelab</category>
+      <category>virtualization</category>
+      <category>tutorial</category>
+      <category>selfhosted</category>
+    </item>
+    <item>
+      <title>Wifi Recovery Script</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/wifi-recovery-script</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/wifi-recovery-script</guid>
+      <pubDate>Sun, 24 Nov 2024 00:00:00 GMT</pubDate>
+      <description>There&apos;s nothing more annoying than trying to SSH into a homelab server only to find it&apos;s dropped off the network. Here is a simple script to handle those annoying WiFi disconnects automatically.
+</description>
+      <author>jabez007</author>
+      <category>homelab</category>
+      <category>bash</category>
+      <category>NetworkManager</category>
+      <category>linux</category>
+      <category>wifi</category>
+      <category>automation</category>
+      <category>troubleshooting</category>
+      <category>self-healing</category>
+      <category>ssh</category>
+      <category>scripting</category>
+    </item>
+    <item>
+      <title>SSH Server Setup</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/ssh-server-setup</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/ssh-server-setup</guid>
+      <pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
+      <description>Don&apos;t throw away that old laptop just yet. It might not be your daily driver anymore,
+but it&apos;s a perfect candidate for a secure, SSH-accessible Linux box for your homelab.
+</description>
+      <author>jabez007</author>
+      <category>homelab</category>
+      <category>ssh</category>
+      <category>ufw</category>
+      <category>linux</category>
+      <category>server-setup</category>
+      <category>security</category>
+      <category>home-network</category>
+      <category>firewall</category>
+      <category>ssh-hardening</category>
+      <category>tutorial</category>
+      <category>beginner-friendly</category>
+    </item>
+    <item>
+      <title>Ventoy USB with Persistence</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/ventoy-usb-persistence</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/ventoy-usb-persistence</guid>
+      <pubDate>Sun, 27 Oct 2024 00:00:00 GMT</pubDate>
+      <description>Stop asking a 15-year-old laptop to run Windows 10.
+With a cheap USB drive and a few specific Linux distros, 
+you can turn e-waste back into a functional, fast machine.
+</description>
+      <author>jabez007</author>
+      <category>ventoy</category>
+      <category>linux</category>
+      <category>bootable-usb</category>
+      <category>lightweight-linux</category>
+      <category>persistence</category>
+      <category>tutorial</category>
+      <category>multi-boot</category>
+    </item>
+    <item>
+      <title>Step 0 – Part 2</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/step-0-part-2</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/step-0-part-2</guid>
+      <pubDate>Sun, 06 Aug 2017 00:00:00 GMT</pubDate>
+      <description>Now that you&apos;ve booted up your Raspberry Pi for the first time, changing the password for your pi user should really be the absolute first thing you do. If you want, you can disable the pi account ...
+</description>
+      <author>jabez007</author>
+      <category>network</category>
+    </item>
+    <item>
+      <title>Step 0 – part 1</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/step-0-part-1</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/step-0-part-1</guid>
+      <pubDate>Sat, 24 Jun 2017 00:00:00 GMT</pubDate>
+      <description>This will be the starting point for all of my projects, unless otherwise specified in that project. Instead of using the NOOBS installer, I like to use the [Raspbian Lite](https://www.raspberrypi.o...
+</description>
+      <author>jabez007</author>
+      <category>initial configuration</category>
+      <category>/etc</category>
+      <category>configuration</category>
+      <category>file system</category>
+    </item>
+    <item>
+      <title>Initial Commit</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/initial-commit</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/initial-commit</guid>
+      <pubDate>Mon, 12 Jun 2017 00:00:00 GMT</pubDate>
+      <description>Good morning! Yes, it is morning somewhere in the world.
+</description>
+      <author>jabez007</author>
+      <category>introduction</category>
+      <category>about</category>
+      <category>purpose</category>
+    </item>
+  </channel>
+</rss>
