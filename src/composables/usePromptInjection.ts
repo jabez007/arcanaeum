@@ -34,12 +34,27 @@ export type ConcealmentMethod = "css" | "metadata" | "aria";
 function encodeBase64Utf8(value: string) {
   const bytes = new TextEncoder().encode(value);
   let binary = "";
+  const buffer = (globalThis as typeof globalThis & {
+    Buffer?: {
+      from(input: string, encoding: string): {
+        toString(encoding: string): string;
+      };
+    };
+  }).Buffer;
 
   for (const byte of bytes) {
     binary += String.fromCharCode(byte);
   }
 
-  return btoa(binary);
+  if (typeof btoa === "function") {
+    return btoa(binary);
+  }
+
+  if (buffer) {
+    return buffer.from(value, "utf8").toString("base64");
+  }
+
+  throw new Error("No Base64 encoder available in this environment.");
 }
 
 export function usePromptInjection() {
