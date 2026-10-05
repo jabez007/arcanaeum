@@ -123,6 +123,8 @@ drwxr-xr-x   root root          /srv
 drwxrws---+  root project-devs  /srv/projects
 ```
 
+That `---` at the end of `/srv/projects` is doing more work than it looks like. The checkout I moved in still had `other::r-x` on its own files. That's fine, because nobody outside `project-devs` can traverse `/srv/projects` to reach them. It's the same rule that kept `molty` out of my home directory, now working in my favor. The parent decides who gets in.
+
 ## Test it like you don't trust it
 
 Before moving any real code in, I ran an end-to-end check with both users:
@@ -141,7 +143,7 @@ Everything should belong to group `project-devs`. The directory should show `s`,
 
 ## Moving the project (no sudo required)
 
-I had Codex helping with this, and its first attempt at the move put `sudo` in front of everything. I asked why. If my shell has `project-devs` membership and I own every file in the checkout, the permissions we'd just set up allow the move without root.
+I had Codex helping with this, and its first plan for the move put `sudo` in front of everything. That made me stop and ask why. `sudo` for a `chown` makes sense. But if my shell has `project-devs` membership and I own every file in the checkout, the permissions we'd just set up should allow the move without root. A quick check confirmed every file in the checkout belonged to `jabez`, so nothing needed root.
 
 That's the point of setting this up properly. You shouldn't need `sudo` for day-to-day work in a shared directory.
 
@@ -159,6 +161,8 @@ find /srv/projects/chunk-tether -type d \
 
 git -C /srv/projects/chunk-tether config core.sharedRepository group
 ```
+
+One more wrinkle here, and it's a sandbox one. Codex runs commands inside a sandbox, and that sandbox wasn't allowed to write to `/srv`. So the first attempt at the move failed partway. It left the original checkout untouched and created nothing at the destination, which is the good outcome. But a half-finished `mv` is exactly when you should look at both paths before trying again. You don't want to end up with two checkouts, or one nested inside the other. The retry, with real filesystem access, went through fine.
 
 The capital `X` in `g+rwX` is worth knowing. It adds execute only to directories, plus files that are already executable for someone, so you don't mark every source file executable.
 
@@ -202,10 +206,11 @@ For most setups, two separate clones are safer. In my case the shared runtime ch
 
 The commands themselves are short. Understanding them took longer:
 
-- **Traversal beats permissions.** A `775` directory under a `750` parent is still unreachable.
+- **Traversal beats permissions.** A `775` directory under a `750` parent is still unreachable. That cuts both ways, and a locked parent can protect a loose child.
 - **Setgid gives new files the group. A default ACL gives them group-write.** You need both.
 - **Default ACLs aren't retroactive.** Apply them to the directory you actually want to share.
 - **New groups need a new session.** `id` tells you what your current shell can do.
 - **`sudo -u` keeps your working directory.** If the target user can't stand where you're standing, `cd /` first.
+- **Ask why `sudo` is there.** If the permissions are right, everyday work shouldn't need it.
 
 Now both accounts can work in the same project. I'm sure that won't cause any problems at all.
