@@ -1,100 +1,79 @@
-<template>
-  <div id="particles" class="particles"></div>
-</template>
-
 <script setup lang="ts">
-import { onMounted } from "vue";
-
-function getRandomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function createParticles() {
-  const particlesContainer = document.getElementById("particles");
-  const particleCount = getRandomInt(50, 100);
-
-  for (let i = 0; i < particleCount; i++) {
-    const particle = document.createElement("div");
-    const size = Math.random();
-
-    if (size < 0.6) {
-      particle.className = "particle small";
-    } else if (size < 0.85) {
-      particle.className = "particle medium";
-    } else {
-      particle.className = "particle large";
-    }
-
-    particle.style.left = Math.random() * 100 + "%";
-    particle.style.animationDelay = Math.random() * 8 + "s";
-    particle.style.animationDuration = Math.random() * 4 + 6 + "s";
-    particle.style.setProperty("--drift", (Math.random() - 0.5) * 100 + "px");
-    if (particlesContainer) {
-      particlesContainer.appendChild(particle);
-    }
-  }
-}
-
-onMounted(() => {
-  createParticles();
+const particles = Array.from({ length: 24 }, () => {
+  const duration = 32 + Math.random() * 20;
+  return {
+    size: Math.random() < 0.75 ? "small" : "medium",
+    style: {
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      animationDelay: `${-Math.random() * duration}s`,
+      animationDuration: `${duration}s`,
+      "--drift": `${(Math.random() - 0.5) * 30}px`,
+    },
+  };
 });
 </script>
+
+<template>
+  <div class="particles" aria-hidden="true">
+    <div
+      v-for="(particle, index) in particles"
+      :key="index"
+      class="particle"
+      :class="particle.size"
+      :style="particle.style"
+    ></div>
+  </div>
+</template>
 
 <style scoped>
 .particles {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   pointer-events: none;
   z-index: -1;
 }
 
-:deep(.particle) {
+.particle {
   position: absolute;
   border-radius: 50%;
-  animation: floatParticle 8s infinite linear;
+  opacity: 0.25;
+  animation: floatParticle 40s infinite linear;
 }
 
-:deep(.particle.small) {
+.particle.small {
   width: 1px;
   height: 1px;
   background: #64ffda;
-  box-shadow: 0 0 6px #64ffda;
+  box-shadow: 0 0 4px #64ffda;
 }
 
-:deep(.particle.medium) {
-  width: 3px;
-  height: 3px;
+.particle.medium {
+  width: 2px;
+  height: 2px;
   background: #bb86fc;
-  box-shadow: 0 0 10px #bb86fc;
-}
-
-:deep(.particle.large) {
-  width: 5px;
-  height: 5px;
-  background: #03dac6;
-  box-shadow: 0 0 15px #03dac6;
+  box-shadow: 0 0 6px #bb86fc;
 }
 
 @keyframes floatParticle {
   0% {
-    transform: translateY(100vh) translateX(0px) scale(0);
+    transform: translateY(15vh) translateX(0);
     opacity: 0;
   }
-
-  10% {
-    opacity: 1;
+  20%,
+  80% {
+    opacity: 0.35;
   }
-
-  90% {
-    opacity: 1;
-  }
-
   100% {
-    transform: translateY(-100px) translateX(var(--drift)) scale(1);
+    transform: translateY(-15vh) translateX(var(--drift));
     opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particle {
+    animation: none;
+    opacity: 0.25;
   }
 }
 </style>

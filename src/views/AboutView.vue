@@ -1,13 +1,15 @@
 <template>
   <section class="about-container">
-    <div class="parallax-bg" ref="parallaxBg"></div>
+    <div class="parallax-bg" aria-hidden="true"></div>
 
     <div class="content">
       <h1>The Arcane Origins of Jabez007</h1>
       <blockquote>
         "All we have to decide is what to do with the code that is given us."
         <br />
-        <cite style="display: block; text-align: right; margin-top: 0.5rem;">– a totally real Gandalf quote (probably)</cite>
+        <cite style="display: block; text-align: right; margin-top: 0.5rem"
+          >– a totally real Gandalf quote (probably)</cite
+        >
       </blockquote>
 
       <p>
@@ -64,8 +66,8 @@
       <h2>Alignment: Chaotic Helpful</h2>
       <p>
         I’m realistic enough to know every system has skeletons in the repo, sarcastic enough to
-        name them properly, and helpful enough to document the exorcism afterward. Like Gandalf,
-        but with fewer fireworks and more <code>git rebase</code>.
+        name them properly, and helpful enough to document the exorcism afterward. Like Gandalf, but
+        with fewer fireworks and more <code>git rebase</code>.
       </p>
 
       <h2>A Lore-Rich Past</h2>
@@ -145,43 +147,17 @@
 
 <script setup lang="ts">
 import PromptInjectionCanary from "@/components/PromptInjectionCanary.vue";
-import { onBeforeUnmount, onMounted, ref } from "vue";
-
-const parallaxBg = ref<HTMLElement | null>(null);
-
-const handleParallax = () => {
-  const scrolled = window.scrollY;
-  // const parallaxBg = this.$refs.parallaxBg;
-
-  if (parallaxBg.value) {
-    // Move background slower than scroll for parallax effect
-    const speed = scrolled * 0.5;
-    parallaxBg.value.style.transform = `translateY(${speed}px)`;
-  }
-};
-
-onMounted(() => {
-  // Add parallax scroll effect
-  window.addEventListener("scroll", handleParallax, { passive: true });
-});
-
-onBeforeUnmount(() => {
-  // Clean up event listener
-  window.removeEventListener("scroll", handleParallax);
-});
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap");
-
 .about-container {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
-  max-width: 900px;
-  margin: 4rem auto;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  width: min(900px, calc(100% - 2rem));
+  margin: 2rem auto;
   background-color: #1a1a1a;
   color: #e0e0e0;
   border-radius: 16px;
@@ -207,7 +183,6 @@ onBeforeUnmount(() => {
     100% 100%,
     100% 100%;
   z-index: -1;
-  will-change: transform;
 }
 
 /* Add some floating particles effect */
@@ -230,21 +205,11 @@ onBeforeUnmount(() => {
     150px 150px,
     250px 250px,
     180px 180px;
-  animation: float 19s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-23px);
-  }
 }
 
 .content {
+  min-width: 0;
+  overflow-wrap: anywhere;
   position: relative;
   z-index: 10;
 }
@@ -258,6 +223,8 @@ onBeforeUnmount(() => {
 }
 
 .content h1 {
+  font-family: var(--arcanaeum-font-display);
+  font-weight: 400;
   font-size: 2rem;
   margin-bottom: 0.5rem;
   color: #64ffda;
@@ -274,6 +241,8 @@ onBeforeUnmount(() => {
 }
 
 .content h2 {
+  font-family: var(--arcanaeum-font-display);
+  font-weight: 400;
   font-size: 1.5rem;
   margin-top: 1.5rem;
   color: #80cbc4;
@@ -285,13 +254,21 @@ onBeforeUnmount(() => {
 
 .content p,
 .content li {
-  font-family: "Cinzel", serif;
+  font-family: var(--arcanaeum-font-body);
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.8;
 }
 
 .content p {
-  text-indent: 2rem;
+  margin-top: 0.75rem;
+}
+
+.content li + li {
+  margin-top: 0.5rem;
+}
+
+.content strong {
+  font-weight: 600;
 }
 
 .contact-links {
@@ -338,6 +315,20 @@ onBeforeUnmount(() => {
 .home-button:hover,
 .home-button:focus-visible {
   background: #64ffda60;
-  outline: none;
+}
+
+.home-button:focus-visible {
+  outline: 2px solid var(--arcanaeum-mint);
+  outline-offset: 4px;
+}
+
+@media (max-width: 600px) {
+  .content blockquote {
+    width: 100%;
+  }
+
+  .home-button {
+    margin-right: 0;
+  }
 }
 </style>

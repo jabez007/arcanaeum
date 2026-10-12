@@ -50,7 +50,7 @@ onUnmounted(() => {
           stroke-width="1.5"
           fill="none"
           stroke-dasharray="1000"
-          stroke-dashoffset="1000"
+          :stroke-dashoffset="prefersReducedMotion ? 0 : 1000"
         >
           <animate
             v-if="!prefersReducedMotion"
@@ -72,48 +72,73 @@ onUnmounted(() => {
     <header>
       <h1 class="title">Archons' Arcanaeum</h1>
       <p class="subtitle">Stabilizing the Spire's Most Volatile Arcana</p>
+      <p class="introduction">
+        I'm <strong>jabez007</strong>, a backend architect building developer tools and documenting
+        homelab experiments. This is where I keep my projects and field notes.
+      </p>
+      <nav class="intro-links" aria-label="About and profiles">
+        <router-link :to="{ name: 'about' }">About the Vice Magus</router-link>
+        <a href="https://github.com/jabez007" target="_blank" rel="noopener noreferrer">
+          GitHub <span aria-hidden="true">↗</span
+          ><span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </nav>
     </header>
-    <div class="app-grid">
-      <AppCard
-        title="CryptoTron"
-        :index="0"
-        description="Interactive ciphers in a cyberpunk digital laboratory."
-        :to="{ name: 'cryptotron-home' }"
-      >
-        <template #icon><ArcaneIcon name="cipher" /></template>
-      </AppCard>
-      <AppCard
-        title="Heur Aegis DEX"
-        :index="1"
-        description="Advanced Pokémon meta-analysis and team workbench."
-        :to="{ name: 'heur-aegis-dex' }"
-      >
-        <template #icon><ArcaneIcon name="aegis" /></template>
-      </AppCard>
-      <AppCard
-        icon="🫑"
-        title="The Forgotten Pepper"
-        :index="2"
-        description="A bold culinary blog where ingredients meet design."
-        to="https://theforgottenpepper.com"
-      />
-      <AppCard
-        title="Commits & Conjurations"
-        :index="3"
-        description="Lab notes of a dev with a flair for the arcane."
-        :to="{ name: 'BlogList' }"
-      >
-        <template #icon><ArcaneIcon name="tome" /></template>
-      </AppCard>
-      <AppCard
-        title="Meet the Vice Magus"
-        :index="4"
-        description="Who's behind the glyphs? Learn more about the conjurer."
-        :to="{ name: 'about' }"
-      >
-        <template #icon><ArcaneIcon name="magus" /></template>
-      </AppCard>
-    </div>
+    <section class="projects" aria-labelledby="projects-title">
+      <h2 id="projects-title">Tools, experiments &amp; field notes</h2>
+      <div class="app-grid">
+        <AppCard
+          title="CryptoTron"
+          :index="0"
+          category="Cipher lab"
+          action="Open the lab"
+          description="Encode, decode, and experiment with classic ciphers and hidden messages."
+          :to="{ name: 'cryptotron-home' }"
+        >
+          <template #icon><ArcaneIcon name="cipher" /></template>
+        </AppCard>
+        <AppCard
+          title="Heur Aegis DEX"
+          :index="1"
+          category="Team workbench"
+          action="Explore the DEX"
+          description="Compare Pokémon, explore type matchups, and plan your next team."
+          :to="{ name: 'heur-aegis-dex' }"
+        >
+          <template #icon><ArcaneIcon name="aegis" /></template>
+        </AppCard>
+        <AppCard
+          title="The Forgotten Pepper"
+          :index="2"
+          category="Kitchen experiments"
+          action="Visit the blog"
+          description="A culinary blog for the other kind of experimentation."
+          to="https://theforgottenpepper.com"
+        >
+          <template #icon><ArcaneIcon name="pepper" /></template>
+        </AppCard>
+        <AppCard
+          title="Commits & Conjurations"
+          :index="3"
+          category="Field notes"
+          action="Read the notes"
+          description="Homelab adventures, Linux fixes, and scripts worth keeping."
+          :to="{ name: 'BlogList' }"
+        >
+          <template #icon><ArcaneIcon name="tome" /></template>
+        </AppCard>
+        <AppCard
+          title="Meet the Vice Magus"
+          :index="4"
+          category="The conjurer"
+          action="Meet jabez007"
+          description="Who's behind the glyphs? Meet jabez007, the Vice Magus."
+          :to="{ name: 'about' }"
+        >
+          <template #icon><ArcaneIcon name="magus" /></template>
+        </AppCard>
+      </div>
+    </section>
     <PromptInjectionCanary />
   </div>
 </template>
@@ -123,6 +148,7 @@ onUnmounted(() => {
 
 .constellation-container {
   position: relative;
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
@@ -156,10 +182,11 @@ header {
   position: relative;
   z-index: 10;
   text-align: center;
-  margin-bottom: 5rem;
+  margin-bottom: 2.5rem;
 }
 
 .title {
+  font-family: var(--arcanaeum-font-display);
   font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 300;
   background: linear-gradient(45deg, #64ffda, #bb86fc, #03dac6);
@@ -167,7 +194,6 @@ header {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradientShift 3s ease-in-out infinite;
   text-shadow: 0 0 30px rgba(100, 255, 218, 0.3);
   margin-bottom: 1rem;
 }
@@ -176,103 +202,100 @@ header {
   font-size: clamp(1rem, 3vw, 1.5rem);
   color: #bb86fc;
   opacity: 0.9;
-  font-weight: 300;
+  font-weight: 400;
 }
 
-@keyframes gradientShift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
+.introduction {
+  max-width: 62ch;
+  margin: 1.5rem auto 0;
+  color: #d4d7e7;
+  font-size: 1rem;
+  line-height: 1.8;
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
+.introduction strong {
+  color: #64ffda;
+  font-weight: 600;
+}
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.intro-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.intro-links a {
+  color: #64ffda;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.projects {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.projects h2 {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--arcanaeum-muted);
+  margin-bottom: 1rem;
 }
 
 .app-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 2rem;
-  margin-top: 2rem;
-  animation: fadeInUp 1s ease-out;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1.25rem;
 }
 
 .app-card {
   grid-column: span 2;
-  margin: 0; /* Removing margins as we use grid gap */
 }
 
-/* Broken Grid: Feature cards span more space */
 .app-card:nth-child(1),
 .app-card:nth-child(2) {
   grid-column: span 3;
 }
 
-.app-card:nth-child(3),
-.app-card:nth-child(4),
-.app-card:nth-child(5) {
-  grid-column: span 2;
-}
-
-@media only screen and (max-width: 1100px) {
+@media (min-width: 701px) and (max-width: 1100px) {
   .app-grid {
-    grid-template-columns: 1fr;
-    padding: 0;
-    width: 100%;
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .app-card {
-    grid-column: span 1 !important;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+  .app-card,
+  .app-card:nth-child(1),
+  .app-card:nth-child(2) {
+    grid-column: span 1;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .app-card:last-child {
+    grid-column: span 2;
   }
 }
 
-:deep(.app-card:nth-child(1)) {
-  --delay: 2;
-}
+@media (max-width: 700px) {
+  .app-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
 
-:deep(.app-card:nth-child(2)) {
-  --delay: 5;
-}
-
-:deep(.app-card:nth-child(3)) {
-  --delay: 11;
-}
-
-:deep(.app-card:nth-child(4)) {
-  --delay: 7;
-}
-
-:deep(.app-card:nth-child(5)) {
-  --delay: 13;
-}
-
-:deep(.app-card:nth-child(6)) {
-  --delay: 3;
+  .app-card,
+  .app-card:nth-child(1),
+  .app-card:nth-child(2) {
+    grid-column: span 1;
+  }
 }
 </style>

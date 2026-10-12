@@ -1,9 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@400;500;700;900&display=swap");
-
 :root {
-  --blog-font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --blog-font-heading: "Orbitron", "Inter", sans-serif;
-  --blog-font-mono: "JetBrains Mono", "Fira Code", Consolas, monospace;
+  --blog-font-primary: var(--arcanaeum-font-body);
+  --blog-font-heading: var(--arcanaeum-font-body);
+  --blog-font-mono: var(--arcanaeum-font-mono);
 
   /* Mystical Tech Wizard Colors */
   --blog-primary: #8b5cf6;

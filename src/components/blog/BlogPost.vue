@@ -1,10 +1,20 @@
 <template>
   <Transition name="fade-slide" mode="out-in">
-    <article class="blog-post" v-if="post" :key="post.slug" ref="postContainer" @scroll="handleScroll">
+    <article class="blog-post" v-if="post" :key="post.slug">
       <header class="post-header">
         <nav class="breadcrumb">
           <router-link to="/blog" class="back-link">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="nav-arrow"
+            >
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
@@ -43,11 +53,11 @@
       <section v-if="relatedPosts.length > 0" class="related-posts">
         <h3>Related Posts</h3>
         <div class="related-grid">
-          <div
+          <router-link
             v-for="relatedPost in relatedPosts"
             :key="relatedPost.slug"
+            :to="`/blog/${relatedPost.slug}`"
             class="blog-card related-card"
-            @click="navigateToPost(relatedPost.slug)"
           >
             <h4>{{ relatedPost.frontmatter.title }}</h4>
             <p>{{ relatedPost.frontmatter.excerpt }}</p>
@@ -57,7 +67,7 @@
                 >{{ relatedPost.readingTime }} min read</span
               >
             </div>
-          </div>
+          </router-link>
         </div>
       </section>
 
@@ -77,20 +87,49 @@
 
       <!-- Back to Top Button -->
       <Transition name="fade">
-        <button v-if="showBackToTop" @click="scrollToTop" class="blog-btn-scroll-top" aria-label="Back to top">
+        <button
+          v-if="showBackToTop"
+          @click="scrollToTop"
+          class="blog-btn-scroll-top"
+          aria-label="Back to top"
+        >
           <svg viewBox="0 0 24 24" class="scroll-arrow" width="24" height="24">
-            <path d="M12 4l-8 8h6v8h4v-8h6l-8-8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M7 11l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path
+              d="M12 4l-8 8h6v8h4v-8h6l-8-8z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M7 11l5-5 5 5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </button>
       </Transition>
-      </article>
+    </article>
 
     <div v-else-if="!postLoading && error" class="blog-error" key="error">
       <h1>Error Loading Post</h1>
       <p>{{ error }}</p>
       <router-link to="/blog" class="blog-btn blog-btn-primary">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="nav-arrow"
+        >
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
@@ -102,7 +141,17 @@
       <h1>Post not found</h1>
       <p>The post you're looking for doesn't exist or has been moved.</p>
       <router-link to="/blog" class="blog-btn blog-btn-primary">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="nav-arrow"
+        >
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
@@ -115,8 +164,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
 import { useBlog } from "@/blog/composables/use-blog";
 import type { BlogPost, BlogPostMetadata } from "@/blog/types";
 
@@ -125,7 +173,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const router = useRouter();
 
 const { posts, postLoading, error, getPost, getRelatedPostsForPost, loadPosts } = useBlog();
 
@@ -160,23 +207,15 @@ const formatDate = (dateString: string): string => {
   });
 };
 
-const navigateToPost = (slug: string): void => {
-  router.push(`/blog/${slug}`);
-};
-
-const postContainer = ref<HTMLElement | null>(null);
 const showBackToTop = ref(false);
 
 const handleScroll = () => {
-  if (postContainer.value) {
-    showBackToTop.value = postContainer.value.scrollTop > 500;
-  }
+  showBackToTop.value = window.scrollY > 500;
 };
 
 const scrollToTop = () => {
-  if (postContainer.value) {
-    postContainer.value.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: 0, behavior: reducedMotion ? "instant" : "smooth" });
 };
 
 const loadPostData = async (): Promise<void> => {
@@ -199,9 +238,7 @@ const loadPostData = async (): Promise<void> => {
 
       // Wait for the new post to be rendered before scrolling
       await nextTick();
-      if (postContainer.value) {
-        postContainer.value.scrollTo({ top: 0, behavior: "smooth" });
-      }
+      window.scrollTo(0, 0);
 
       // Update page title
       if (foundPost.frontmatter.title) {
@@ -221,7 +258,12 @@ const loadPostData = async (): Promise<void> => {
 watch(() => props.slug, loadPostData);
 
 onMounted(() => {
+  window.addEventListener("scroll", handleScroll, { passive: true });
   loadPostData();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", handleScroll);
 });
 </script>
 
@@ -232,10 +274,11 @@ onMounted(() => {
 
 <style scoped>
 .blog-post {
-  max-width: 1200px;
-  height: 100vh;
-  overflow: auto;
-  margin: 0 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: 1000px;
+  min-height: 100vh;
+  margin: 2rem auto;
   padding: var(--blog-spacing-xl);
   background: var(--blog-background);
   border-radius: var(--blog-radius-xl);
@@ -296,7 +339,8 @@ onMounted(() => {
 }
 
 .post-header h1 {
-  font-size: var(--blog-font-size-4xl);
+  font-size: clamp(2rem, 4vw, 3rem);
+  overflow-wrap: anywhere;
   margin-bottom: var(--blog-spacing-lg);
   color: var(--blog-text-primary);
   line-height: var(--blog-line-height-tight);
@@ -315,6 +359,10 @@ onMounted(() => {
 }
 
 .post-content {
+  max-width: 72ch;
+  margin-inline: auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-family: var(--blog-font-primary);
   line-height: var(--blog-line-height-relaxed);
   font-size: var(--blog-font-size-lg);
@@ -323,6 +371,9 @@ onMounted(() => {
 }
 
 .post-content :deep(h1) {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.35;
+  margin-bottom: var(--blog-spacing-lg);
   font-family: var(--blog-font-heading);
   font-weight: 700;
   background: var(--blog-gradient-mystical);
@@ -374,6 +425,8 @@ onMounted(() => {
 }
 
 .post-content :deep(pre) {
+  max-width: 100%;
+  overflow-wrap: normal;
   background: var(--blog-background-light);
   padding: var(--blog-spacing-lg);
   border-radius: var(--blog-radius-md);
@@ -416,6 +469,9 @@ onMounted(() => {
 }
 
 .post-content :deep(table) {
+  /* Keep wide tables scrollable without widening the article. */
+  display: block;
+  overflow-x: auto;
   width: 100%;
   border-collapse: collapse;
   margin: var(--blog-spacing-xl) 0;
@@ -449,11 +505,13 @@ onMounted(() => {
 
 .related-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
   gap: var(--blog-spacing-lg);
 }
 
 .related-card {
+  display: block;
+  text-decoration: none;
   padding: var(--blog-spacing-lg);
   cursor: pointer;
   transition: all var(--blog-transition-base);
@@ -476,6 +534,8 @@ onMounted(() => {
 }
 
 .related-meta {
+  flex-wrap: wrap;
+  gap: 0.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -554,7 +614,9 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .blog-post {
-    padding: var(--blog-spacing-lg);
+    padding: 1.25rem;
+    margin: 0 auto;
+    border-radius: 0;
   }
 
   .post-header h1 {
@@ -583,23 +645,18 @@ onMounted(() => {
 /* Transition Animations */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 120ms ease;
 }
 
-.fade-slide-enter-from {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
+.fade-slide-enter-from,
 .fade-slide-leave-to {
   opacity: 0;
-  transform: translateY(-20px);
 }
 
 .blog-btn-scroll-top {
   position: fixed;
   bottom: var(--blog-spacing-xl);
-  right: calc(50% - 580px); /* Position relative to the 1200px container */
+  right: max(var(--blog-spacing-lg), calc((100vw - 1000px) / 2 + 1rem));
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -625,15 +682,6 @@ onMounted(() => {
   color: white;
   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
   transition: transform var(--blog-transition-base);
-}
-
-.blog-btn-scroll-top:hover .scroll-arrow {
-  animation: arrow-float 1.5s ease-in-out infinite;
-}
-
-@keyframes arrow-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
 }
 
 .fade-enter-active,
