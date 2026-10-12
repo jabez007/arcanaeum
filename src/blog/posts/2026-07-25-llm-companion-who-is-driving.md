@@ -14,7 +14,7 @@ excerpt: |
   what does the LLM actually do while the bot is patrolling? The answer was "nothing". Here is how
   I gave the model some initiative without letting it spam tokens or overrule a player.
 featured: false
-draft: true
+draft: false
 ---
 
 # Who's Driving? Giving an LLM a Minecraft Body Without the Steering Wheel
@@ -25,16 +25,7 @@ Last month [Reeve couldn't get through a door](/#/blog/minecraft-bot-vs-wooden-d
 
 That was always the plan. A language model is too slow and too expensive to run a Minecraft body tick by tick. The body should run itself, and the model should be the part that talks, judges, and now and then decides what to do next.
 
-A couple of weeks ago I sat down to get ready for the first proper live run. I went through the `.env` and made a few deliberate choices:
-
-- `CAN_MODIFY_WORLD=true`, so scheduled farm work could actually harvest and replant.
-- Doors allowed, fence gates not yet.
-- Patrol follows the bot instead of staying pinned to the home anchor.
-- The player allowlist left empty for now.
-
-Turning on world modification made me check how far that permission reaches. Patrol targets stay within 64 blocks of home, but world modification uses its own boundary, a 64-block box around home plus one around every remembered point of interest. Reeve had 32 of those, so the combined area reached about 110 blocks to the farthest corner. Neither is a hard leash. Detours, safety retreats, and explicit commands can all carry him past either one.
-
-Then I asked the next question. How does the LLM interact with the bot while the behavior loop is running?
+A couple of weeks ago, while getting ready for the first proper live run, I asked a question I should have asked earlier. How does the LLM interact with the bot while the behavior loop is running?
 
 ## The answer: it doesn't
 
@@ -54,7 +45,7 @@ What I wanted, in my own words at the time:
 
 That comes with constraints I care about:
 
-1. **Players always win.** If I tell Reeve to do something, that beats anything the model decided on its own.
+1. **Player commands beat autonomous chores.** If I tell Reeve to do something, that beats anything the model decided on its own. Survival reflexes still interrupt both of us.
 2. **Don't spam the model.** Token usage should be deliberate, not a side effect of the game loop.
 3. **The body works without a brain.** With no model configured, or with the provider down, the deterministic loop keeps Reeve alive and useful.
 
@@ -69,7 +60,7 @@ The design I ended up with puts four layers over one body, each with a clear aut
 | Autonomous LLM | Picks an occasional goal from a short list | Above idle behavior |
 | Deterministic loop | Patrol, upkeep, farm schedule, fallback | Baseline |
 
-The rule underneath all four layers is that **the LLM never emits code or calls Mineflayer directly.** It returns a structured choice from a catalog of registered Skills. The runtime validates that choice at execution time against source allowlists, capability gates, territory rules, and resource limits. The model can ask for something. It never does anything itself.
+The rule underneath all four layers is that **the LLM never emits code or calls Mineflayer directly.** It chooses a chore from a list of registered skills. Before running it, the runtime checks who asked, whether that source can use the skill, and whether its required capabilities are enabled. It also checks where the bot may work and what resources it may spend. The model can ask for something. The runtime decides whether Reeve is allowed to do it.
 
 Here's the flow on one page:
 
@@ -88,7 +79,7 @@ Safety reflexes ─────────────────────�
 
 ## Who asked for this?
 
-The catch was that the `ActionRunner` only knew three priorities: `passive`, `high`, and `critical`. It had no idea whether an action came from a player or from a model that decided something on its own. A player command at the same priority as an LLM chore wasn't guaranteed to win. "Players always win" would have been a line in a prompt, which is to say a suggestion.
+The catch was that the `ActionRunner` only knew three priorities: `passive`, `high`, and `critical`. It had no idea whether an action came from a player or from a model that decided something on its own. A player command at the same priority as an LLM chore wasn't guaranteed to win. "Player commands beat autonomous chores" would have been a line in a prompt, which is to say a suggestion.
 
 So every action now carries an *execution source*:
 
@@ -121,7 +112,7 @@ The proactive coordinator only calls a real model when *all* of these are true:
 - A minimum interval has passed, and so has a quiet period since the last player activity
 - The rolling hourly budget has room
 - Any provider-failure backoff has expired
-- Something actually changed: the scene, or which Skills are available right now
+- Something actually changed: the scene, or which skills are available right now
 
 That last condition saves the most tokens. If Reeve is standing in the same room with the same options as last time, asking the model again buys nothing. A skipped opportunity costs zero model calls.
 
@@ -133,18 +124,18 @@ When the provider fails, the coordinator backs off and lets the deterministic lo
 
 ## A deliberately small menu
 
-What the model can choose on its own is a lot narrower than what it can do for a player. An autonomous turn may pick **at most one** Skill, and that Skill has to:
+What the model can choose on its own is a lot narrower than what it can do for a player. An autonomous turn may pick **at most one** skill, and that skill has to:
 
 - explicitly allow the `agent` source,
 - be a reversible chore,
 - need no special capability, and
 - pass a live availability check both before the model sees it and again before it runs.
 
-In the first slice that's exactly five skills: `collect_drops`, `go_home`, `go_to_location`, `inspect_sector`, and `patrol_area`. A test pins the production catalog to those five, so a new skill can't quietly become agent-callable because someone forgot a flag.
+For now that's exactly five skills: `collect_drops`, `go_home`, `go_to_location`, `inspect_sector`, and `patrol_area`. A test pins the production catalog to those five, so a new skill can't quietly become agent-callable because someone forgot a flag.
 
 Anything bigger has to come from a player, through the conversational planner, with that player's authority.
 
-The first slice reused the full conversational prompt, which meant every autonomous turn paid for the whole skill catalog and the whole response contract. The second slice gave autonomy its own prompt. It lists only the five chores and asks for a three-field response, `{ skill, input?, reason }`. It comes in at about 18% of the conversational system prompt by character count, and a regression test fails if it ever passes a third. Autonomous turns on Codex always run at low reasoning effort. Conversation keeps whatever effort I configured.
+At first, every autonomous turn used the full conversational prompt, including skills it couldn't choose. I gave autonomy a smaller prompt containing only its five allowed chores and asking for a three-field response, `{ skill, input?, reason }`. It comes in at about 18% of the conversational system prompt by character count, and a regression test fails if it ever passes a third. Autonomous turns on Codex always run at low reasoning effort. Conversation keeps whatever effort I configured.
 
 ## Same character, both modes
 
@@ -158,20 +149,8 @@ So yes, it's one character. In player mode Reeve converses and acts with the pla
 
 The deterministic loop is the exception. Patrol, doors, survival reflexes, and farm work never read `SOUL.md`. From inside the game it all looks like Reeve, but that part is autopilot.
 
-## Two other pieces that landed this month
+## Letting him choose
 
-**The brain runs on my ChatGPT subscription.** Like my [OpenClaw box](/#/blog/taming-openclaw-proxmox-lxc), Reeve can use OpenAI models through Codex OAuth instead of a metered API key. A typo like `LLM_REASONING_EFFORT=fast` now fails at boot instead of quietly doing something.
+I started this work with a model that was configured, authenticated, and unreachable. Wiring it in meant deciding when it gets a turn, what it may ask for, and how quickly it has to get out of a player's way. None of those decisions could live only in the prompt.
 
-**Discord as a second mouth.** A thin Discord adapter maps Discord user IDs, never display names, to the same commander identities the in-game chat uses, at chat-level privilege. Unmapped users get ignored.
-
-## Final thoughts
-
-- **Check that the brain is wired to anything.** Mine was configured, authenticated, and unreachable.
-- **Authority belongs in the runtime, not the prompt.** Priorities that don't know who asked can't enforce "players win".
-- **Re-check the world after the model answers.** A slow response is a window for something to change.
-- **The cheapest model call is the one you skip.** An unchanged scene doesn't need a fresh opinion.
-- **A persona shapes choices. It doesn't grant them.**
-
-The interesting design work on an LLM agent isn't the prompt. It's deciding what the model is *allowed to want*, and who wins when it disagrees with a human.
-
-The first two slices are in. The model can now decide on its own, at most six times an hour, to go look at a sector or head home. Whether those choices are any *good* only gets answered by letting him loose in the world and reading the journal afterward.
+Reeve can now decide on his own, at most six times an hour, to inspect a sector or head home. Whether those choices are any *good* only gets answered by letting him loose in the world and reading the journal afterward.

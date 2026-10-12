@@ -66,7 +66,7 @@ I was running these checks through Codex, which works inside a sandbox. That add
 
 So the very first error had nothing to do with OpenCode or my project. It was the sandbox doing its job. Running the same commands outside it got past the log file and straight to `no such column: name`, which at least meant everyone was looking at the same bug.
 
-It's worth saying because it's an easy trap. When an agent runs your commands in a sandbox, the first error you see may be about the sandbox. Make sure you're debugging the same failure the user is.
+When an agent runs your commands in a sandbox, the first error you see may be about the sandbox. Make sure you're debugging the same failure you get in your own terminal.
 
 ## Where's the SQL?
 
@@ -112,7 +112,7 @@ One small gotcha in the isolated run. Running `debug config` and `mcp list` at t
 
 Comparing the two databases made it obvious. The fresh one, created by the same OpenCode version, had tables my old one lacked entirely: `workspace`, `event`, `session_message`, `session_input`, `data_migration`. Several tables that existed in both were missing newer columns. The old migration table even had rows with blank IDs.
 
-So the current OpenCode version opened my old database, didn't migrate it all the way, and then queried a column that wasn't there.
+That pointed to an old database the current version hadn't fully migrated. I never traced the exact failing query, but the two schemas gave me a reason to try fresh state in my real profile.
 
 ## The red herring
 
@@ -126,50 +126,16 @@ In the isolated environment, `opencode mcp list` got further but reported:
 │      node dist/index.js
 ```
 
-But talking to the server directly worked. Pipe JSON-RPC into it over stdio and it answers `initialize` and `tools/list` normally:
-
-```bash
-{ printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"probe","version":"1"}}}'
-  sleep 2
-  printf '%s\n' '{"jsonrpc":"2.0","method":"notifications/initialized"}'
-  printf '%s\n' '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}'
-  sleep 2
-} | node dist/index.js
-```
-
-To see what OpenCode was actually sending, I put a tiny logging proxy between it and the server. OpenCode launches the proxy, and the proxy launches the real server and writes down every byte going each way:
-
-```js
-#!/usr/bin/env node
-// /tmp/opencode-mcp-proxy.cjs
-const fs = require("node:fs");
-const { spawn } = require("node:child_process");
-
-const log = (line) => fs.appendFileSync("/tmp/opencode-mcp-proxy.log", line + "\n");
-const child = spawn("node", ["/path/to/obsidian-vault-mcp/dist/index.js"], {
-  stdio: ["pipe", "pipe", "pipe"],
-});
-
-process.stdin.on("data", (c) => { log(`CLIENT ${JSON.stringify(c.toString())}`); child.stdin.write(c); });
-process.stdin.on("end", () => { log("CLIENT_END"); child.stdin.end(); });
-child.stdout.on("data", (c) => { log(`SERVER ${JSON.stringify(c.toString())}`); process.stdout.write(c); });
-child.stderr.on("data", (c) => { log(`SERVER_ERR ${JSON.stringify(c.toString())}`); process.stderr.write(c); });
-child.on("exit", (code) => { log(`CHILD_EXIT code=${code}`); process.exit(code ?? 1); });
-```
-
-Point an `opencode.json` at `["node", "/tmp/opencode-mcp-proxy.cjs"]`, run `mcp list`, and read the log:
+The server answered `initialize` and `tools/list` normally when I sent JSON-RPC directly over stdio. So I put a small logging proxy between OpenCode and the server to see who hung up first. The full proxy is in the appendix; the useful part of the transcript was:
 
 ```text
-start cwd=/tmp/opencode-proxy-project
 CLIENT_END
 CHILD_EXIT code=0 signal=null
 ```
 
-OpenCode started the server and closed its stdin without sending a single message. The server saw EOF and exited cleanly, and OpenCode reported "Connection closed". I got the same result with a TTY attached.
+OpenCode started the server and closed its stdin without sending a single message. The server saw EOF and exited cleanly. That looked like a second bug.
 
-That looked like a real OpenCode bug, separate from the database one.
-
-Then I fixed the actual problem, and in my real profile `opencode mcp list` showed the server as connected. Whatever made it close stdin in the scratch environment didn't happen in a normal one. I still don't know exactly why. Throwaway environments are great for ruling things out, but they aren't your real environment, and sometimes they show you a problem that only exists in the throwaway.
+After I replaced the stale database, the server connected normally in my real profile. I still don't know why the scratch run closed stdin. The throwaway environment helped rule out my project, but its extra failure sent me down another rabbit hole.
 
 I'm keeping the proxy, though. Next time an MCP host says "Connection closed", it'll tell me who hung up first.
 
@@ -193,10 +159,34 @@ The project was fine the whole time. The JSON file got suspected first because i
 
 A few things I'm taking away:
 
-- **"no such column" means a schema mismatch.** If a tool you just upgraded throws a SQL error before it does anything else, look at its state database before you look at your code.
+- **Check the state database when startup throws a SQL error.** Mine was missing columns the current version expected. A fresh profile helped separate that from a project config problem.
 - **Isolate state with XDG variables.** Pointing `HOME` and the `XDG_*` variables at `/tmp` is the fastest way to answer "is it my project or my machine?"
 - **Back up instead of deleting.** `mv` to a timestamped name costs nothing and keeps the old sessions if you ever want them.
 - **A logging stdio proxy is worth keeping around.** It turns "Connection closed" into a transcript.
 - **Know which errors come from the sandbox.** The first failure was about where the agent was allowed to write, not about OpenCode.
 
 With the database fixed, my notes are reachable from all four agents. Which means all four can now confidently cite the wrong note at me.
+
+## Appendix: the logging proxy
+
+Save this as `/tmp/opencode-mcp-proxy.cjs` and replace `/path/to/obsidian-vault-mcp/dist/index.js` with your server's entry point:
+
+```js
+#!/usr/bin/env node
+// /tmp/opencode-mcp-proxy.cjs
+const fs = require("node:fs");
+const { spawn } = require("node:child_process");
+
+const log = (line) => fs.appendFileSync("/tmp/opencode-mcp-proxy.log", line + "\n");
+const child = spawn("node", ["/path/to/obsidian-vault-mcp/dist/index.js"], {
+  stdio: ["pipe", "pipe", "pipe"],
+});
+
+process.stdin.on("data", (c) => { log(`CLIENT ${JSON.stringify(c.toString())}`); child.stdin.write(c); });
+process.stdin.on("end", () => { log("CLIENT_END"); child.stdin.end(); });
+child.stdout.on("data", (c) => { log(`SERVER ${JSON.stringify(c.toString())}`); process.stdout.write(c); });
+child.stderr.on("data", (c) => { log(`SERVER_ERR ${JSON.stringify(c.toString())}`); process.stderr.write(c); });
+child.on("exit", (code) => { log(`CHILD_EXIT code=${code}`); process.exit(code ?? 1); });
+```
+
+Temporarily set the server's `command` in `opencode.json` to `["node", "/tmp/opencode-mcp-proxy.cjs"]`, run `opencode mcp list`, and read `/tmp/opencode-mcp-proxy.log`. Restore the original command afterward.

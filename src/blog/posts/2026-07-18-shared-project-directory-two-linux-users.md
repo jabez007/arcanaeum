@@ -15,14 +15,16 @@ excerpt: |
   The answer was a shared group, a setgid directory, and default ACLs under /srv. Along the way I learned what the
   `s` and `+` in `drwxrws---+` mean, and why `sudo -u` still cares about the directory you're standing in.
 featured: false
-draft: true
+draft: false
 ---
 
 # One Project, Two Linux Users: setgid, Default ACLs, and `/srv`
 
 _Or: What the `s` and the `+` in `drwxrws---+` actually mean_
 
-My laptop has two user accounts now: `jabez`, which is me, and `molty`. I wanted both of them to have full read, write, and execute access to my Minecraft bot project, `chunk-tether`. I wanted a single working tree, not two clones. Both accounts should be able to run the same checkout.
+My laptop has two user accounts now: `jabez`, which is me, and `molty`, which my Hermes Agent profiles use. Hermes runs in a small, streamlined LXC on my Proxmox host. For heavier development, I let its profiles use the laptop and help with projects I'm working on. `molty` is a regular user, deliberately outside sudoers.
+
+For my Minecraft bot project, `chunk-tether`, I wanted both accounts to work from and run the same checkout. One working tree, with both users able to read and write the files and run the code. That meant giving `molty` access to the project without giving it root.
 
 The project lived at `/home/jabez/source/repos/chunk-tether`. The simple question was whether to leave it there and loosen permissions, or move it somewhere both users could reach.
 
@@ -127,6 +129,8 @@ That `---` at the end of `/srv/projects` is doing more work than it looks like. 
 
 ## Test it like you don't trust it
 
+There's one catch before testing: **new group membership only applies to new login sessions.** `usermod -aG` updates `/etc/group`, but any shell that was already running keeps its old group list. Check with `id`. If `project-devs` isn't listed, log out and back in, or start a subshell with `newgrp project-devs`. A long-lived `tmux` server has the same problem: its panes inherit whatever groups the server had when it started.
+
 Before moving any real code in, I ran an end-to-end check with both users:
 
 ```bash
@@ -146,8 +150,6 @@ Everything should belong to group `project-devs`. The directory should show `s`,
 I had Codex helping with this, and its first plan for the move put `sudo` in front of everything. That made me stop and ask why. `sudo` for a `chown` makes sense. But if my shell has `project-devs` membership and I own every file in the checkout, the permissions we'd just set up should allow the move without root. A quick check confirmed every file in the checkout belonged to `jabez`, so nothing needed root.
 
 That's the point of setting this up properly. You shouldn't need `sudo` for day-to-day work in a shared directory.
-
-There's one catch: **new group membership only applies to new login sessions.** `usermod -aG` updates `/etc/group`, but any shell that was already running keeps its old group list. Check with `id`. If `project-devs` isn't listed, log out and back in, or start a subshell with `newgrp project-devs`. A long-lived `tmux` server has the same problem: its panes inherit whatever groups the server had when it started.
 
 Once `id` showed the group:
 

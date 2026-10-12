@@ -14,7 +14,7 @@ excerpt: |
   I'm building an LLM-powered companion that lives in my Minecraft world. Before it can hold a conversation,
   it has to get from the house to the wheat farm. That meant a weekend spent losing to a single oak door.
 featured: false
-draft: true
+draft: false
 ---
 
 # My Minecraft Bot vs. One Wooden Door
@@ -127,21 +127,15 @@ That came out of a night test. Reeve went to bed, got stuck partway there, and l
 
 ## The goal you can't stand on
 
-One more quirk from the same weekend. "Go to the farm" targeted the farm's center block, which is water with crops around it. There was no standable tile within range 1 of that point, so `GoalNear` could never be satisfied, and the bot circled the edge of the field until it timed out.
+There was one more navigation problem that weekend. "Go to the farm" targeted its center block, which was water surrounded by crops. Reeve could reach the field, but couldn't stand close enough to that point to satisfy `GoalNear`. The goal now snaps to a nearby tile he can actually stand on.
 
-`GoalNear` now snaps to the nearest standable tile, within two blocks horizontally and one vertically, when the target itself isn't standable. If the target already has floor next to it, like a barrel, a bed, or a player, the goal is left alone.
-
-There was a cousin of that bug in the harvest skill. In one test, none of the farm's 80 mature crops were reachable, and harvest paced the fence line for its full 90-second timeout, skipping one unreachable crop after another. The stuck detector never fired, because pacing back and forth moves more than two blocks per check, and that counts as progress. Now three path failures in a row end the harvest with an honest "the farm may be fenced off from me". That took 7.5 seconds instead of 90.
+The harvest skill had a related problem. It could pace a fence line for its full 90-second timeout, skipping unreachable crops while the stuck detector counted movement as progress. Now three path failures in a row end the harvest with an honest "the farm may be fenced off from me". That took 7.5 seconds instead of 90.
 
 ## Side quest: the bread incident
 
-While all this was going on, Reeve found a way to waste food.
+While all this was going on, Reeve found a way to waste food. He deposited surplus bread into a barrel over a hopper that emptied into a composter. Every loaf he "stored" became compost.
 
-He was depositing surplus bread into a barrel near the farm. That barrel sits on top of a hopper, and the hopper empties into a composter. Every loaf he "stored" got pulled down and composted.
-
-The old heuristic flagged a container as a composter feeder only if a composter was within four blocks or a hopper within two. Mine was a straight vertical chain, barrel to hopper to composter, and it didn't trip either check. The resolver also allowed a flagged container if it "already stored the item". A feeder barrel holds the item briefly before the hopper takes it, so Reeve kept topping it up.
-
-The fix stopped guessing from distance. It follows the hopper chain under a container, respecting which way each hopper faces, and checks whether it ends in a composter. If it does, the bot never deposits there, no matter what's inside.
+The storage check guessed from nearby blocks, and the barrel briefly holding bread made it look like the right place for more bread. Now it follows the hopper chain. If it ends in a composter, Reeve doesn't deposit there.
 
 ## Final thoughts
 
@@ -149,7 +143,6 @@ The fix stopped guessing from distance. It follows the hopper chain under a cont
 - **Lie to the pathfinder as little as you can.** "Safe" was enough. "Not there at all" froze the bot in place.
 - **Two systems touching the same door will fight.** Pick one owner.
 - **Moving isn't the same as making progress.** A bot pacing a fence line looks busy to a stuck detector.
-- **Trace the mechanism, don't guess from distance.** A barrel over a hopper over a composter is a composter.
 
 None of this involved a language model. Each problem was the bot's body failing at something a player does without thinking. Walk through a door, close it, stand next to a field, put bread somewhere safe.
 

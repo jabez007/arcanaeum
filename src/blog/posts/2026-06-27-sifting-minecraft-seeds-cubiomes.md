@@ -13,7 +13,7 @@ excerpt: |
   Cubiomes Viewer can search for that, but only if you feed it the right climate numbers. My first numbers were guesses.
   The second set came from "research" and was worse. The third set came from the source code.
 featured: false
-draft: true
+draft: false
 ---
 
 # Seed Sifting: Stop Guessing Your Cubiomes Thresholds
@@ -64,7 +64,7 @@ Next I wanted a condition that raised the odds of a Pale Garden. The history of 
 
 The first version came from reasoning about the other conditions already in my stack. `Coastal` used continentalness `<= -1100`, and another condition treated `>= -500` as loosely inland. So "clearly inland" became `continentalness >= 1800`. `Open terrain` kept weirdness between `-2000` and `2000`, so "unusual terrain" became `weirdness >= 2500`.
 
-That's internally consistent and completely made up. When I asked where those values came from, the honest answer was "a deliberate heuristic, not a sourced formula". Fair enough. I asked for one.
+That's internally consistent and completely made up. I couldn't tie either value to a biome table. They were deliberate heuristics, and I wanted numbers I could check.
 
 ### Attempt two: research, which was worse
 
@@ -76,13 +76,13 @@ MAX_PEAK_WEIRDNESS        = 0.7666667
 MAX_SECOND_HIGH_WEIRDNESS = 0.9333333
 ```
 
-If Cubiomes scales noise to `[-10000, 10000]`, those map to about `5667`, `7667`, and `9333`. The recommendation became "your 2500 is probably too low, try 5667".
+Assuming Cubiomes multiplies noise values by 10000, those map to about `5667`, `7667`, and `9333`. The next candidate for my weirdness floor was `5667`.
 
-That sounded rigorous. It had real constants and a link. It also rested on an assumption about the scale that nobody had checked, and it would have more than doubled my weirdness threshold.
+That sounded rigorous. It had real constants and a link. But I hadn't checked the conversion or whether a named weirdness band actually described Pale Garden terrain. The new number would have more than doubled my threshold.
 
 ### Attempt three: read the source
 
-The next step was checking the Cubiomes and Cubiomes Viewer source on GitHub for the scale they actually use. That settled it.
+With Claude Code helping me read the Cubiomes and Cubiomes Viewer source on GitHub, I checked the scale and biome limits they actually use.
 
 The viewer doesn't invent its own range. It asks Cubiomes for integer limits through `getBiomeParaExtremes()` and `getBiomeParaLimits()`. In Cubiomes, the sampled climate values really are multiplied by 10000:
 
@@ -90,7 +90,9 @@ The viewer doesn't invent its own range. It asks Cubiomes for integer limits thr
 int64_t id = (int64_t) (10000.0 * sampleClimatePara(bn, np, x, z));
 ```
 
-But the valid ranges aren't a uniform `±10000`. For the commit the viewer was built against, `getBiomeParaExtremes()` returns:
+The multiplier was right. That still didn't tell me which threshold to use for a Pale Garden.
+
+The parameter ranges aren't a uniform `±10000`, either. In the Cubiomes version I checked for this search, `getBiomeParaExtremes()` returned:
 
 | Parameter | Range |
 | :--- | :--- |
@@ -101,7 +103,7 @@ But the valid ranges aren't a uniform `±10000`. For the commit the viewer was b
 | depth | `1000 .. 10500` |
 | weirdness | `-9333 .. 9333` |
 
-The real find was that Cubiomes already has a parameter row for Pale Garden on 1.21.4 and later:
+The real find was that Cubiomes' [`finders.c`](https://github.com/Cubitect/cubiomes/blob/master/finders.c) already has a parameter row for Pale Garden on 1.21.4 and later. These are the values I used for this search:
 
 | Parameter | Pale Garden |
 | :--- | :--- |
@@ -111,7 +113,7 @@ The real find was that Cubiomes already has a parameter row for Pale Garden on 1
 | erosion | `-7799 .. 500` |
 | weirdness | `>= 2666` |
 
-So the scorecard for weirdness reads: guess `2500`, research `5667`, actual `2666`. My lazy guess was almost right by accident, and the researched number would have filtered out a big chunk of valid Pale Garden terrain. On continentalness the guess was way off, `1800` where `300` is enough. I'd been demanding deep inland when Pale Gardens only need to be off the coast.
+So the scorecard for weirdness reads: guess `2500`, research `5667`, actual `2666`. My lazy guess was almost right by accident. The researched number converted a real constant correctly, but picked the wrong cutoff for the biome I wanted. It would have filtered out a big chunk of valid Pale Garden terrain. On continentalness the guess was way off, `1800` where `300` is enough. I'd been demanding deep inland when Pale Gardens only need to be off the coast.
 
 > Narrator: _The footnoted answer was the wrong one. The footnotes were very nice, though._
 
@@ -172,11 +174,10 @@ If your config lives in a binary format, read it back after every change. A doc 
 ## Final thoughts
 
 - **Confident numbers aren't the same as sourced numbers.** My guess was confident. The research was confident and footnoted. Only the source code was correct.
-- **Check the scale before you convert.** `0.5666667` only becomes `5667` if the multiplier really is 10000 everywhere.
-- **Tuning by feel moves you in the right direction and stops short.** `1500` was warmer than `1000` and still wasn't lukewarm.
+- **A correct conversion can still give you the wrong threshold.** `5667` came from a real constant, but Pale Garden's row starts at `2666`.
 - **When you have to estimate, build it from the nearest real data and label it.**
 - **Put cheap, independent checks first.** Don't make every condition wait on the most expensive one.
 
-If you're tuning Cubiomes conditions, skip the forum posts and the scale assumptions. The biome parameter tables are in `finders.c`. Read them, put the numbers in a script, and make the script prove what it wrote.
+If you're tuning Cubiomes conditions, start with the biome parameter tables in `finders.c` for the version your viewer uses. Read them, put the numbers in a script, and make the script prove what it wrote.
 
 Now I just need the search to finish, so I can find out the island I want doesn't exist.

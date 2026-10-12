@@ -14,7 +14,7 @@ excerpt: |
   journal afterward, fix something, and run it again. It found real bot bugs. It also found that my test
   graders were lying to me about as often as the bot was.
 featured: false
-draft: true
+draft: false
 ---
 
 # Letting Codex Playtest My Minecraft Bot
@@ -25,13 +25,13 @@ Reeve, my Mineflayer companion, has a lot of unit tests. Over two thousand of th
 
 The honest way to find out is to play with him. I don't have other players on the server right now to help with that. So this week I handed the job to Codex.
 
-The idea was a loop. Launch the bot for ten to twenty minutes. Ask him for something a player might ask for, through the operator console. Wait for him to finish or fail. Shut him down, read the journal, and decide what went wrong. Fix it, run it again, and compare.
+I gave Codex a loop to follow. Launch the bot for ten to twenty minutes. Ask him for something a player might ask for, through the operator console. Wait for him to finish or fail. Shut him down, read the journal, and decide what went wrong. Fix it, run it again, and compare.
 
-Most of the pieces already existed. An older harness in the project could launch the bot against the live server, run a scripted scenario, keep a structured journal, and shut everything down cleanly. It had just never been used as a loop, with somebody actually reading the results each time.
+Most of the pieces already existed. An older harness in the project could launch the bot against the live server, run a scripted scenario, keep a structured journal, and shut everything down cleanly. It had just never been used as a loop, with somebody actually reading the results each time. By the end of the week, I wanted more than a green report. I wanted Reeve to finish a useful errand.
 
 ## The first bug was in the grader
 
-The first run was a twenty-minute patrol soak with four survey passes, five minutes apart, and status checks at the start and end. Three surveys completed. One failed:
+Codex's first run left Reeve patrolling for twenty minutes, with four survey passes, five minutes apart, and status checks at the start and end. Three surveys completed. One failed:
 
 ```text
 Survey Task observation pose was unreachable.
@@ -45,13 +45,13 @@ The zero-effect check matched any `0/N` pattern in the output. The first status 
 
 The first regression test for it used the counters from the end of the run, `1/27/6`, and stayed green. It took the exact startup string to get a red test. The fix narrowed the check to real effect phrasing like `0/2 repaired`.
 
-The comparison run, with no bot code changed, went 4/4 across twenty minutes and 147 journal records. So the unreachable pose looked like a one-off, and the only bug fixed in the first loop was in the tool that grades the bot.
+The comparison run, with no bot code changed, completed all four surveys across twenty minutes. So the unreachable pose looked like a one-off, and the only bug fixed in the first loop was in the tool that grades the bot.
 
 > Narrator: _This would become a theme._
 
 ## Green that proved less than it looked
 
-The patrol soak never touched the language model. I wanted a test where someone asks Reeve for something in plain English. With no real players around, the harness can send a synthetic whisper through the real model provider and require the planner to pick `survey_surroundings`.
+The patrol run never touched the language model. I wanted a test where someone asks Reeve for something in plain English. With no real players around, the harness can send a synthetic whisper through the real model provider and require the planner to pick `survey_surroundings`.
 
 Before connecting to the server, the planner's offline evaluation ran against the real model. It scored 35 of 41. On the exact case the live scenario depended on, a one-off "patrol" request, the model chose `patrol_area` instead.
 
@@ -71,11 +71,11 @@ So there was nothing reproducible to fix. Changing the prompt would have been a 
 
 ## Nothing to walk up
 
-Next on the list was the spatial map's topology. Reeve records stairs, slabs, and doorways as `Connector` objects, and links them with edges in a graph. Earlier runs had discovered candidate connectors, but nothing had ever proved one could be walked.
+Next I wanted to know whether Reeve could use the routes he'd mapped. He records stairs, slabs, and doorways as `Connector` objects, and links them in a graph. Earlier runs had found possible crossings, but none had proved he could actually walk across one.
 
 The new scenario was strict. Find a connector, walk across it, require the walk to confirm the matching edge, restart the bot, and check the confirmation survived.
 
-The first live run never came back with a verdict. The bot found zero usable connectors in the spawn area and correctly started no movement, but the scenario only knew how to wait for a successful crossing. So it sat there until the harness time box ran out. Now "no usable geometry" is a graded failure, and the next two runs failed in 14 and 12 seconds for the right reason. Each recorded 132 occupancy observations and zero connectors. There was nothing there to walk up.
+The first live run never came back with a verdict. The bot found no usable crossing in the spawn area and correctly stayed put, but the scenario only knew how to wait for a successful crossing. So it sat there until the run's time limit expired. Now "no usable geometry" is a graded failure, and the next two runs failed in 14 and 12 seconds for the right reason. There was nothing there to walk up.
 
 ## Decorative stairs
 
@@ -86,7 +86,7 @@ It found 228 stair blocks and 284 slabs. Every one of the 228 stairs got rejecte
 That raised the question I actually cared about. Can the map tell decorative stairs and slabs from a real staircase? It does it in two stages:
 
 1. **Geometry.** A stair only counts if it's bottom-half, straight, not waterlogged, with a clear space to move through and standable landings above and below. A slab only counts if it's a bottom slab with standable landings on both levels. Anything that qualifies becomes a connector, but its edges start as `candidate`.
-2. **Proof.** An edge only becomes `confirmed` after a reached, continuous Journey physically crosses it. The map records which Journey confirmed it.
+2. **Proof.** An edge only becomes `confirmed` after the bot successfully walks across it in one continuous trip. The map keeps a record of that trip.
 
 It can't read the builder's mind. It just refuses to believe a staircase is a staircase until somebody has walked up it.
 
@@ -96,25 +96,25 @@ That was the second grader bug.
 
 ## How far can he actually see?
 
-The scan got changed to report its own limits instead of quietly applying them, and that turned up a surprise.
+As Codex worked through the staircase tests, it changed the scan to report its own limits instead of quietly applying them. That turned up a surprise.
 
 The debug skill accepted a 24-block radius. The production observer clamps that to 8. It also caps a scan at 512 cells and 128 results. A radius-8 sphere has 2,109 candidate cells, so the 512-cell cap cuts it off partway through the distance-5 shell. On the home scan, another 327 cells were dropped for line of sight.
 
 So "radius 8" was the setting, and **radius 4** is the only distance that was ever fully scanned. The scan receipt now reports the requested, clamped, and fully scanned radius as three separate numbers, so nobody, including me, overstates what the bot has seen.
 
-## Up four flights, restart, and back down
+## Up four steps, restart, and back down
 
 With that known, the bot rescanned at radius 4 after every step instead of trusting one big scan. From a lower landing he found a chain of bottom oak slabs going up four levels.
 
-The final staircase scenario climbs four slab steps, confirming each edge with its own traversal Journey. Then it restarts the bot and descends the same four levels using only edges that were already confirmed and persisted. No falling back to candidate geometry.
+The final staircase scenario climbs four slab steps, recording each successful crossing. Then it restarts the bot and descends the same four levels using only routes whose crossing records survived the restart. No falling back to untested geometry.
 
-It passed in 33 seconds. All 14 confirmed edges in the run database had a reached Journey behind them. The full test suite went from 2,168 to 2,188 along the way.
+It passed in 33 seconds. All 14 confirmed edges in the run database had a successful trip behind them.
 
 ## Stuck on the edges
 
 Later in the week I said what had been bugging me. It felt like we were stuck tweaking fixes around the edges instead of pushing the bot forward. The loop is very good at finding the next small thing that's wrong, and there's always a next small thing.
 
-So the unit of progress changed from "prove one mechanism" to "finish one useful errand". The errand was to make one iron pickaxe and put it in a chest, as a durable job that survives restarts. It has three operations: check inventory, craft, deposit. It only counts as done when the deposit is verified, not when the craft succeeds.
+So I gave Codex a concrete errand to test. Reeve had to make one iron pickaxe and put it in a chest, keeping track of the job across restarts. Crafting it wasn't enough. The run only passed when the pickaxe was in the chest.
 
 First the bot had to find the materials. I knew there was a double chest of iron somewhere in the basement and one of bamboo nearby. A read-only search opened the basement chests without taking anything and found 1,984 iron ingots and 1,046 bamboo. The iron chest was full to all 54 slots, so the bamboo chest became the deposit target.
 
@@ -126,16 +126,10 @@ Then it took four attempts.
 
 **Attempt three** made the pickaxe and then failed twice. After the restart, the deposit chest wasn't in the map anymore. And the craft audit said three ingots were used but zero sticks. The server had consumed the sticks. Mineflayer still showed them in the inventory when the audit ran, and they only vanished after the restart. Ghost sticks.
 
-**Attempt four** passed. One job survived both restarts, crafted exactly one iron pickaxe, and deposited it in the bamboo chest with zero unmet waits.
-
-## Final thoughts
-
-- **An honest red beats a fake green.** The failure I liked most this week was the bot saying "I couldn't get there."
-- **Graders have bugs too.** Two of this week's bugs lived in the test harness. When a test and its fixture share a typo, they'll agree forever.
-- **Don't fix what you can't reproduce.** Add the diagnostic, rerun, and let the evidence decide.
-- **Make limits visible.** "Radius 8" was a setting. "Fully scanned: 4" is what changed how the next scenario was built.
-- **Give the loop a real errand.** Mechanism tests find small bugs. An errand finds the ones between the mechanisms.
+**Attempt four** passed. Reeve kept track of the job through both restarts, crafted exactly one iron pickaxe, and deposited it in the bamboo chest.
 
 Codex did most of the running, the reading, and the fixing. My job was mostly saying "commit and push" and asking what a green run actually proved.
+
+That question kept changing the next test. A survey at Reeve's feet proved he could answer, but not walk. A staircase crossed before a restart proved less than one he could still use afterward. Making the pickaxe proved less than putting it away. The loop got useful when I gave it an errand with an ending I could check.
 
 Reeve can now make a pickaxe and put it away. It only took four tries and a chest with 1,984 iron ingots in it.
