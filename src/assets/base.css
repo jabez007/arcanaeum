@@ -1,5 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=Uncial+Antiqua&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Uncial+Antiqua&display=swap");
 @import "./scrollbar.css";
+
+:root {
+  --arcanaeum-font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --arcanaeum-font-display: "Uncial Antiqua", Georgia, serif;
+  --arcanaeum-font-mono: "JetBrains Mono", Consolas, monospace;
+  --arcanaeum-ink: #0a0a23;
+  --arcanaeum-violet: #bb86fc;
+  --arcanaeum-mint: #64ffda;
+  --arcanaeum-text: #e2e8f0;
+  --arcanaeum-muted: #cbd5e1;
+}
 
 * {
   padding: 0;
@@ -26,19 +37,7 @@ body {
     background 0.5s,
     background-color 0.5s;
   line-height: 1.6;
-  font-family:
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    "Fira Sans",
-    "Droid Sans",
-    "Helvetica Neue",
-    sans-serif;
+  font-family: var(--arcanaeum-font-body);
   font-size: 16px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -48,10 +47,26 @@ body {
 h1,
 h2,
 h3,
-h4,
+h4 {
+  font-family: var(--arcanaeum-font-body);
+  font-weight: 600;
+}
+
 .mystical-text {
-  font-family: "Uncial Antiqua", cursive;
-  font-weight: normal;
+  font-family: var(--arcanaeum-font-display);
+  font-weight: 400;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  .arcanaeum,
+  .arcanaeum *,
+  .arcanaeum *::before,
+  .arcanaeum *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Only apply focus styles to elements NOT inside the cryptotron-container */

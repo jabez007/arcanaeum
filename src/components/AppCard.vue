@@ -5,18 +5,23 @@
     class="app-card shard-shape"
     :class="`shard-${props.index % 3}`"
   >
-    <div class="shard-glow"></div>
-    <div class="mystical-glyph glyph-top-right"></div>
-    <div class="mystical-glyph glyph-bottom-left"></div>
+    <div class="shard-glow" aria-hidden="true"></div>
 
     <div class="content-wrapper">
-      <div v-if="hasIcon" class="app-icon">
+      <div v-if="hasIcon" class="app-icon" aria-hidden="true">
         <slot name="icon"
           ><span v-if="props.icon">{{ props.icon }}</span></slot
         >
       </div>
-      <h3 class="app-title">{{ props.title }}</h3>
-      <p class="app-description">{{ props.description }}</p>
+      <div class="app-copy">
+        <p class="app-category">{{ props.category }}</p>
+        <h3 class="app-title">{{ props.title }}</h3>
+        <p class="app-description">{{ props.description }}</p>
+        <span class="app-action">
+          {{ props.action }} <span aria-hidden="true">{{ isExternal ? "↗" : "→" }}</span>
+          <span v-if="isExternal" class="sr-only"> (opens in a new tab)</span>
+        </span>
+      </div>
     </div>
   </component>
 </template>
@@ -29,6 +34,8 @@ const props = defineProps<{
   icon?: string;
   title: string;
   description: string;
+  category: string;
+  action: string;
   to: RouteLocationRaw;
   index: number;
 }>();
@@ -52,260 +59,149 @@ const linkProps = computed(() => {
 
 <style scoped>
 .app-card {
-  display: block;
-  text-decoration: none;
-  background: rgba(100, 255, 218, 0.05);
-  backdrop-filter: blur(12px);
-  padding: 3rem 2rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  --shard: polygon(3% 0%, 100% 4%, 97% 100%, 0% 96%);
+  display: flex;
   position: relative;
-  overflow: hidden;
-  border: none;
-  animation: mysticalFloat 15s ease-in-out infinite;
-  animation-delay: calc(var(--delay) * 1s);
+  min-width: 0;
+  padding: 2rem 1.75rem;
+  color: var(--arcanaeum-text);
+  text-decoration: none;
+  isolation: isolate;
+  transition: transform 180ms ease;
+}
+
+/* Keep clipping on the decoration so the link's focus outline stays visible. */
+.shard-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  clip-path: var(--shard);
+  background: linear-gradient(135deg, rgba(100, 255, 218, 0.09), rgba(187, 134, 252, 0.12));
+  transition: background 180ms ease;
+}
+
+.shard-1 {
+  --shard: polygon(0% 4%, 97% 0%, 100% 96%, 3% 100%);
+}
+
+.shard-2 {
+  --shard: polygon(4% 0%, 100% 3%, 96% 100%, 0% 97%);
+}
+
+.app-card:hover,
+.app-card:focus-visible {
+  background: transparent;
+}
+
+.app-card:hover .shard-glow,
+.app-card:focus-visible .shard-glow {
+  background: linear-gradient(135deg, rgba(100, 255, 218, 0.15), rgba(187, 134, 252, 0.19));
+}
+
+.app-card:focus-visible {
+  outline: 2px solid var(--arcanaeum-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .app-card:hover {
+    transform: translateY(-3px);
+  }
 }
 
 .content-wrapper {
-  position: relative;
-  z-index: 2;
-}
-
-/* Shard Shapes */
-.shard-0 {
-  clip-path: polygon(5% 0%, 100% 10%, 90% 95%, 0% 100%);
-}
-.shard-1 {
-  clip-path: polygon(0% 10%, 95% 0%, 100% 90%, 10% 100%);
-}
-.shard-2 {
-  clip-path: polygon(10% 0%, 100% 5%, 95% 100%, 0% 90%);
-}
-
-.shard-glow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(100, 255, 218, 0.1), rgba(187, 134, 252, 0.1));
-  opacity: 0.5;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-
-.app-card:hover .shard-glow {
-  opacity: 1;
-  background: linear-gradient(135deg, rgba(100, 255, 218, 0.2), rgba(187, 134, 252, 0.2));
-}
-
-/* Mystical Glyphs */
-.mystical-glyph {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  border: 1px solid rgba(100, 255, 218, 0.1);
-  opacity: 0;
-  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  pointer-events: none;
-  z-index: 3;
-}
-
-.glyph-top-right {
-  top: -10px;
-  right: -10px;
-  border-radius: 5px;
-  transform: rotate(45deg);
-}
-
-.glyph-bottom-left {
-  bottom: -10px;
-  left: -10px;
-  border-radius: 5px;
-  transform: rotate(-30deg);
-}
-
-.app-card:hover .mystical-glyph {
-  opacity: 0.4;
-  border-color: rgba(100, 255, 218, 0.6);
-}
-
-.app-card:hover .glyph-top-right {
-  top: 15px;
-  right: 15px;
-  transform: rotate(135deg);
-}
-
-.app-card:hover .glyph-bottom-left {
-  bottom: 15px;
-  left: 15px;
-  transform: rotate(-120deg);
-}
-
-.app-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
   width: 100%;
+}
+
+.app-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.1), transparent);
-  transition: left 0.5s;
-  z-index: 1;
-}
-
-.app-card:hover::before {
-  left: 100%;
-}
-
-.app-card:hover {
-  transform: translateY(-20px) scale(1.03) rotate(1deg) !important;
-  box-shadow: 0 30px 60px rgba(100, 255, 218, 0.2);
-  animation-play-state: paused;
-}
-
-/* Magical Surge Effect on Click */
-.app-card:active {
-  transform: translateY(-5px) scale(0.97) !important;
-  box-shadow: 0 0 80px rgba(100, 255, 218, 0.5);
-  transition: all 0.1s ease;
 }
 
 .app-icon {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 1.5rem;
-  background: rgba(10, 10, 35, 0.9);
-  border: 2px solid rgba(100, 255, 218, 0.3);
-  border-radius: 50%;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.2rem;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  box-shadow: inset 0 0 20px rgba(100, 255, 218, 0.1);
-  z-index: 5;
-}
-
-.app-card:hover .app-icon {
-  transform: scale(1.15);
-  border-color: #64ffda;
-  box-shadow:
-    0 0 30px rgba(100, 255, 218, 0.4),
-    inset 0 0 15px rgba(100, 255, 218, 0.2);
-}
-
-.app-icon::after {
-  content: "";
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
-  background: linear-gradient(45deg, #64ffda, #bb86fc, #03dac6, #64ffda);
+  border: 1px solid rgba(100, 255, 218, 0.3);
   border-radius: 50%;
-  z-index: -1;
-  opacity: 0.2;
-  transition: opacity 0.3s ease;
-}
-
-.app-card:hover .app-icon::after {
-  opacity: 0.6;
-  animation: rotate 2s linear infinite;
-}
-
-.app-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: #fff;
+  background: rgba(10, 10, 35, 0.6);
+  color: var(--arcanaeum-mint);
 }
 
 .app-icon :deep(svg) {
-  width: 42px;
-  height: 42px;
-  color: #64ffda;
-  filter: drop-shadow(0 0 8px rgba(100, 255, 218, 0.6));
+  width: 25px;
+  height: 25px;
+}
+
+.app-category {
+  color: var(--arcanaeum-violet);
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+
+.app-title {
+  font-family: var(--arcanaeum-font-body);
+  font-size: clamp(1.125rem, 2vw, 1.4rem);
+  line-height: 1.3;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.65rem;
+  overflow-wrap: anywhere;
 }
 
 .app-description {
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.6;
+  color: var(--arcanaeum-muted);
+  line-height: 1.65;
   font-size: 0.95rem;
+  margin-bottom: 1rem;
 }
 
-@keyframes mysticalFloat {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  33% {
-    transform: translate(10px, -15px) rotate(1deg);
-  }
-  66% {
-    transform: translate(-10px, -10px) rotate(-1deg);
-  }
+.app-action {
+  margin-top: auto;
+  color: var(--arcanaeum-mint);
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.app-action > [aria-hidden] {
+  margin-left: 0.25rem;
 }
 
-/* Media Query Overrides */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 
-@media (max-width: 1100px) {
+@media (max-width: 600px) {
   .app-card {
-    padding: 2.5rem 1.5rem;
+    padding: 1.4rem 1.25rem;
   }
 
-  .shard-0 {
-    clip-path: polygon(1% 0%, 100% 2%, 99% 99%, 0% 100%);
-  }
-  .shard-1 {
-    clip-path: polygon(0% 2%, 99% 0%, 100% 98%, 1% 100%);
-  }
-  .shard-2 {
-    clip-path: polygon(2% 0%, 100% 1%, 98% 100%, 0% 99%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .app-card {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
-    backdrop-filter: none !important;
+  .content-wrapper {
+    gap: 0.85rem;
   }
 
-  .app-card:hover,
-  .app-card:active,
-  .app-card:hover .app-icon {
-    transform: none !important;
-    box-shadow: none !important;
-    transition: none !important;
-    animation: none !important;
-  }
-
-  .app-icon,
-  .mystical-glyph,
-  .shard-glow,
-  .app-icon::after {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
-  }
-
-  .mystical-glyph,
-  .shard-glow,
-  .app-icon::after {
-    display: none !important;
+  .app-icon {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
   }
 }
 </style>

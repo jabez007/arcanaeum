@@ -51,6 +51,7 @@
             v-model="searchQuery"
             type="text"
             placeholder="Search tags..."
+            aria-label="Search tags"
             ref="searchInputRef"
             @keydown.esc="closeDropdown(true)"
             @keydown.down.prevent="focusFirstOption"
@@ -205,14 +206,13 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener("mousedown", handleClickOutside);
 });
-
 </script>
 
 <style scoped>
 .tag-select-container {
   position: relative;
-  min-width: 250px;
-  flex: 1;
+  min-width: min(250px, 100%);
+  flex: 1 1 250px;
   max-width: 400px;
 }
 
@@ -237,6 +237,7 @@ onUnmounted(() => {
 }
 
 .selected-tags-display {
+  min-width: 0;
   display: flex;
   flex-wrap: wrap;
   gap: var(--blog-spacing-xs);
@@ -249,12 +250,15 @@ onUnmounted(() => {
 }
 
 .tag-chips {
+  min-width: 0;
   display: flex;
   flex-wrap: wrap;
   gap: var(--blog-spacing-xs);
 }
 
 .tag-chip {
+  overflow-wrap: anywhere;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 4px;

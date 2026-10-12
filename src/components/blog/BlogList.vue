@@ -2,7 +2,17 @@
   <div class="blog-container">
     <nav class="blog-nav">
       <router-link to="/" class="back-link">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-arrow">
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="nav-arrow"
+        >
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
@@ -22,10 +32,18 @@
           v-model="searchQuery"
           type="text"
           placeholder="Search posts..."
+          aria-label="Search posts"
           class="blog-input search-input"
           @input="handleSearch"
         />
-        <button v-if="searchQuery" @click="clearSearch" class="clear-search">✕</button>
+        <button
+          v-if="searchQuery"
+          @click="clearSearch"
+          class="clear-search"
+          aria-label="Clear search"
+        >
+          ✕
+        </button>
       </div>
 
       <div class="filters-container">
@@ -35,7 +53,11 @@
           :get-tag-count="getTagCount"
         />
 
-        <select v-model="selectedAuthor" class="blog-input filter-select">
+        <select
+          v-model="selectedAuthor"
+          class="blog-input filter-select"
+          aria-label="Filter by author"
+        >
           <option value="">All Authors</option>
           <option v-for="author in allAuthors" :key="author" :value="author">
             {{ author }}
@@ -44,6 +66,7 @@
 
         <button
           @click="showFeaturedOnly = !showFeaturedOnly"
+          :aria-pressed="showFeaturedOnly"
           :class="{ active: showFeaturedOnly }"
           class="blog-btn blog-btn-secondary featured-toggle"
         >
@@ -314,7 +337,9 @@ onMounted(() => {
 }
 
 .blog-header h1 {
-  font-size: var(--blog-font-size-4xl);
+  font-family: var(--arcanaeum-font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 5vw, 3rem);
   margin-bottom: var(--blog-spacing-sm);
   color: var(--blog-text-primary);
 }
@@ -335,7 +360,7 @@ onMounted(() => {
 .search-container {
   position: relative;
   flex: 1;
-  min-width: 300px;
+  min-width: min(300px, 100%);
 }
 
 .search-input {
@@ -356,6 +381,9 @@ onMounted(() => {
 
 .filters-container {
   display: flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+  min-width: 0;
   gap: var(--blog-spacing-md);
   align-items: center;
 }
@@ -401,7 +429,7 @@ onMounted(() => {
 
 .posts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr));
   gap: var(--blog-spacing-xl);
   margin-bottom: var(--blog-spacing-2xl);
 }
@@ -431,6 +459,8 @@ onMounted(() => {
   color: var(--blog-text-primary);
   line-height: var(--blog-line-height-tight);
   flex-grow: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
 }
 
 .excerpt {

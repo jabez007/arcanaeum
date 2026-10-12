@@ -12,7 +12,7 @@ const scrollToTop = () => {
   <PromptInjectionCanary />
   <ParticlesDiv />
   <RouterView v-slot="{ Component, route }">
-    <transition name="scale-transition" mode="out-in" @after-leave="scrollToTop">
+    <transition name="page-transition" mode="out-in" @after-leave="scrollToTop">
       <div class="arcanaeum" :key="((route.name || '') as string).split('-')[0]">
         <component :is="Component" />
       </div>
@@ -21,60 +21,24 @@ const scrollToTop = () => {
   <PromptInjectionCanary />
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .arcanaeum {
   min-height: 100vh;
-  min-width: 100vw;
+  width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
 }
 
-$transition-duration-root: 0.3s !default;
-$transition-move-duration-root: 0.5s !default;
-$standard-easing: cubic-bezier(0.4, 0, 0.2, 1) !default;
-
-@mixin transition-default() {
-  &-enter-active {
-    transition-duration: $transition-duration-root !important;
-    transition-timing-function: $standard-easing !important;
-  }
-
-  &-leave-active {
-    transition-duration: $transition-duration-root !important;
-    transition-timing-function: $standard-easing !important;
-  }
-
-  &-move {
-    transition-duration: $transition-move-duration-root !important;
-    transition-property: transform !important;
-    transition-timing-function: $standard-easing !important;
-  }
+.page-transition-enter-active,
+.page-transition-leave-active {
+  transition: opacity 120ms ease;
 }
 
-@mixin fade-out() {
-  &-leave-to {
-    opacity: 0;
-  }
-
-  &-leave-active {
-    transition-duration: 100ms !important;
-  }
-}
-
-.scale-transition {
-  @include transition-default();
-  @include fade-out();
-
-  &-enter-from {
-    opacity: 0;
-    transform: scale(0);
-  }
-
-  &-enter-active,
-  &-leave-active {
-    transition-property: transform, opacity !important;
-  }
+.page-transition-enter-from,
+.page-transition-leave-to {
+  opacity: 0;
 }
 </style>
