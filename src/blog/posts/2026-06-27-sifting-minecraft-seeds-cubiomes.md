@@ -155,7 +155,7 @@ My tweak by feel had moved in the right direction and stopped short of the line 
 
 Then came a newer biome, the dappled forest, that Cubiomes doesn't have a row for yet. All I had was the description: cold regions, very little humidity, high weirdness, borders plains, sunflower plains and cherry groves but never other woodland, and shows up near cold oceans as well as in the mountains.
 
-After all that, I was back to estimating. The difference is that this time the estimate was built from the neighboring rows. Humidity `<= -1000` keeps it away from every other forest, since regular forest starts at `-1000` and birch and dark forest are wetter still. Weirdness `>= 2666` lines it up with the Cherry Grove. Temperature tops out at `2000`, and there's no erosion limit, since it can generate on any terrain. It's in the reference table marked as an estimate, so I won't forget which row I made up.
+After all that, I was back to estimating. The difference is that this time the estimate was built from the neighboring rows. Humidity `<= -1000` keeps it out of nearly every other forest. Regular forest starts at exactly `-1000`, so the two only share that one boundary value, and birch and dark forest are wetter still. Weirdness `>= 2666` lines it up with the Cherry Grove. Temperature tops out at `2000`, and there's no erosion limit, since it can generate on any terrain. It's in the reference table marked as an estimate, so I won't forget which row I made up.
 
 ## The order of the stack matters
 

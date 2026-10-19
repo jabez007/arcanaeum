@@ -93,18 +93,19 @@ The next thought was a version mismatch, an old binary reading a newer database 
 
 ## Isolate the state, not the project
 
-The trick that cracked this was running OpenCode with a throwaway home directory. OpenCode follows the XDG variables, so you can point all of its state at `/tmp`:
+The trick that cracked this was running OpenCode with a throwaway home directory. OpenCode follows the XDG variables, so you can point all of its state at a fresh directory under `/tmp`:
 
 ```bash
-env HOME=/tmp/opencode-isolated \
-    XDG_CONFIG_HOME=/tmp/opencode-isolated/.config \
-    XDG_DATA_HOME=/tmp/opencode-isolated/.local/share \
-    XDG_STATE_HOME=/tmp/opencode-isolated/.local/state \
-    XDG_CACHE_HOME=/tmp/opencode-isolated/.cache \
+iso=$(mktemp -d /tmp/opencode-isolated.XXXXXX)
+env HOME="$iso" \
+    XDG_CONFIG_HOME="$iso/.config" \
+    XDG_DATA_HOME="$iso/.local/share" \
+    XDG_STATE_HOME="$iso/.local/state" \
+    XDG_CACHE_HOME="$iso/.cache" \
     opencode debug config
 ```
 
-Each of those variables moves one kind of state. `XDG_CONFIG_HOME` is where global config lives, `XDG_DATA_HOME` is where `opencode.db` lives, and the state and cache directories hold logs and downloads. Setting `HOME` too catches anything that ignores XDG and goes straight for `~`. My real profile never gets touched, and when I'm done I delete the directory.
+Each of those variables moves one kind of state. `XDG_CONFIG_HOME` is where global config lives, `XDG_DATA_HOME` is where `opencode.db` lives, and the state and cache directories hold logs and downloads. Setting `HOME` too catches anything that ignores XDG and goes straight for `~`. `mktemp -d` makes a new directory every time, so a leftover database from an earlier run can't sneak back in. My real profile never gets touched, and when I'm done, `rm -rf "$iso"` cleans it up.
 
 With a fresh state directory, `debug config` loaded my repo's `opencode.json` fine. Same binary, same project, different database. That rules out the project.
 
@@ -186,7 +187,7 @@ process.stdin.on("data", (c) => { log(`CLIENT ${JSON.stringify(c.toString())}`);
 process.stdin.on("end", () => { log("CLIENT_END"); child.stdin.end(); });
 child.stdout.on("data", (c) => { log(`SERVER ${JSON.stringify(c.toString())}`); process.stdout.write(c); });
 child.stderr.on("data", (c) => { log(`SERVER_ERR ${JSON.stringify(c.toString())}`); process.stderr.write(c); });
-child.on("exit", (code) => { log(`CHILD_EXIT code=${code}`); process.exit(code ?? 1); });
+child.on("close", (code, signal) => { log(`CHILD_EXIT code=${code} signal=${signal}`); process.exit(code ?? 1); });
 ```
 
 Temporarily set the server's `command` in `opencode.json` to `["node", "/tmp/opencode-mcp-proxy.cjs"]`, run `opencode mcp list`, and read `/tmp/opencode-mcp-proxy.log`. Restore the original command afterward.

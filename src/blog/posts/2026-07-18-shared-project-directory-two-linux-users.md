@@ -59,7 +59,7 @@ There are two separate inheritance mechanisms in there.
 
 **The setgid bit**, the `2` in `2770`. On a directory, it means new files and subdirectories inherit the directory's *group* instead of the creating user's primary group. Without it, a file `molty` creates would belong to group `molty`, and `jabez` might not be able to touch it.
 
-**The default ACL**, the `d:` entries. Setgid fixes the group, but not the permissions. If one user has a restrictive `umask`, their new files might come out `644`, which isn't group-writable. A default ACL on a directory sets the permissions new entries start with, so the group keeps `rwx` no matter whose `umask` created the file.
+**The default ACL**, the `d:` entries. Setgid fixes the group, but not the permissions. If one user has a restrictive `umask`, their new files might come out `644`, which isn't group-writable. A default ACL on a directory sets the permissions new entries start with, and it overrides the `umask`, so the group keeps write access no matter who created the file. It can't add bits the creating program didn't ask for, though. A regular file created with mode `0666` comes out group `rw-`, while a new directory gets the full `rwx`.
 
 You need both. Setgid gives the group ownership of new files, and the default ACL makes sure that group can write to them.
 
@@ -134,14 +134,17 @@ There's one catch before testing: **new group membership only applies to new log
 Before moving any real code in, I ran an end-to-end check with both users:
 
 ```bash
-sudo -u jabez mkdir /srv/projects/permission-test
-sudo -u jabez touch /srv/projects/permission-test/from-jabez
-sudo -u molty touch /srv/projects/permission-test/from-molty
-sudo -u molty sh -c 'echo molty-wrote-here >> /srv/projects/permission-test/from-jabez'
+if sudo -u jabez mkdir /srv/projects/permission-test; then
+  sudo -u jabez touch /srv/projects/permission-test/from-jabez
+  sudo -u molty touch /srv/projects/permission-test/from-molty
+  sudo -u molty sh -c 'echo molty-wrote-here >> /srv/projects/permission-test/from-jabez'
 
-stat -c '%A %U:%G %n' /srv/projects/permission-test{,/*}
-sudo rm -rf /srv/projects/permission-test
+  stat -c '%A %U:%G %n' /srv/projects/permission-test{,/*}
+  sudo rm -rf /srv/projects/permission-test
+fi
 ```
+
+The `if` matters. Plain `mkdir` fails when the directory already exists, and without the guard, the `rm -rf` at the end would delete whatever was already there. This way the cleanup only removes a directory this test created.
 
 Everything should belong to group `project-devs`. The directory should show `s`, both files should be group-writable, and `molty` should be able to append to the file `jabez` created.
 
