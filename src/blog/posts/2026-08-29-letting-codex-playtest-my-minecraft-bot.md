@@ -79,7 +79,7 @@ The first live run never came back with a verdict. The bot found no usable cross
 
 ## Decorative stairs
 
-My base has several half-slab spiral staircases, but I didn't have coordinates for any of them. So the bot went home and scanned 24 blocks around him for every stair and slab.
+My base has several half-slab spiral staircases, but I didn't have coordinates for any of them. So the bot went home and asked for a scan of every stair and slab within 24 blocks.
 
 It found 228 stair blocks and 284 slabs. Every one of the 228 stairs got rejected. That sounded like a bug until the rejection reasons came back. They were mostly top-half stairs, which in my base are trim, not steps.
 
