@@ -5,8 +5,93 @@
     <link>https://archonsarcanaeum.xyz/#/blog</link>
     <description>Crafting code, weaving algorithms, and brewing solutions in the realm of technology</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 17 May 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 29 Aug 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="https://archonsarcanaeum.xyz/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Letting Codex Playtest My Minecraft Bot</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/letting-codex-playtest-my-minecraft-bot</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/letting-codex-playtest-my-minecraft-bot</guid>
+      <pubDate>Sat, 29 Aug 2026 00:00:00 GMT</pubDate>
+      <description>I had Codex run my Minecraft companion bot for twenty minutes at a time, give it chores, read the
+journal afterward, fix something, and run it again. It found real bot bugs. It also found that my test
+graders were lying to me about as often as the bot was.
+</description>
+      <author>jabez007</author>
+      <category>minecraft</category>
+      <category>mineflayer</category>
+      <category>llm</category>
+      <category>ai-agents</category>
+      <category>testing</category>
+      <category>troubleshooting</category>
+    </item>
+    <item>
+      <title>Who&apos;s Driving? Giving an LLM a Minecraft Body Without the Steering Wheel</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/llm-companion-who-is-driving</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/llm-companion-who-is-driving</guid>
+      <pubDate>Sat, 25 Jul 2026 00:00:00 GMT</pubDate>
+      <description>Right before the first real live run of my Minecraft companion bot, I asked a simple question:
+what does the LLM actually do while the bot is patrolling? The answer was &quot;nothing&quot;. Here is how
+I gave the model some initiative without letting it spam tokens or overrule a player.
+</description>
+      <author>jabez007</author>
+      <category>minecraft</category>
+      <category>mineflayer</category>
+      <category>llm</category>
+      <category>ai-agents</category>
+      <category>software-architecture</category>
+      <category>typescript</category>
+    </item>
+    <item>
+      <title>One Project, Two Linux Users: setgid, Default ACLs, and `/srv`</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/shared-project-directory-two-linux-users</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/shared-project-directory-two-linux-users</guid>
+      <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+      <description>I needed two accounts on my laptop, jabez and molty, to share full read/write access to the same project checkout.
+The answer was a shared group, a setgid directory, and default ACLs under /srv. Along the way I learned what the
+`s` and `+` in `drwxrws---+` mean, and why `sudo -u` still cares about the directory you&apos;re standing in.
+</description>
+      <author>jabez007</author>
+      <category>linux</category>
+      <category>permissions</category>
+      <category>acl</category>
+      <category>git</category>
+      <category>homelab</category>
+      <category>ubuntu</category>
+      <category>troubleshooting</category>
+    </item>
+    <item>
+      <title>Seed Sifting: Stop Guessing Your Cubiomes Thresholds</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/sifting-minecraft-seeds-cubiomes</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/sifting-minecraft-seeds-cubiomes</guid>
+      <pubDate>Sat, 27 Jun 2026 00:00:00 GMT</pubDate>
+      <description>I wanted a Minecraft seed with an island home base, warm water at spawn, and a Pale Garden somewhere across the sea.
+Cubiomes Viewer can search for that, but only if you feed it the right climate numbers. My first numbers were guesses.
+The second set came from &quot;research&quot; and was worse. The third set came from the source code.
+</description>
+      <author>jabez007</author>
+      <category>minecraft</category>
+      <category>cubiomes</category>
+      <category>worldgen</category>
+      <category>python</category>
+      <category>automation</category>
+    </item>
+    <item>
+      <title>My Minecraft Bot vs. One Wooden Door</title>
+      <link>https://archonsarcanaeum.xyz/#/blog/minecraft-bot-vs-wooden-door</link>
+      <guid>https://archonsarcanaeum.xyz/#/blog/minecraft-bot-vs-wooden-door</guid>
+      <pubDate>Sun, 14 Jun 2026 00:00:00 GMT</pubDate>
+      <description>I&apos;m building an LLM-powered companion that lives in my Minecraft world. Before it can hold a conversation,
+it has to get from the house to the wheat farm. That meant a weekend spent losing to a single oak door.
+</description>
+      <author>jabez007</author>
+      <category>minecraft</category>
+      <category>mineflayer</category>
+      <category>pathfinding</category>
+      <category>llm</category>
+      <category>ai-agents</category>
+      <category>troubleshooting</category>
+      <category>typescript</category>
+    </item>
     <item>
       <title>Tailscale Serve and the Pursuit of Private Access</title>
       <link>https://archonsarcanaeum.xyz/#/blog/exposing-openclaw-tailscale-serve</link>
