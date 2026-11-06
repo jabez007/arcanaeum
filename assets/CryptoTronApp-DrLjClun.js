@@ -1,1 +1,0 @@
-import{d as n,g as e,h as r,i as t,u as p,o as s,_ as a}from"./index-CC2ln-Qh.js";const c=n({__name:"CryptoTronApp",setup(_){const o=e(r.app);return(f,d)=>(s(),t(p(o),{class:"cryptotron-container"}))}}),m=a(c,[["__scopeId","data-v-3f1f636e"]]);export{m as default};
